@@ -3,147 +3,88 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GregLandscape App</title>
-
+  <title>GregLandscape Login Test</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
-    body { margin:0; font-family: Arial; background:#0f265f; }
-    .hidden { display:none; }
-
-    .login {
-      height:100vh; display:flex; align-items:center; justify-content:center;
-    }
-
-    .card {
-      background:white; padding:30px; border-radius:12px; width:350px;
-    }
-
-    input { width:100%; padding:10px; margin:8px 0; }
-    button { width:100%; padding:12px; background:#16a34a; color:white; border:none; }
-
-    .app { display:flex; height:100vh; }
-    .sidebar { width:200px; background:#07163a; color:white; padding:20px; }
-    .content { flex:1; padding:20px; background:#f3f4f6; }
-
-    .logout { background:red; margin-top:20px; }
-
-    table { width:100%; background:white; border-collapse:collapse; }
-    td, th { padding:10px; border-bottom:1px solid #eee; }
+    body { margin: 0; font-family: Arial, sans-serif; background: #0b235f; }
+    .wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .card { width: 360px; background: #fff; border-radius: 14px; padding: 28px; }
+    h1 { margin: 0 0 20px; font-size: 22px; }
+    input { width: 100%; box-sizing: border-box; padding: 12px; margin: 0 0 12px; }
+    button { width: 100%; padding: 12px; border: 0; background: #16a34a; color: #fff; cursor: pointer; }
+    #msg { margin-top: 12px; color: #b91c1c; white-space: pre-wrap; }
+    #ok { margin-top: 12px; color: #166534; white-space: pre-wrap; }
   </style>
 </head>
-
 <body>
-
-<!-- LOGIN -->
-<div id="loginScreen" class="login">
-  <div class="card">
-    <h2>GregLandscape</h2>
-
-    <input id="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Password">
-
-    <button onclick="login()">Login</button>
-
-    <div id="loginMsg" style="color:red; margin-top:10px;"></div>
-  </div>
-</div>
-
-<!-- APP -->
-<div id="app" class="app hidden">
-  <div class="sidebar">
-    <h3>Menu</h3>
-    <button class="logout" onclick="logout()">Logout</button>
+  <div class="wrap">
+    <div class="card">
+      <h1>GregLandscape</h1>
+      <input id="email" type="email" placeholder="Email" autocomplete="username" />
+      <input id="password" type="password" placeholder="Password" autocomplete="current-password" />
+      <button id="loginBtn" type="button">Login</button>
+      <div id="msg"></div>
+      <div id="ok"></div>
+    </div>
   </div>
 
-  <div class="content">
-    <h2>Customers</h2>
+  <script>
+    const SUPABASE_URL = "PASTE_YOUR_PROJECT_URL_HERE";
+    const SUPABASE_ANON_KEY = "PASTE_YOUR_ANON_PUBLIC_KEY_HERE";
 
-    <input id="name" placeholder="Customer Name">
-    <button onclick="addCustomer()">Add Customer</button>
+    const msgEl = document.getElementById("msg");
+    const okEl = document.getElementById("ok");
 
-    <br><br>
+    function setError(text) {
+      msgEl.textContent = text;
+      okEl.textContent = "";
+    }
 
-    <table>
-      <thead>
-        <tr><th>Name</th></tr>
-      </thead>
-      <tbody id="list"></tbody>
-    </table>
-  </div>
-</div>
+    function setOk(text) {
+      okEl.textContent = text;
+      msgEl.textContent = "";
+    }
 
-<script>
-/* ✅ CORRECT KEYS (ONE LINE, NOT BROKEN) */
-const SUPABASE_URL = "https://nmbobbmqkvyuucwapaoj.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm9iYm1xa3Z5dXVjd2FwYW9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyNDM5MDgsImV4cCI6MjA5MDgxOTkwOH0.L-e_JF5YnZQejSvz3hieWM3gVOdwJ91nuetFy4gv4N4";
+    if (
+      !SUPABASE_URL.startsWith("https://") ||
+      SUPABASE_ANON_KEY === "PASTE_YOUR_ANON_PUBLIC_KEY_HERE"
+    ) {
+      setError("Paste the exact Project URL and anon public key from Supabase Settings > API.");
+      throw new Error("Supabase config not pasted yet.");
+    }
 
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-/* LOGIN */
-async function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+    async function login() {
+      setError("");
+      setOk("");
 
-  const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
 
-  if (error) {
-    document.getElementById("loginMsg").innerText = error.message;
-    return;
-  }
+      if (!email || !password) {
+        setError("Email and password are required.");
+        return;
+      }
 
-  showApp();
-}
+      const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
 
-/* LOGOUT */
-async function logout() {
-  await supabaseClient.auth.signOut();
-  document.getElementById("app").classList.add("hidden");
-  document.getElementById("loginScreen").classList.remove("hidden");
-}
+      if (error) {
+        setError(error.message);
+        return;
+      }
 
-/* SHOW APP */
-function showApp() {
-  document.getElementById("loginScreen").classList.add("hidden");
-  document.getElementById("app").classList.remove("hidden");
-  loadCustomers();
-}
+      setOk("Login successful.\nUser: " + (data.user?.email || ""));
+      console.log("LOGIN_OK", data);
+    }
 
-/* LOAD CUSTOMERS */
-async function loadCustomers() {
-  const { data, error } = await supabaseClient.from("customers").select("*");
-
-  if (error) {
-    console.log(error);
-    return;
-  }
-
-  const tbody = document.getElementById("list");
-  tbody.innerHTML = data.map(c => `<tr><td>${c.customer_name}</td></tr>`).join("");
-}
-
-/* ADD CUSTOMER */
-async function addCustomer() {
-  const name = document.getElementById("name").value;
-
-  const { error } = await supabaseClient.from("customers").insert([
-    { customer_name: name }
-  ]);
-
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  loadCustomers();
-}
-
-/* CHECK SESSION ON LOAD */
-(async () => {
-  const { data } = await supabaseClient.auth.getSession();
-  if (data.session) showApp();
-})();
-</script>
-
+    document.getElementById("loginBtn").addEventListener("click", login);
+    document.getElementById("password").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") login();
+    });
+  </script>
 </body>
 </html>
