@@ -3,131 +3,1894 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GregLandscape Login Test</title>
+  <title>GregLandscape App</title>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
-    body {
+    * {
+      box-sizing: border-box;
       margin: 0;
+      padding: 0;
       font-family: Arial, sans-serif;
-      background: #0b235f;
     }
 
-    .wrap {
+    body {
+      background: #f3f4f6;
+      color: #111827;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .login-shell {
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 24px;
+      background: linear-gradient(135deg, #07163a 0%, #0f265f 100%);
     }
 
-    .card {
-      width: 360px;
-      background: #ffffff;
-      border-radius: 14px;
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: white;
+      border-radius: 18px;
+      padding: 28px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      border: 1px solid #e5e7eb;
+    }
+
+    .login-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #07163a;
+      margin-bottom: 8px;
+    }
+
+    .login-subtext {
+      color: #6b7280;
+      margin-bottom: 22px;
+      line-height: 1.45;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 220px;
+      background: #07163a;
+      color: white;
+      padding: 28px 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .sidebar-top {
+      width: 100%;
+    }
+
+    .sidebar-bottom {
+      padding: 0 24px;
+    }
+
+    .brand {
+      font-size: 22px;
+      font-weight: 700;
+      padding: 0 24px 28px;
+    }
+
+    .nav-btn {
+      display: block;
+      width: 100%;
+      border: none;
+      background: transparent;
+      color: white;
+      text-align: left;
+      padding: 16px 24px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .nav-btn.active,
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .logout-btn {
+      width: 100%;
+      border: none;
+      background: #dc2626;
+      color: white;
+      text-align: center;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: 12px;
+    }
+
+    .content {
+      flex: 1;
       padding: 28px;
     }
 
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
     h1 {
-      margin: 0 0 20px;
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+
+    .subtext {
+      color: #6b7280;
+      margin-bottom: 24px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+
+    .stat-title {
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
       font-size: 22px;
+      font-weight: 700;
+      color: #07163a;
     }
 
-    input {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 12px;
-      margin: 0 0 12px;
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.45fr 0.95fr;
+      gap: 20px;
     }
 
+    .grid-1 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .panel-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    input,
+    select,
+    textarea,
     button {
+      font-size: 14px;
+    }
+
+    input,
+    select,
+    textarea {
       width: 100%;
-      padding: 12px;
-      border: 0;
-      background: #16a34a;
-      color: #ffffff;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      padding: 12px 14px;
+      outline: none;
+      background: white;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 240px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
       cursor: pointer;
+      font-weight: 600;
     }
 
-    #msg {
-      margin-top: 12px;
-      color: #b91c1c;
+    .btn-primary {
+      background: #16a34a;
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #eef2ff;
+      color: #3730a3;
+    }
+
+    .btn-warning {
+      background: #ea580c;
+      color: white;
+    }
+
+    .btn-danger {
+      background: #dc2626;
+      color: white;
+    }
+
+    .small-btn {
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      background: white;
+    }
+
+    table {
+      width: 100%;
+      min-width: 1000px;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 14px 12px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: top;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    th {
+      background: #f9fafb;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    .message {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      display: none;
       white-space: pre-wrap;
     }
 
-    #ok {
-      margin-top: 12px;
+    .message.show {
+      display: block;
+    }
+
+    .message.success {
+      background: #dcfce7;
       color: #166534;
-      white-space: pre-wrap;
+      border: 1px solid #bbf7d0;
+    }
+
+    .message.error {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .muted {
+      color: #6b7280;
+      font-size: 13px;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .positive {
+      color: #166534 !important;
+    }
+
+    .negative {
+      color: #b91c1c !important;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #eef2ff;
+      color: #3730a3;
+    }
+
+    .badge-danger {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .badge-success {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    @media (max-width: 1200px) {
+      .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .grid-2,
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .app {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card">
-      <h1>GregLandscape</h1>
+  <div id="loginScreen" class="login-shell">
+    <div class="login-card">
+      <div class="login-title">GregLandscape</div>
+      <div class="login-subtext">Sign in with the email and password you created in Supabase Auth.</div>
 
-      <input id="email" type="email" placeholder="Email" autocomplete="username" />
-      <input id="password" type="password" placeholder="Password" autocomplete="current-password" />
+      <div class="form-group">
+        <label class="muted">Email</label>
+        <input id="loginEmail" type="email" autocomplete="username" />
+      </div>
 
-      <button id="loginBtn" type="button">Login</button>
+      <div class="form-group">
+        <label class="muted">Password</label>
+        <input id="loginPassword" type="password" autocomplete="current-password" />
+      </div>
 
-      <div id="msg"></div>
-      <div id="ok"></div>
+      <button class="btn btn-primary" id="loginBtn" type="button" style="width:100%;">Log In</button>
+
+      <div id="loginMessage" class="message"></div>
     </div>
+  </div>
+
+  <div id="appShell" class="app hidden">
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <div class="brand">GregLandscape</div>
+        <button class="nav-btn active" data-page="customersPage" type="button">Customers</button>
+        <button class="nav-btn" data-page="invoicesPage" type="button">Invoices</button>
+        <button class="nav-btn" data-page="expensesPage" type="button">Expenses</button>
+        <button class="nav-btn" data-page="dashboardPage" type="button">Dashboard</button>
+      </div>
+
+      <div class="sidebar-bottom">
+        <button id="logoutBtn" class="logout-btn" type="button">Logout</button>
+      </div>
+    </aside>
+
+    <main class="content">
+      <section id="customersPage" class="page active">
+        <h1>Customers</h1>
+        <p class="subtext">Manage customer records.</p>
+
+        <div class="stats">
+          <div class="card">
+            <div class="stat-title">Total Customers</div>
+            <div class="stat-value" id="customersTotalStat">0</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Active Customers</div>
+            <div class="stat-value" id="customersActiveStat">0</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Recurring Contracts</div>
+            <div class="stat-value" id="customersRecurringStat">0</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Search Results</div>
+            <div class="stat-value" id="customersSearchStat">0</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="panel-title">Customer List</div>
+
+            <div class="toolbar">
+              <input id="customerSearch" class="search-input" type="text" placeholder="Search by name, type, phone, email, address, region, status" autocomplete="off" />
+              <button class="btn btn-secondary" id="customerClearSearchBtn" type="button">Clear Search</button>
+              <button class="btn btn-secondary" id="customerRefreshBtn" type="button">Refresh</button>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Customer Type</th>
+                    <th>Recurring Contract</th>
+                    <th>Customer Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Address</th>
+                    <th>Region</th>
+                    <th>Notes</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="customersTableBody"></tbody>
+              </table>
+            </div>
+
+            <div id="customerListMessage" class="message"></div>
+          </div>
+
+          <div class="card">
+            <div class="panel-title">Add Customer</div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="muted">Customer Type</label>
+                <select id="customerType">
+                  <option value="Individual">Individual</option>
+                  <option value="Company">Company</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="muted">Recurring Contract</label>
+                <select id="customerRecurringContract">
+                  <option value="No Contract">No Contract</option>
+                  <option value="Weekly">Weekly</option>
+                  <option value="Bi-Weekly">Bi-Weekly</option>
+                  <option value="Monthly">Monthly</option>
+                  <option value="Quarterly">Quarterly</option>
+                  <option value="Yearly">Yearly</option>
+                </select>
+              </div>
+
+              <div class="form-group full">
+                <label class="muted">Customer Name</label>
+                <input id="customerName" type="text" autocomplete="off" />
+              </div>
+
+              <div class="form-group">
+                <label class="muted">Phone</label>
+                <input id="customerPhone" type="text" autocomplete="off" />
+              </div>
+
+              <div class="form-group">
+                <label class="muted">Email</label>
+                <input id="customerEmail" type="email" autocomplete="off" />
+              </div>
+
+              <div class="form-group full">
+                <label class="muted">Address</label>
+                <textarea id="customerAddress" autocomplete="off"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="muted">Region</label>
+                <input id="customerRegion" type="text" autocomplete="off" />
+              </div>
+
+              <div class="form-group">
+                <label class="muted">Status</label>
+                <select id="customerStatus">
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                </select>
+              </div>
+
+              <div class="form-group full">
+                <label class="muted">Notes</label>
+                <textarea id="customerNotes" autocomplete="off"></textarea>
+              </div>
+            </div>
+
+            <div class="toolbar">
+              <button class="btn btn-primary" id="saveCustomerBtn" type="button">Save Customer</button>
+              <button class="btn btn-secondary" id="clearCustomerBtn" type="button">Clear</button>
+            </div>
+
+            <div id="customerMessage" class="message"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="invoicesPage" class="page">
+        <h1>Invoices</h1>
+        <p class="subtext">Invoice tracking linked to customers.</p>
+
+        <div class="stats">
+          <div class="card">
+            <div class="stat-title">Total Invoices</div>
+            <div class="stat-value" id="invoiceTotalStat">0</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Open Invoices</div>
+            <div class="stat-value" id="invoiceOpenStat">0</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Paid Invoices</div>
+            <div class="stat-value" id="invoicePaidStat">0</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Open Amount</div>
+            <div class="stat-value" id="invoiceOpenAmountStat">0.00</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="panel-title">Invoice List</div>
+
+            <div class="toolbar">
+              <input id="invoiceSearch" class="search-input" type="text" placeholder="Search by customer, service type, description, status" autocomplete="off" />
+              <button class="btn btn-secondary" id="invoiceClearSearchBtn" type="button">Clear Search</button>
+              <button class="btn btn-secondary" id="invoiceRefreshBtn" type="button">Refresh</button>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Invoice Date</th>
+                    <th>Customer</th>
+                    <th>Service Type</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Payment Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="invoicesTableBody"></tbody>
+              </table>
+            </div>
+
+            <div id="invoiceListMessage" class="message"></div>
+          </div>
+
+          <div class="card">
+            <div class="panel-title">Invoice Form</div>
+
+            <div class="form-group">
+              <label class="muted">Customer</label>
+              <select id="invoiceCustomer"></select>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="muted">Invoice Date</label>
+                <input id="invoiceDate" type="date" />
+              </div>
+
+              <div class="form-group">
+                <label class="muted">Status</label>
+                <select id="invoiceStatus">
+                  <option value="Open">Open</option>
+                  <option value="Paid">Paid</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="muted">Service Type</label>
+                <select id="invoiceServiceType">
+                  <option value="Grass Cutting">Grass Cutting</option>
+                  <option value="Hedge Trimming">Hedge Trimming</option>
+                  <option value="Cleaning">Cleaning</option>
+                  <option value="Landscaping">Landscaping</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="muted">Amount</label>
+                <input id="invoiceAmount" type="number" step="0.01" />
+              </div>
+
+              <div class="form-group full">
+                <label class="muted">Description</label>
+                <textarea id="invoiceDescription"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="muted">Payment Date</label>
+                <input id="invoicePaymentDate" type="date" />
+              </div>
+            </div>
+
+            <div class="toolbar">
+              <button class="btn btn-primary" id="saveInvoiceBtn" type="button">Save Invoice</button>
+              <button class="btn btn-warning" id="updateInvoiceBtn" type="button">Update Invoice</button>
+              <button class="btn btn-secondary" id="clearInvoiceBtn" type="button">Clear</button>
+            </div>
+
+            <div id="invoiceMessage" class="message"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="expensesPage" class="page">
+        <h1>Expenses</h1>
+        <p class="subtext">Track business expenses.</p>
+
+        <div class="stats">
+          <div class="card">
+            <div class="stat-title">Total Expenses</div>
+            <div class="stat-value" id="expensesTotalStat">0</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Paid Expenses</div>
+            <div class="stat-value" id="expensesPaidStat">0</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Unpaid Expenses</div>
+            <div class="stat-value" id="expensesUnpaidStat">0</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Total Amount</div>
+            <div class="stat-value" id="expensesAmountStat">0.00</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="panel-title">Expense List</div>
+
+            <div class="toolbar">
+              <input id="expenseSearch" class="search-input" type="text" placeholder="Search by category, vendor, description, payment method, status, notes" autocomplete="off" />
+              <button class="btn btn-secondary" id="expenseClearSearchBtn" type="button">Clear Search</button>
+              <button class="btn btn-secondary" id="expenseRefreshBtn" type="button">Refresh</button>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Expense Date</th>
+                    <th>Category</th>
+                    <th>Vendor</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Payment Method</th>
+                    <th>Status</th>
+                    <th>Receipt URL</th>
+                    <th>Notes</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="expensesTableBody"></tbody>
+              </table>
+            </div>
+
+            <div id="expenseListMessage" class="message"></div>
+          </div>
+
+          <div class="card">
+            <div class="panel-title">Expense Form</div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="muted">Expense Date</label>
+                <input id="expenseDate" type="date" />
+              </div>
+
+              <div class="form-group">
+                <label class="muted">Category</label>
+                <select id="expenseCategory">
+                  <option value="Fuel">Fuel</option>
+                  <option value="Salary">Salary</option>
+                  <option value="Supplies">Supplies</option>
+                  <option value="Equipment">Equipment</option>
+                  <option value="Transport">Transport</option>
+                  <option value="Maintenance">Maintenance</option>
+                  <option value="Utilities">Utilities</option>
+                  <option value="Rent">Rent</option>
+                  <option value="Marketing">Marketing</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="muted">Vendor</label>
+                <input id="expenseVendor" type="text" />
+              </div>
+
+              <div class="form-group">
+                <label class="muted">Amount</label>
+                <input id="expenseAmount" type="number" step="0.01" />
+              </div>
+
+              <div class="form-group">
+                <label class="muted">Payment Method</label>
+                <select id="expensePaymentMethod">
+                  <option value="">Select method</option>
+                  <option value="Cash">Cash</option>
+                  <option value="Bank Transfer">Bank Transfer</option>
+                  <option value="Card">Card</option>
+                  <option value="Cheque">Cheque</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="muted">Status</label>
+                <select id="expenseStatus">
+                  <option value="Unpaid">Unpaid</option>
+                  <option value="Paid">Paid</option>
+                </select>
+              </div>
+
+              <div class="form-group full">
+                <label class="muted">Description</label>
+                <textarea id="expenseDescription"></textarea>
+              </div>
+
+              <div class="form-group full">
+                <label class="muted">Receipt URL</label>
+                <input id="expenseReceiptUrl" type="text" />
+              </div>
+
+              <div class="form-group full">
+                <label class="muted">Notes</label>
+                <textarea id="expenseNotes"></textarea>
+              </div>
+            </div>
+
+            <div class="toolbar">
+              <button class="btn btn-primary" id="saveExpenseBtn" type="button">Save Expense</button>
+              <button class="btn btn-warning" id="updateExpenseBtn" type="button">Update Expense</button>
+              <button class="btn btn-secondary" id="clearExpenseBtn" type="button">Clear</button>
+            </div>
+
+            <div id="expenseMessage" class="message"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="dashboardPage" class="page">
+        <h1>Dashboard</h1>
+        <p class="subtext">Quick business summary.</p>
+
+        <div class="stats">
+          <div class="card">
+            <div class="stat-title">Total Customers</div>
+            <div class="stat-value" id="dashTotalCustomers">0</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Open Invoice Amount</div>
+            <div class="stat-value" id="dashOpenInvoiceAmount">0.00</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Total Expenses</div>
+            <div class="stat-value" id="dashTotalExpenses">0.00</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Net Position</div>
+            <div class="stat-value" id="dashNetPosition">0.00</div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="card">
+            <div class="panel-title">Open Invoices</div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Customer</th>
+                    <th>Invoice Date</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="dashboardOpenInvoicesBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="panel-title">Recent Expenses</div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Vendor</th>
+                    <th>Amount</th>
+                  </tr>
+                </thead>
+                <tbody id="dashboardRecentExpensesBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:20px;">
+          <div class="panel-title">Alerts</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Type</th>
+                  <th>Details</th>
+                  <th>Flag</th>
+                </tr>
+              </thead>
+              <tbody id="dashboardAlertsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
   </div>
 
   <script>
     const SUPABASE_URL = "https://nmbobbmqkvyuucwapaoj.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5tYm9iYm1xa3Z5dXVjd2FwYW9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyNDM5MDgsImV4cCI6MjA5MDgxOTkwOH0.L-e_JF5YnZQejSvz3hieWM3gVOdwJ91nuetFy4gv4N4";
 
-    const msgEl = document.getElementById("msg");
-    const okEl = document.getElementById("ok");
-
-    function setError(text) {
-      msgEl.textContent = text;
-      okEl.textContent = "";
-    }
-
-    function setOk(text) {
-      okEl.textContent = text;
-      msgEl.textContent = "";
-    }
-
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    async function login() {
-      setError("");
-      setOk("");
+    let customers = [];
+    let invoices = [];
+    let expenses = [];
+    let editingInvoiceId = null;
+    let editingExpenseId = null;
+    let appInitialized = false;
 
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
+    function showMessage(elementId, text, type = "success") {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      el.textContent = text;
+      el.className = "message show " + type;
+    }
 
-      if (!email || !password) {
-        setError("Email and password are required.");
+    function clearMessage(elementId) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      el.textContent = "";
+      el.className = "message";
+    }
+
+    function showLoginScreen() {
+      document.getElementById("loginScreen").classList.remove("hidden");
+      document.getElementById("appShell").classList.add("hidden");
+    }
+
+    function showAppShell() {
+      document.getElementById("loginScreen").classList.add("hidden");
+      document.getElementById("appShell").classList.remove("hidden");
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function todayInputDate() {
+      const d = new Date();
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function formatMoney(value) {
+      const num = Number(value || 0);
+      return Number.isFinite(num) ? num.toFixed(2) : "0.00";
+    }
+
+    function normalizeRecurringLabel(value) {
+      const v = String(value || "").trim().toLowerCase();
+      if (!v || v === "no" || v === "none") return "No Contract";
+      return value;
+    }
+
+    function customerNameById(customerId) {
+      const found = customers.find((c) => String(c.id) === String(customerId));
+      return found ? (found.customer_name || "") : "Unknown Customer";
+    }
+
+    function populateCustomerDropdown() {
+      const select = document.getElementById("invoiceCustomer");
+      const activeCustomers = customers.filter((c) => String(c.status || "").toLowerCase() === "active");
+
+      if (!activeCustomers.length) {
+        select.innerHTML = `<option value="">No active customers found</option>`;
         return;
       }
 
-      const { data, error } = await supabaseClient.auth.signInWithPassword({
+      select.innerHTML = `
+        <option value="">Select customer</option>
+        ${activeCustomers
+          .map((row) => `<option value="${row.id}">${escapeHtml(row.customer_name || "Unnamed Customer")}</option>`)
+          .join("")}
+      `;
+    }
+
+    async function handleLogin() {
+      clearMessage("loginMessage");
+
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value;
+
+      if (!email || !password) {
+        showMessage("loginMessage", "Email and password are required.", "error");
+        return;
+      }
+
+      const { error } = await supabaseClient.auth.signInWithPassword({
         email,
         password
       });
 
       if (error) {
-        setError(error.message);
+        showMessage("loginMessage", error.message, "error");
         return;
       }
 
-      setOk("Login successful.\nUser: " + (data.user?.email || ""));
-      console.log("LOGIN_OK", data);
+      document.getElementById("loginPassword").value = "";
+      showAppShell();
+      await initApp();
     }
 
-    document.getElementById("loginBtn").addEventListener("click", login);
+    async function handleLogout() {
+      const { error } = await supabaseClient.auth.signOut();
 
-    document.getElementById("password").addEventListener("keydown", function (e) {
-      if (e.key === "Enter") {
-        login();
+      if (error) {
+        showMessage("customerListMessage", "Logout failed.\n" + error.message, "error");
+        return;
+      }
+
+      customers = [];
+      invoices = [];
+      expenses = [];
+      editingInvoiceId = null;
+      editingExpenseId = null;
+      appInitialized = false;
+
+      showLoginScreen();
+    }
+
+    async function checkAuthOnLoad() {
+      const { data, error } = await supabaseClient.auth.getSession();
+
+      if (error || !data?.session) {
+        showLoginScreen();
+        return;
+      }
+
+      showAppShell();
+      await initApp();
+    }
+
+    async function loadCustomers(showSuccessMessage = false) {
+      clearMessage("customerListMessage");
+
+      const { data, error } = await supabaseClient
+        .from("customers")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        customers = [];
+        renderCustomers();
+        populateCustomerDropdown();
+        renderDashboard();
+        showMessage("customerListMessage", "Could not load customers.\n" + error.message, "error");
+        return false;
+      }
+
+      customers = Array.isArray(data) ? data : [];
+      renderCustomers();
+      populateCustomerDropdown();
+      renderDashboard();
+
+      if (showSuccessMessage) {
+        showMessage("customerListMessage", "Customers refreshed.", "success");
+      }
+
+      return true;
+    }
+
+    function renderCustomers() {
+      const searchValue = document.getElementById("customerSearch").value.trim().toLowerCase();
+
+      const filtered = customers.filter((row) => {
+        const haystack = [
+          row.customer_type,
+          row.recurring_contract,
+          row.customer_name,
+          row.phone,
+          row.email,
+          row.address,
+          row.region,
+          row.notes,
+          row.status
+        ].join(" ").toLowerCase();
+
+        return haystack.includes(searchValue);
+      });
+
+      document.getElementById("customersTotalStat").textContent = customers.length;
+      document.getElementById("customersActiveStat").textContent = customers.filter((c) => String(c.status || "").toLowerCase() === "active").length;
+      document.getElementById("customersRecurringStat").textContent = customers.filter((c) => {
+        const v = String(c.recurring_contract || "").toLowerCase();
+        return v && v !== "no contract" && v !== "no";
+      }).length;
+      document.getElementById("customersSearchStat").textContent = filtered.length;
+
+      const tbody = document.getElementById("customersTableBody");
+
+      if (!filtered.length) {
+        tbody.innerHTML = `<tr><td colspan="11">No customers found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map((row, index) => `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${escapeHtml(row.customer_type || "")}</td>
+          <td>${escapeHtml(normalizeRecurringLabel(row.recurring_contract || ""))}</td>
+          <td>${escapeHtml(row.customer_name || "")}</td>
+          <td>${escapeHtml(row.phone || "")}</td>
+          <td>${escapeHtml(row.email || "")}</td>
+          <td>${escapeHtml(row.address || "")}</td>
+          <td>${escapeHtml(row.region || "")}</td>
+          <td>${escapeHtml(row.notes || "")}</td>
+          <td>${escapeHtml(row.status || "")}</td>
+          <td>
+            <div class="action-row">
+              <button class="small-btn btn-danger" type="button" onclick="deleteCustomer('${row.id}')">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    async function saveCustomer() {
+      clearMessage("customerMessage");
+
+      const customer_type = document.getElementById("customerType").value;
+      const recurring_contract = document.getElementById("customerRecurringContract").value;
+      const customer_name = document.getElementById("customerName").value.trim();
+      const phone = document.getElementById("customerPhone").value.trim();
+      const email = document.getElementById("customerEmail").value.trim();
+      const address = document.getElementById("customerAddress").value.trim();
+      const region = document.getElementById("customerRegion").value.trim();
+      const notes = document.getElementById("customerNotes").value.trim();
+      const status = document.getElementById("customerStatus").value;
+
+      if (!customer_name) {
+        showMessage("customerMessage", "Customer name is required.", "error");
+        return;
+      }
+
+      const payload = {
+        customer_type,
+        recurring_contract,
+        customer_name,
+        phone,
+        email,
+        address,
+        region,
+        notes: notes || null,
+        status
+      };
+
+      const { error } = await supabaseClient.from("customers").insert([payload]);
+
+      if (error) {
+        showMessage("customerMessage", "Could not save customer.\n" + error.message, "error");
+        return;
+      }
+
+      clearCustomerForm();
+      document.getElementById("customerSearch").value = "";
+      await loadCustomers();
+      showMessage("customerMessage", "Customer saved successfully.", "success");
+    }
+
+    function clearCustomerForm() {
+      document.getElementById("customerType").value = "Individual";
+      document.getElementById("customerRecurringContract").value = "No Contract";
+      document.getElementById("customerName").value = "";
+      document.getElementById("customerPhone").value = "";
+      document.getElementById("customerEmail").value = "";
+      document.getElementById("customerAddress").value = "";
+      document.getElementById("customerRegion").value = "";
+      document.getElementById("customerNotes").value = "";
+      document.getElementById("customerStatus").value = "Active";
+    }
+
+    async function deleteCustomer(id) {
+      const linkedInvoices = invoices.filter((inv) => String(inv.customer_id) === String(id));
+      if (linkedInvoices.length > 0) {
+        showMessage("customerMessage", "Cannot delete this customer because invoices are linked to it.", "error");
+        return;
+      }
+
+      const confirmed = confirm("Delete this customer?");
+      if (!confirmed) return;
+
+      const { error } = await supabaseClient.from("customers").delete().eq("id", id);
+
+      if (error) {
+        showMessage("customerMessage", "Could not delete customer.\n" + error.message, "error");
+        return;
+      }
+
+      await loadCustomers();
+      showMessage("customerMessage", "Customer deleted successfully.", "success");
+    }
+
+    async function loadInvoices(showSuccessMessage = false) {
+      clearMessage("invoiceListMessage");
+
+      const { data, error } = await supabaseClient
+        .from("Invoices")
+        .select("*")
+        .order("invoice_date", { ascending: false });
+
+      if (error) {
+        invoices = [];
+        renderInvoices();
+        renderDashboard();
+        showMessage("invoiceListMessage", "Could not load invoices.\n" + error.message, "error");
+        return false;
+      }
+
+      invoices = Array.isArray(data) ? data : [];
+      renderInvoices();
+      renderDashboard();
+
+      if (showSuccessMessage) {
+        showMessage("invoiceListMessage", "Invoices refreshed.", "success");
+      }
+
+      return true;
+    }
+
+    function renderInvoices() {
+      const searchValue = document.getElementById("invoiceSearch").value.trim().toLowerCase();
+
+      const filtered = invoices.filter((row) => {
+        const customerName = customerNameById(row.customer_id);
+        const haystack = [
+          customerName,
+          row.service_type,
+          row.description,
+          row.status,
+          row.invoice_date,
+          row.payment_date,
+          row.amount
+        ].join(" ").toLowerCase();
+
+        return haystack.includes(searchValue);
+      });
+
+      document.getElementById("invoiceTotalStat").textContent = invoices.length;
+      document.getElementById("invoiceOpenStat").textContent = invoices.filter((i) => String(i.status || "").toLowerCase() === "open").length;
+      document.getElementById("invoicePaidStat").textContent = invoices.filter((i) => String(i.status || "").toLowerCase() === "paid").length;
+      document.getElementById("invoiceOpenAmountStat").textContent = formatMoney(
+        invoices.filter((i) => String(i.status || "").toLowerCase() === "open").reduce((sum, i) => sum + Number(i.amount || 0), 0)
+      );
+
+      const tbody = document.getElementById("invoicesTableBody");
+
+      if (!filtered.length) {
+        tbody.innerHTML = `<tr><td colspan="9">No invoices found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map((row, index) => `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${escapeHtml(row.invoice_date || "")}</td>
+          <td>${escapeHtml(customerNameById(row.customer_id))}</td>
+          <td>${escapeHtml(row.service_type || "")}</td>
+          <td>${escapeHtml(row.description || "")}</td>
+          <td>${escapeHtml(formatMoney(row.amount))}</td>
+          <td>${escapeHtml(row.status || "")}</td>
+          <td>${escapeHtml(row.payment_date || "")}</td>
+          <td>
+            <div class="action-row">
+              <button class="small-btn btn-warning" type="button" onclick="editInvoice('${row.id}')">Edit</button>
+              <button class="small-btn btn-danger" type="button" onclick="deleteInvoice('${row.id}')">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    function normalizeInvoiceBeforeSave() {
+      const statusEl = document.getElementById("invoiceStatus");
+      const paymentDateEl = document.getElementById("invoicePaymentDate");
+
+      if (paymentDateEl.value && statusEl.value !== "Cancelled") {
+        statusEl.value = "Paid";
+      }
+
+      if (!paymentDateEl.value && statusEl.value === "Paid") {
+        return {
+          ok: false,
+          message: "Payment date is required when status is Paid."
+        };
+      }
+
+      return { ok: true };
+    }
+
+    async function saveInvoice() {
+      clearMessage("invoiceMessage");
+
+      const validation = normalizeInvoiceBeforeSave();
+      if (!validation.ok) {
+        showMessage("invoiceMessage", validation.message, "error");
+        return;
+      }
+
+      const customer_id = document.getElementById("invoiceCustomer").value;
+      const invoice_date = document.getElementById("invoiceDate").value;
+      const status = document.getElementById("invoiceStatus").value;
+      const service_type = document.getElementById("invoiceServiceType").value;
+      const amount = document.getElementById("invoiceAmount").value;
+      const description = document.getElementById("invoiceDescription").value.trim();
+      const payment_date = document.getElementById("invoicePaymentDate").value || null;
+
+      if (!customer_id) {
+        showMessage("invoiceMessage", "Please select a customer.", "error");
+        return;
+      }
+
+      if (!invoice_date) {
+        showMessage("invoiceMessage", "Invoice date is required.", "error");
+        return;
+      }
+
+      if (!amount || Number(amount) <= 0) {
+        showMessage("invoiceMessage", "Amount must be greater than 0.", "error");
+        return;
+      }
+
+      const payload = {
+        customer_id,
+        invoice_date,
+        service_type,
+        description,
+        amount: Number(amount),
+        status,
+        payment_date
+      };
+
+      const { error } = await supabaseClient.from("Invoices").insert([payload]);
+
+      if (error) {
+        showMessage("invoiceMessage", "Could not save invoice.\n" + error.message, "error");
+        return;
+      }
+
+      clearInvoiceForm();
+      await loadInvoices();
+      showMessage("invoiceMessage", "Invoice saved successfully.", "success");
+    }
+
+    async function updateInvoice() {
+      clearMessage("invoiceMessage");
+
+      if (!editingInvoiceId) {
+        showMessage("invoiceMessage", "Select an invoice using Edit first.", "error");
+        return;
+      }
+
+      const validation = normalizeInvoiceBeforeSave();
+      if (!validation.ok) {
+        showMessage("invoiceMessage", validation.message, "error");
+        return;
+      }
+
+      const customer_id = document.getElementById("invoiceCustomer").value;
+      const invoice_date = document.getElementById("invoiceDate").value;
+      const status = document.getElementById("invoiceStatus").value;
+      const service_type = document.getElementById("invoiceServiceType").value;
+      const amount = document.getElementById("invoiceAmount").value;
+      const description = document.getElementById("invoiceDescription").value.trim();
+      const payment_date = document.getElementById("invoicePaymentDate").value || null;
+
+      if (!customer_id) {
+        showMessage("invoiceMessage", "Please select a customer.", "error");
+        return;
+      }
+
+      if (!invoice_date) {
+        showMessage("invoiceMessage", "Invoice date is required.", "error");
+        return;
+      }
+
+      if (!amount || Number(amount) <= 0) {
+        showMessage("invoiceMessage", "Amount must be greater than 0.", "error");
+        return;
+      }
+
+      const payload = {
+        customer_id,
+        invoice_date,
+        service_type,
+        description,
+        amount: Number(amount),
+        status,
+        payment_date
+      };
+
+      const { error } = await supabaseClient.from("Invoices").update(payload).eq("id", editingInvoiceId);
+
+      if (error) {
+        showMessage("invoiceMessage", "Could not update invoice.\n" + error.message, "error");
+        return;
+      }
+
+      clearInvoiceForm();
+      await loadInvoices();
+      showMessage("invoiceMessage", "Invoice updated successfully.", "success");
+    }
+
+    async function deleteInvoice(id) {
+      const confirmed = confirm("Delete this invoice?");
+      if (!confirmed) return;
+
+      const { error } = await supabaseClient.from("Invoices").delete().eq("id", id);
+
+      if (error) {
+        showMessage("invoiceListMessage", "Could not delete invoice.\n" + error.message, "error");
+        return;
+      }
+
+      if (editingInvoiceId === id) {
+        clearInvoiceForm();
+      }
+
+      await loadInvoices();
+      showMessage("invoiceListMessage", "Invoice deleted successfully.", "success");
+    }
+
+    function editInvoice(id) {
+      const found = invoices.find((inv) => String(inv.id) === String(id));
+
+      if (!found) {
+        showMessage("invoiceMessage", "Invoice not found.", "error");
+        return;
+      }
+
+      editingInvoiceId = found.id;
+      document.getElementById("invoiceCustomer").value = found.customer_id || "";
+      document.getElementById("invoiceDate").value = found.invoice_date || "";
+      document.getElementById("invoiceStatus").value = found.status || "Open";
+      document.getElementById("invoiceServiceType").value = found.service_type || "Grass Cutting";
+      document.getElementById("invoiceAmount").value = found.amount ?? "";
+      document.getElementById("invoiceDescription").value = found.description || "";
+      document.getElementById("invoicePaymentDate").value = found.payment_date || "";
+
+      showMessage("invoiceMessage", "Invoice loaded for update. Change the fields, then click Update Invoice.", "success");
+      document.querySelector('[data-page="invoicesPage"]').click();
+    }
+
+    function clearInvoiceForm() {
+      editingInvoiceId = null;
+      document.getElementById("invoiceCustomer").value = "";
+      document.getElementById("invoiceDate").value = todayInputDate();
+      document.getElementById("invoiceStatus").value = "Open";
+      document.getElementById("invoiceServiceType").value = "Grass Cutting";
+      document.getElementById("invoiceAmount").value = "";
+      document.getElementById("invoiceDescription").value = "";
+      document.getElementById("invoicePaymentDate").value = "";
+    }
+
+    async function loadExpenses(showSuccessMessage = false) {
+      clearMessage("expenseListMessage");
+
+      const { data, error } = await supabaseClient
+        .from("expenses")
+        .select("*")
+        .order("expense_date", { ascending: false });
+
+      if (error) {
+        expenses = [];
+        renderExpenses();
+        renderDashboard();
+        showMessage("expenseListMessage", "Could not load expenses.\n" + error.message, "error");
+        return false;
+      }
+
+      expenses = Array.isArray(data) ? data : [];
+      renderExpenses();
+      renderDashboard();
+
+      if (showSuccessMessage) {
+        showMessage("expenseListMessage", "Expenses refreshed.", "success");
+      }
+
+      return true;
+    }
+
+    function renderExpenses() {
+      const searchValue = document.getElementById("expenseSearch").value.trim().toLowerCase();
+
+      const filtered = expenses.filter((row) => {
+        const haystack = [
+          row.category,
+          row.vendor,
+          row.description,
+          row.amount,
+          row.payment_method,
+          row.status,
+          row.receipt_url,
+          row.notes,
+          row.expense_date
+        ].join(" ").toLowerCase();
+
+        return haystack.includes(searchValue);
+      });
+
+      document.getElementById("expensesTotalStat").textContent = expenses.length;
+      document.getElementById("expensesPaidStat").textContent = expenses.filter((e) => String(e.status || "").toLowerCase() === "paid").length;
+      document.getElementById("expensesUnpaidStat").textContent = expenses.filter((e) => String(e.status || "").toLowerCase() === "unpaid").length;
+      document.getElementById("expensesAmountStat").textContent = formatMoney(
+        expenses.reduce((sum, e) => sum + Number(e.amount || 0), 0)
+      );
+
+      const tbody = document.getElementById("expensesTableBody");
+
+      if (!filtered.length) {
+        tbody.innerHTML = `<tr><td colspan="11">No expenses found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map((row, index) => `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${escapeHtml(row.expense_date || "")}</td>
+          <td>${escapeHtml(row.category || "")}</td>
+          <td>${escapeHtml(row.vendor || "")}</td>
+          <td>${escapeHtml(row.description || "")}</td>
+          <td>${escapeHtml(formatMoney(row.amount))}</td>
+          <td>${escapeHtml(row.payment_method || "")}</td>
+          <td>${escapeHtml(row.status || "")}</td>
+          <td>${row.receipt_url ? `<a href="${escapeHtml(row.receipt_url)}" target="_blank" rel="noopener noreferrer">Open</a>` : ""}</td>
+          <td>${escapeHtml(row.notes || "")}</td>
+          <td>
+            <div class="action-row">
+              <button class="small-btn btn-warning" type="button" onclick="editExpense('${row.id}')">Edit</button>
+              <button class="small-btn btn-danger" type="button" onclick="deleteExpense('${row.id}')">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    async function saveExpense() {
+      clearMessage("expenseMessage");
+
+      const expense_date = document.getElementById("expenseDate").value;
+      const category = document.getElementById("expenseCategory").value;
+      const vendor = document.getElementById("expenseVendor").value.trim() || null;
+      const description = document.getElementById("expenseDescription").value.trim() || null;
+      const amount = document.getElementById("expenseAmount").value;
+      const payment_method = document.getElementById("expensePaymentMethod").value || null;
+      const status = document.getElementById("expenseStatus").value;
+      const receipt_url = document.getElementById("expenseReceiptUrl").value.trim() || null;
+      const notes = document.getElementById("expenseNotes").value.trim() || null;
+
+      if (!expense_date) {
+        showMessage("expenseMessage", "Expense date is required.", "error");
+        return;
+      }
+
+      if (!category) {
+        showMessage("expenseMessage", "Category is required.", "error");
+        return;
+      }
+
+      if (!amount || Number(amount) <= 0) {
+        showMessage("expenseMessage", "Amount must be greater than 0.", "error");
+        return;
+      }
+
+      const payload = {
+        expense_date,
+        category,
+        vendor,
+        description,
+        amount: Number(amount),
+        payment_method,
+        status,
+        receipt_url,
+        notes
+      };
+
+      const { error } = await supabaseClient.from("expenses").insert([payload]);
+
+      if (error) {
+        showMessage("expenseMessage", "Could not save expense.\n" + error.message, "error");
+        return;
+      }
+
+      clearExpenseForm();
+      await loadExpenses();
+      showMessage("expenseMessage", "Expense saved successfully.", "success");
+    }
+
+    async function updateExpense() {
+      clearMessage("expenseMessage");
+
+      if (!editingExpenseId) {
+        showMessage("expenseMessage", "Select an expense using Edit first.", "error");
+        return;
+      }
+
+      const expense_date = document.getElementById("expenseDate").value;
+      const category = document.getElementById("expenseCategory").value;
+      const vendor = document.getElementById("expenseVendor").value.trim() || null;
+      const description = document.getElementById("expenseDescription").value.trim() || null;
+      const amount = document.getElementById("expenseAmount").value;
+      const payment_method = document.getElementById("expensePaymentMethod").value || null;
+      const status = document.getElementById("expenseStatus").value;
+      const receipt_url = document.getElementById("expenseReceiptUrl").value.trim() || null;
+      const notes = document.getElementById("expenseNotes").value.trim() || null;
+
+      if (!expense_date) {
+        showMessage("expenseMessage", "Expense date is required.", "error");
+        return;
+      }
+
+      if (!category) {
+        showMessage("expenseMessage", "Category is required.", "error");
+        return;
+      }
+
+      if (!amount || Number(amount) <= 0) {
+        showMessage("expenseMessage", "Amount must be greater than 0.", "error");
+        return;
+      }
+
+      const payload = {
+        expense_date,
+        category,
+        vendor,
+        description,
+        amount: Number(amount),
+        payment_method,
+        status,
+        receipt_url,
+        notes
+      };
+
+      const { error } = await supabaseClient.from("expenses").update(payload).eq("id", editingExpenseId);
+
+      if (error) {
+        showMessage("expenseMessage", "Could not update expense.\n" + error.message, "error");
+        return;
+      }
+
+      clearExpenseForm();
+      await loadExpenses();
+      showMessage("expenseMessage", "Expense updated successfully.", "success");
+    }
+
+    async function deleteExpense(id) {
+      const confirmed = confirm("Delete this expense?");
+      if (!confirmed) return;
+
+      const { error } = await supabaseClient.from("expenses").delete().eq("id", id);
+
+      if (error) {
+        showMessage("expenseListMessage", "Could not delete expense.\n" + error.message, "error");
+        return;
+      }
+
+      if (editingExpenseId === id) {
+        clearExpenseForm();
+      }
+
+      await loadExpenses();
+      showMessage("expenseListMessage", "Expense deleted successfully.", "success");
+    }
+
+    function editExpense(id) {
+      const found = expenses.find((exp) => String(exp.id) === String(id));
+
+      if (!found) {
+        showMessage("expenseMessage", "Expense not found.", "error");
+        return;
+      }
+
+      editingExpenseId = found.id;
+      document.getElementById("expenseDate").value = found.expense_date || "";
+      document.getElementById("expenseCategory").value = found.category || "Other";
+      document.getElementById("expenseVendor").value = found.vendor || "";
+      document.getElementById("expenseDescription").value = found.description || "";
+      document.getElementById("expenseAmount").value = found.amount ?? "";
+      document.getElementById("expensePaymentMethod").value = found.payment_method || "";
+      document.getElementById("expenseStatus").value = found.status || "Unpaid";
+      document.getElementById("expenseReceiptUrl").value = found.receipt_url || "";
+      document.getElementById("expenseNotes").value = found.notes || "";
+
+      showMessage("expenseMessage", "Expense loaded for update. Change the fields, then click Update Expense.", "success");
+      document.querySelector('[data-page="expensesPage"]').click();
+    }
+
+    function clearExpenseForm() {
+      editingExpenseId = null;
+      document.getElementById("expenseDate").value = todayInputDate();
+      document.getElementById("expenseCategory").value = "Fuel";
+      document.getElementById("expenseVendor").value = "";
+      document.getElementById("expenseDescription").value = "";
+      document.getElementById("expenseAmount").value = "";
+      document.getElementById("expensePaymentMethod").value = "";
+      document.getElementById("expenseStatus").value = "Unpaid";
+      document.getElementById("expenseReceiptUrl").value = "";
+      document.getElementById("expenseNotes").value = "";
+    }
+
+    function renderDashboard() {
+      const totalCustomers = customers.length;
+      const openInvoices = invoices.filter((i) => String(i.status || "").toLowerCase() === "open");
+      const openInvoiceAmount = openInvoices.reduce((sum, i) => sum + Number(i.amount || 0), 0);
+      const totalExpenses = expenses.reduce((sum, e) => sum + Number(e.amount || 0), 0);
+      const netPosition = openInvoiceAmount - totalExpenses;
+
+      document.getElementById("dashTotalCustomers").textContent = totalCustomers;
+      document.getElementById("dashOpenInvoiceAmount").textContent = formatMoney(openInvoiceAmount);
+      document.getElementById("dashTotalExpenses").textContent = formatMoney(totalExpenses);
+      document.getElementById("dashNetPosition").textContent = formatMoney(netPosition);
+      document.getElementById("dashNetPosition").classList.remove("positive", "negative");
+      document.getElementById("dashNetPosition").classList.add(netPosition >= 0 ? "positive" : "negative");
+
+      const openBody = document.getElementById("dashboardOpenInvoicesBody");
+      if (!openInvoices.length) {
+        openBody.innerHTML = `<tr><td colspan="5">No open invoices.</td></tr>`;
+      } else {
+        openBody.innerHTML = openInvoices.slice(0, 10).map((row, index) => `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${escapeHtml(customerNameById(row.customer_id))}</td>
+            <td>${escapeHtml(row.invoice_date || "")}</td>
+            <td>${escapeHtml(formatMoney(row.amount))}</td>
+            <td><span class="badge badge-danger">${escapeHtml(row.status || "")}</span></td>
+          </tr>
+        `).join("");
+      }
+
+      const recentExpenses = [...expenses].sort((a, b) => String(b.expense_date || "").localeCompare(String(a.expense_date || ""))).slice(0, 10);
+      const recentBody = document.getElementById("dashboardRecentExpensesBody");
+      if (!recentExpenses.length) {
+        recentBody.innerHTML = `<tr><td colspan="5">No expenses found.</td></tr>`;
+      } else {
+        recentBody.innerHTML = recentExpenses.map((row, index) => `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${escapeHtml(row.expense_date || "")}</td>
+            <td>${escapeHtml(row.category || "")}</td>
+            <td>${escapeHtml(row.vendor || "")}</td>
+            <td>${escapeHtml(formatMoney(row.amount))}</td>
+          </tr>
+        `).join("");
+      }
+
+      const alerts = [];
+      openInvoices.forEach((row) => {
+        alerts.push({
+          type: "Open Invoice",
+          details: `${customerNameById(row.customer_id)} - ${row.invoice_date || ""} - ${formatMoney(row.amount)}`,
+          flag: "Check Collection"
+        });
+      });
+
+      expenses
+        .filter((e) => String(e.status || "").toLowerCase() === "unpaid")
+        .forEach((row) => {
+          alerts.push({
+            type: "Unpaid Expense",
+            details: `${row.category || ""} - ${row.vendor || ""} - ${formatMoney(row.amount)}`,
+            flag: "Check Payment"
+          });
+        });
+
+      const alertsBody = document.getElementById("dashboardAlertsBody");
+      if (!alerts.length) {
+        alertsBody.innerHTML = `<tr><td colspan="4">No alerts.</td></tr>`;
+      } else {
+        alertsBody.innerHTML = alerts.slice(0, 15).map((row, index) => `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${escapeHtml(row.type)}</td>
+            <td>${escapeHtml(row.details)}</td>
+            <td><span class="badge">${escapeHtml(row.flag)}</span></td>
+          </tr>
+        `).join("");
+      }
+    }
+
+    function bindNavigation() {
+      const navButtons = document.querySelectorAll(".nav-btn");
+      const pages = document.querySelectorAll(".page");
+
+      navButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          navButtons.forEach((b) => b.classList.remove("active"));
+          pages.forEach((p) => p.classList.remove("active"));
+          btn.classList.add("active");
+          document.getElementById(btn.dataset.page).classList.add("active");
+          if (btn.dataset.page === "dashboardPage") {
+            renderDashboard();
+          }
+        });
+      });
+    }
+
+    function bindEvents() {
+      document.getElementById("loginBtn").addEventListener("click", handleLogin);
+      document.getElementById("logoutBtn").addEventListener("click", handleLogout);
+
+      document.getElementById("loginPassword").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          handleLogin();
+        }
+      });
+
+      document.getElementById("customerSearch").addEventListener("input", renderCustomers);
+      document.getElementById("customerClearSearchBtn").addEventListener("click", function () {
+        document.getElementById("customerSearch").value = "";
+        renderCustomers();
+      });
+      document.getElementById("customerRefreshBtn").addEventListener("click", function () {
+        loadCustomers(true);
+      });
+      document.getElementById("saveCustomerBtn").addEventListener("click", saveCustomer);
+      document.getElementById("clearCustomerBtn").addEventListener("click", clearCustomerForm);
+
+      document.getElementById("invoiceSearch").addEventListener("input", renderInvoices);
+      document.getElementById("invoiceClearSearchBtn").addEventListener("click", function () {
+        document.getElementById("invoiceSearch").value = "";
+        renderInvoices();
+      });
+      document.getElementById("invoiceRefreshBtn").addEventListener("click", function () {
+        loadInvoices(true);
+      });
+      document.getElementById("saveInvoiceBtn").addEventListener("click", saveInvoice);
+      document.getElementById("updateInvoiceBtn").addEventListener("click", updateInvoice);
+      document.getElementById("clearInvoiceBtn").addEventListener("click", clearInvoiceForm);
+      document.getElementById("invoicePaymentDate").addEventListener("change", function () {
+        const paymentDate = document.getElementById("invoicePaymentDate").value;
+        const status = document.getElementById("invoiceStatus").value;
+        if (paymentDate && status !== "Cancelled") {
+          document.getElementById("invoiceStatus").value = "Paid";
+        }
+      });
+
+      document.getElementById("expenseSearch").addEventListener("input", renderExpenses);
+      document.getElementById("expenseClearSearchBtn").addEventListener("click", function () {
+        document.getElementById("expenseSearch").value = "";
+        renderExpenses();
+      });
+      document.getElementById("expenseRefreshBtn").addEventListener("click", function () {
+        loadExpenses(true);
+      });
+      document.getElementById("saveExpenseBtn").addEventListener("click", saveExpense);
+      document.getElementById("updateExpenseBtn").addEventListener("click", updateExpense);
+      document.getElementById("clearExpenseBtn").addEventListener("click", clearExpenseForm);
+    }
+
+    async function initApp() {
+      document.getElementById("invoiceDate").value = todayInputDate();
+      document.getElementById("expenseDate").value = todayInputDate();
+      clearInvoiceForm();
+      clearExpenseForm();
+      clearCustomerForm();
+
+      await loadCustomers();
+      await loadInvoices();
+      await loadExpenses();
+
+      appInitialized = true;
+    }
+
+    supabaseClient.auth.onAuthStateChange(function (_event, session) {
+      if (!session) {
+        appInitialized = false;
+        showLoginScreen();
       }
     });
+
+    window.deleteCustomer = deleteCustomer;
+    window.deleteInvoice = deleteInvoice;
+    window.editInvoice = editInvoice;
+    window.deleteExpense = deleteExpense;
+    window.editExpense = editExpense;
+
+    bindNavigation();
+    bindEvents();
+    checkAuthOnLoad();
   </script>
 </body>
 </html>
