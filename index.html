@@ -6,58 +6,107 @@
   <title>GregLandscape App - Customers</title>
   <style>
     :root{
-      --bg:#f6f8fb; --card:#fff; --line:#e5e7eb; --text:#111827; --muted:#6b7280;
-      --green:#166534; --green2:#22c55e; --red:#b91c1c; --blue:#3b82f6;
-      --shadow:0 8px 24px rgba(17,24,39,.06); --radius:16px;
+      --bg:#f6f8fb;
+      --card:#ffffff;
+      --line:#e5e7eb;
+      --text:#111827;
+      --muted:#6b7280;
+      --green:#166534;
+      --green2:#22c55e;
+      --red:#b91c1c;
+      --blue:#3b82f6;
+      --shadow:0 8px 24px rgba(17,24,39,.06);
+      --radius:16px;
     }
     *{box-sizing:border-box}
     body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
     .app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
     .sidebar{background:#0f172a;color:#fff;padding:24px 16px}
     .brand{font-size:28px;font-weight:700;margin-bottom:24px}
-    .nav a{display:block;color:#cbd5e1;text-decoration:none;padding:12px 14px;border-radius:12px;margin-bottom:8px;font-weight:600}
+    .nav a{
+      display:block;color:#cbd5e1;text-decoration:none;padding:12px 14px;
+      border-radius:12px;margin-bottom:8px;font-weight:600
+    }
     .nav a.active{background:#1e293b;color:#fff}
     .main{padding:28px}
     .title h1{margin:0 0 6px;font-size:32px}
     .title p{margin:0;color:var(--muted)}
     .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:24px 0}
-    .kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:16px 18px}
+    .kpi{
+      background:var(--card);border:1px solid var(--line);border-radius:16px;
+      box-shadow:var(--shadow);padding:16px 18px
+    }
     .kpi-label{color:var(--muted);font-size:13px;margin-bottom:8px}
     .kpi-value{font-size:28px;font-weight:700}
     .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:24px}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+    .card{
+      background:var(--card);border:1px solid var(--line);
+      border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden
+    }
     .card-header{padding:18px 20px;border-bottom:1px solid var(--line)}
     .card-header h2{margin:0;font-size:20px}
     .card-body{padding:20px}
     .search-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
     input, textarea, select{
-      width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;
-      font-size:14px;outline:none;background:#fff
+      width:100%;padding:12px 14px;border:1px solid var(--line);
+      border-radius:12px;font-size:14px;outline:none;background:#fff
     }
     textarea{min-height:88px;resize:vertical}
-    input:focus, textarea:focus, select:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(59,130,246,.12)}
+    input:focus, textarea:focus, select:focus{
+      border-color:var(--blue);box-shadow:0 0 0 4px rgba(59,130,246,.12)
+    }
     .search{flex:1;min-width:240px}
-    .btn{border:none;border-radius:12px;padding:12px 14px;font-weight:700;cursor:pointer}
+    .btn{
+      border:none;border-radius:12px;padding:12px 14px;
+      font-weight:700;cursor:pointer
+    }
     .btn-primary{background:var(--green2);color:#062f14}
     .btn-secondary{background:#eef2ff;color:#3730a3}
     .btn-danger{background:#fee2e2;color:var(--red)}
     .btn-small{padding:8px 10px;font-size:12px}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
     .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
     .full{grid-column:1 / -1}
     .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}
     table{width:100%;border-collapse:collapse;min-width:1100px}
-    th,td{text-align:left;padding:14px 12px;border-bottom:1px solid var(--line);vertical-align:top;font-size:14px}
+    th,td{
+      text-align:left;padding:14px 12px;border-bottom:1px solid var(--line);
+      vertical-align:top;font-size:14px
+    }
     th{background:#f8fafc;color:#334155;position:sticky;top:0}
-    .tag{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
+    .tag{
+      display:inline-block;padding:6px 10px;border-radius:999px;
+      font-size:12px;font-weight:700
+    }
     .tag-active{background:#dcfce7;color:var(--green)}
     .tag-inactive{background:#fee2e2;color:var(--red)}
     .muted{color:var(--muted)}
     .empty{text-align:center;color:var(--muted);padding:28px}
     .actions{display:flex;gap:8px;flex-wrap:wrap}
-    .notice{display:none;margin-top:14px;padding:12px 14px;border-radius:12px;background:#eff6ff;color:#1d4ed8;font-size:13px}
+    .notice{
+      display:none;margin-top:14px;padding:12px 14px;border-radius:12px;
+      background:#eff6ff;color:#1d4ed8;font-size:13px
+    }
     .notice.show{display:block}
-    @media (max-width:1100px){.grid{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}}
-    @media (max-width:760px){.app{grid-template-columns:1fr}.sidebar{padding:18px}.main{padding:18px}.kpis{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}}
+    .error{
+      display:none;margin-top:14px;padding:12px 14px;border-radius:12px;
+      background:#fee2e2;color:#991b1b;font-size:13px
+    }
+    .error.show{display:block}
+    .top-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    .status-line{font-size:13px;color:var(--muted)}
+    @media (max-width:1100px){
+      .grid{grid-template-columns:1fr}
+      .kpis{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width:760px){
+      .app{grid-template-columns:1fr}
+      .sidebar{padding:18px}
+      .main{padding:18px}
+      .kpis{grid-template-columns:1fr}
+      .form-grid{grid-template-columns:1fr}
+      .title h1{font-size:26px}
+    }
   </style>
 </head>
 <body>
@@ -66,9 +115,9 @@
     <div class="brand">GregLandscape</div>
     <nav class="nav">
       <a href="#" class="active">Customers</a>
-      <a href="#">Invoices</a>
-      <a href="#">Expenses</a>
-      <a href="#">Dashboard</a>
+      <a href="#" onclick="alert('Invoices page next')">Invoices</a>
+      <a href="#" onclick="alert('Expenses page next')">Expenses</a>
+      <a href="#" onclick="alert('Dashboard next')">Dashboard</a>
     </nav>
   </aside>
 
@@ -87,11 +136,18 @@
 
     <div class="grid">
       <section class="card">
-        <div class="card-header"><h2>Customer List</h2></div>
+        <div class="card-header">
+          <h2>Customer List</h2>
+        </div>
         <div class="card-body">
+          <div class="top-actions" style="margin-bottom:12px;">
+            <div class="status-line" id="syncStatus">Loading customers from database...</div>
+          </div>
+
           <div class="search-row">
             <input class="search" id="searchInput" type="text" placeholder="Search by name, phone, email, address, region">
             <button class="btn btn-secondary" onclick="clearSearch()">Clear Search</button>
+            <button class="btn btn-secondary" onclick="loadCustomers()">Refresh</button>
             <button class="btn btn-secondary" onclick="exportCustomers()">Export JSON</button>
           </div>
 
@@ -118,7 +174,9 @@
       </section>
 
       <section class="card">
-        <div class="card-header"><h2 id="formTitle">Add Customer</h2></div>
+        <div class="card-header">
+          <h2 id="formTitle">Add Customer</h2>
+        </div>
         <div class="card-body">
           <form id="customerForm">
             <div class="form-grid">
@@ -136,22 +194,27 @@
                   <option value="Inactive">Inactive</option>
                 </select>
               </div>
+
               <div class="full">
                 <label>Customer Name</label>
                 <input id="customerName" type="text" required>
               </div>
+
               <div>
                 <label>Phone</label>
                 <input id="phone" type="text">
               </div>
+
               <div>
                 <label>Email</label>
                 <input id="email" type="email">
               </div>
+
               <div class="full">
                 <label>Address</label>
                 <input id="address" type="text">
               </div>
+
               <div>
                 <label>Region</label>
                 <select id="region">
@@ -162,6 +225,7 @@
                   <option value="Central">Central</option>
                 </select>
               </div>
+
               <div class="full">
                 <label>Notes</label>
                 <textarea id="notes"></textarea>
@@ -177,6 +241,7 @@
             </div>
 
             <div class="notice" id="notice"></div>
+            <div class="error" id="errorBox"></div>
           </form>
         </div>
       </section>
@@ -185,187 +250,301 @@
 </div>
 
 <script>
-const STORAGE_KEY = "greglandscape_customers_v2";
-let customers = [];
-let filteredCustomers = [];
+  const SUPABASE_URL = "https://nmbobbmqkvyuucwapaaj.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5tYm9iYm1xa3Z5dXVjd2FwYW9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyNDM5MDgsImV4cCI6MjA5MDgxOTkwOH0.L-e_JF5YnZQejSvz3hieWM3gVOdwJ91nuetFy4gv4N4";
 
-function loadCustomers() {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  customers = raw ? JSON.parse(raw) : [];
-  filteredCustomers = [...customers];
-  render();
-}
+  const TABLE_URL = `${SUPABASE_URL}/rest/v1/customers`;
+  let customers = [];
+  let filteredCustomers = [];
 
-function saveCustomers() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(customers));
-  applySearch();
-}
-
-function updateKpis() {
-  const total = customers.length;
-  const active = customers.filter(c => c.status === "Active").length;
-  document.getElementById("kpiTotal").textContent = total;
-  document.getElementById("kpiActive").textContent = active;
-  document.getElementById("kpiInactive").textContent = total - active;
-  document.getElementById("kpiFiltered").textContent = filteredCustomers.length;
-}
-
-function renderTable() {
-  const tbody = document.getElementById("customerTableBody");
-  tbody.innerHTML = "";
-  if (!filteredCustomers.length) {
-    tbody.innerHTML = '<tr><td colspan="10" class="empty">No customers found.</td></tr>';
-    return;
-  }
-  filteredCustomers.forEach((c, i) => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${i + 1}</td>
-      <td>${escapeHtml(c.customerType)}</td>
-      <td><strong>${escapeHtml(c.customerName)}</strong></td>
-      <td>${escapeHtml(c.phone || "")}</td>
-      <td>${escapeHtml(c.email || "")}</td>
-      <td>${escapeHtml(c.address || "")}</td>
-      <td>${escapeHtml(c.region || "")}</td>
-      <td>${escapeHtml(c.notes || "")}</td>
-      <td><span class="tag ${c.status === "Active" ? "tag-active" : "tag-inactive"}">${c.status}</span></td>
-      <td>
-        <div class="actions">
-          <button class="btn btn-small btn-secondary" onclick="editCustomer('${c.id}')">Edit</button>
-          <button class="btn btn-small btn-danger" onclick="deleteCustomer('${c.id}')">Delete</button>
-        </div>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
-
-function render() {
-  updateKpis();
-  renderTable();
-}
-
-function applySearch() {
-  const q = document.getElementById("searchInput").value.trim().toLowerCase();
-  filteredCustomers = customers.filter(c =>
-    [c.customerType, c.customerName, c.phone, c.email, c.address, c.region, c.notes, c.status]
-      .filter(Boolean)
-      .some(v => v.toLowerCase().includes(q))
-  );
-  render();
-}
-
-function clearSearch() {
-  document.getElementById("searchInput").value = "";
-  filteredCustomers = [...customers];
-  render();
-}
-
-function showNotice(msg) {
-  const n = document.getElementById("notice");
-  n.textContent = msg;
-  n.classList.add("show");
-}
-
-function hideNotice() {
-  document.getElementById("notice").classList.remove("show");
-}
-
-function resetForm() {
-  document.getElementById("customerForm").reset();
-  document.getElementById("editingId").value = "";
-  document.getElementById("formTitle").textContent = "Add Customer";
-  document.getElementById("saveBtn").textContent = "Save Customer";
-  document.getElementById("deleteBtn").style.display = "none";
-  document.getElementById("customerType").value = "Individual";
-  document.getElementById("region").value = "North";
-  document.getElementById("status").value = "Active";
-  hideNotice();
-}
-
-function editCustomer(id) {
-  const c = customers.find(x => x.id === id);
-  if (!c) return;
-  document.getElementById("editingId").value = c.id;
-  document.getElementById("customerType").value = c.customerType;
-  document.getElementById("customerName").value = c.customerName || "";
-  document.getElementById("phone").value = c.phone || "";
-  document.getElementById("email").value = c.email || "";
-  document.getElementById("address").value = c.address || "";
-  document.getElementById("region").value = c.region || "North";
-  document.getElementById("notes").value = c.notes || "";
-  document.getElementById("status").value = c.status || "Active";
-  document.getElementById("formTitle").textContent = "Edit Customer";
-  document.getElementById("saveBtn").textContent = "Update Customer";
-  document.getElementById("deleteBtn").style.display = "inline-block";
-  showNotice("Editing customer: " + c.customerName);
-  window.scrollTo({top:0,behavior:"smooth"});
-}
-
-function deleteCustomer(id) {
-  const c = customers.find(x => x.id === id);
-  if (!c) return;
-  if (!confirm("Delete customer: " + c.customerName + "?")) return;
-  customers = customers.filter(x => x.id !== id);
-  saveCustomers();
-  resetForm();
-}
-
-function deleteCurrent() {
-  const id = document.getElementById("editingId").value;
-  if (id) deleteCustomer(id);
-}
-
-function exportCustomers() {
-  const blob = new Blob([JSON.stringify(customers, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "greglandscape-customers.json";
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function escapeHtml(str) {
-  return String(str)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-document.getElementById("customerForm").addEventListener("submit", function(e) {
-  e.preventDefault();
-  const id = document.getElementById("editingId").value;
-  const customer = {
-    id: id || crypto.randomUUID(),
-    customerType: document.getElementById("customerType").value,
-    customerName: document.getElementById("customerName").value.trim(),
-    phone: document.getElementById("phone").value.trim(),
-    email: document.getElementById("email").value.trim(),
-    address: document.getElementById("address").value.trim(),
-    region: document.getElementById("region").value,
-    notes: document.getElementById("notes").value.trim(),
-    status: document.getElementById("status").value
+  const defaultHeaders = {
+    "apikey": SUPABASE_ANON_KEY,
+    "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+    "Content-Type": "application/json"
   };
-  if (!customer.customerName) {
-    showNotice("Customer Name is required.");
-    return;
-  }
-  if (id) {
-    customers = customers.map(x => x.id === id ? customer : x);
-    showNotice("Customer updated.");
-  } else {
-    customers.unshift(customer);
-    showNotice("Customer added.");
-  }
-  saveCustomers();
-  resetForm();
-});
 
-document.getElementById("searchInput").addEventListener("input", applySearch);
-loadCustomers();
+  function setSyncStatus(text) {
+    document.getElementById("syncStatus").textContent = text;
+  }
+
+  function showNotice(message) {
+    const el = document.getElementById("notice");
+    el.textContent = message;
+    el.classList.add("show");
+  }
+
+  function hideNotice() {
+    document.getElementById("notice").classList.remove("show");
+  }
+
+  function showError(message) {
+    const el = document.getElementById("errorBox");
+    el.textContent = message;
+    el.classList.add("show");
+  }
+
+  function hideError() {
+    document.getElementById("errorBox").classList.remove("show");
+  }
+
+  function escapeHtml(str) {
+    return String(str ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  async function loadCustomers() {
+    hideError();
+    setSyncStatus("Loading customers from database...");
+    try {
+      const res = await fetch(`${TABLE_URL}?select=*&order=created_at.desc.nullslast`, {
+        method: "GET",
+        headers: defaultHeaders
+      });
+
+      if (!res.ok) {
+        const txt = await res.text();
+        throw new Error(txt || "Failed to load customers");
+      }
+
+      customers = await res.json();
+      filteredCustomers = [...customers];
+      render();
+      setSyncStatus(`Loaded ${customers.length} customer(s) from database`);
+    } catch (err) {
+      console.error(err);
+      setSyncStatus("Database load failed");
+      showError("Could not load customers from Supabase. Check table, key, and network.");
+    }
+  }
+
+  function updateKpis() {
+    const total = customers.length;
+    const active = customers.filter(c => c.status === "Active").length;
+    document.getElementById("kpiTotal").textContent = total;
+    document.getElementById("kpiActive").textContent = active;
+    document.getElementById("kpiInactive").textContent = total - active;
+    document.getElementById("kpiFiltered").textContent = filteredCustomers.length;
+  }
+
+  function renderTable() {
+    const tbody = document.getElementById("customerTableBody");
+    tbody.innerHTML = "";
+
+    if (!filteredCustomers.length) {
+      tbody.innerHTML = '<tr><td colspan="10" class="empty">No customers found.</td></tr>';
+      return;
+    }
+
+    filteredCustomers.forEach((c, i) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${i + 1}</td>
+        <td>${escapeHtml(c.customer_type)}</td>
+        <td><strong>${escapeHtml(c.customer_name)}</strong></td>
+        <td>${escapeHtml(c.phone)}</td>
+        <td>${escapeHtml(c.email)}</td>
+        <td>${escapeHtml(c.address)}</td>
+        <td>${escapeHtml(c.region)}</td>
+        <td>${escapeHtml(c.notes)}</td>
+        <td><span class="tag ${c.status === "Active" ? "tag-active" : "tag-inactive"}">${escapeHtml(c.status)}</span></td>
+        <td>
+          <div class="actions">
+            <button class="btn btn-small btn-secondary" onclick="editCustomer('${c.id}')">Edit</button>
+            <button class="btn btn-small btn-danger" onclick="deleteCustomer('${c.id}')">Delete</button>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  function render() {
+    updateKpis();
+    renderTable();
+  }
+
+  function applySearch() {
+    const q = document.getElementById("searchInput").value.trim().toLowerCase();
+    filteredCustomers = customers.filter(c =>
+      [c.customer_type, c.customer_name, c.phone, c.email, c.address, c.region, c.notes, c.status]
+        .filter(Boolean)
+        .some(v => String(v).toLowerCase().includes(q))
+    );
+    render();
+  }
+
+  function clearSearch() {
+    document.getElementById("searchInput").value = "";
+    filteredCustomers = [...customers];
+    render();
+  }
+
+  function resetForm() {
+    document.getElementById("customerForm").reset();
+    document.getElementById("editingId").value = "";
+    document.getElementById("formTitle").textContent = "Add Customer";
+    document.getElementById("saveBtn").textContent = "Save Customer";
+    document.getElementById("deleteBtn").style.display = "none";
+    document.getElementById("customerType").value = "Individual";
+    document.getElementById("region").value = "North";
+    document.getElementById("status").value = "Active";
+    hideNotice();
+    hideError();
+  }
+
+  function editCustomer(id) {
+    const c = customers.find(x => x.id === id);
+    if (!c) return;
+
+    document.getElementById("editingId").value = c.id;
+    document.getElementById("customerType").value = c.customer_type || "Individual";
+    document.getElementById("customerName").value = c.customer_name || "";
+    document.getElementById("phone").value = c.phone || "";
+    document.getElementById("email").value = c.email || "";
+    document.getElementById("address").value = c.address || "";
+    document.getElementById("region").value = c.region || "North";
+    document.getElementById("notes").value = c.notes || "";
+    document.getElementById("status").value = c.status || "Active";
+
+    document.getElementById("formTitle").textContent = "Edit Customer";
+    document.getElementById("saveBtn").textContent = "Update Customer";
+    document.getElementById("deleteBtn").style.display = "inline-block";
+    showNotice("Editing customer: " + c.customer_name);
+    hideError();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  async function deleteCustomer(id) {
+    const c = customers.find(x => x.id === id);
+    if (!c) return;
+    if (!confirm("Delete customer: " + c.customer_name + "?")) return;
+
+    hideError();
+    setSyncStatus("Deleting customer...");
+
+    try {
+      const res = await fetch(`${TABLE_URL}?id=eq.${encodeURIComponent(id)}`, {
+        method: "DELETE",
+        headers: {
+          ...defaultHeaders,
+          "Prefer": "return=representation"
+        }
+      });
+
+      if (!res.ok) {
+        const txt = await res.text();
+        throw new Error(txt || "Delete failed");
+      }
+
+      showNotice("Customer deleted.");
+      resetForm();
+      await loadCustomers();
+    } catch (err) {
+      console.error(err);
+      setSyncStatus("Delete failed");
+      showError("Could not delete customer.");
+    }
+  }
+
+  function deleteCurrent() {
+    const id = document.getElementById("editingId").value;
+    if (id) deleteCustomer(id);
+  }
+
+  function exportCustomers() {
+    const blob = new Blob([JSON.stringify(customers, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "greglandscape-customers.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function insertCustomer(payload) {
+    const res = await fetch(TABLE_URL, {
+      method: "POST",
+      headers: {
+        ...defaultHeaders,
+        "Prefer": "return=representation"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      const txt = await res.text();
+      throw new Error(txt || "Insert failed");
+    }
+
+    return res.json();
+  }
+
+  async function updateCustomer(id, payload) {
+    const res = await fetch(`${TABLE_URL}?id=eq.${encodeURIComponent(id)}`, {
+      method: "PATCH",
+      headers: {
+        ...defaultHeaders,
+        "Prefer": "return=representation"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      const txt = await res.text();
+      throw new Error(txt || "Update failed");
+    }
+
+    return res.json();
+  }
+
+  document.getElementById("customerForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+    hideError();
+
+    const id = document.getElementById("editingId").value;
+    const payload = {
+      customer_type: document.getElementById("customerType").value,
+      customer_name: document.getElementById("customerName").value.trim(),
+      phone: document.getElementById("phone").value.trim() || null,
+      email: document.getElementById("email").value.trim() || null,
+      address: document.getElementById("address").value.trim() || null,
+      region: document.getElementById("region").value,
+      notes: document.getElementById("notes").value.trim() || null,
+      status: document.getElementById("status").value
+    };
+
+    if (!payload.customer_name) {
+      showError("Customer Name is required.");
+      return;
+    }
+
+    try {
+      setSyncStatus(id ? "Updating customer..." : "Saving customer...");
+
+      if (id) {
+        await updateCustomer(id, payload);
+        showNotice("Customer updated.");
+      } else {
+        await insertCustomer(payload);
+        showNotice("Customer added.");
+      }
+
+      resetForm();
+      await loadCustomers();
+    } catch (err) {
+      console.error(err);
+      setSyncStatus("Save failed");
+      showError("Could not save customer to Supabase.");
+    }
+  });
+
+  document.getElementById("searchInput").addEventListener("input", applySearch);
+
+  loadCustomers();
 </script>
 </body>
 </html>
