@@ -15,9 +15,36 @@
       font-family: Arial, sans-serif;
     }
 
+    :root {
+      --navy: #07163a;
+      --navy-2: #0f265f;
+      --bg: #f3f4f6;
+      --panel: #ffffff;
+      --border: #e5e7eb;
+      --muted: #6b7280;
+      --text: #111827;
+      --green: #16a34a;
+      --green-soft: #dcfce7;
+      --green-text: #166534;
+      --red: #dc2626;
+      --red-soft: #fee2e2;
+      --red-text: #991b1b;
+      --orange: #ea580c;
+      --orange-soft: #ffedd5;
+      --orange-text: #9a3412;
+      --blue-soft: #dbeafe;
+      --blue-text: #1d4ed8;
+      --purple-soft: #eef2ff;
+      --purple-text: #3730a3;
+      --gray-soft: #f3f4f6;
+      --gray-text: #374151;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+      --radius: 16px;
+    }
+
     body {
-      background: #f3f4f6;
-      color: #111827;
+      background: var(--bg);
+      color: var(--text);
     }
 
     .hidden {
@@ -30,7 +57,7 @@
       align-items: center;
       justify-content: center;
       padding: 24px;
-      background: linear-gradient(135deg, #07163a 0%, #0f265f 100%);
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
     }
 
     .login-card {
@@ -40,18 +67,18 @@
       border-radius: 18px;
       padding: 28px;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-      border: 1px solid #e5e7eb;
+      border: 1px solid var(--border);
     }
 
     .login-title {
       font-size: 28px;
       font-weight: 700;
-      color: #07163a;
+      color: var(--navy);
       margin-bottom: 8px;
     }
 
     .login-subtext {
-      color: #6b7280;
+      color: var(--muted);
       margin-bottom: 22px;
       line-height: 1.45;
     }
@@ -63,12 +90,15 @@
 
     .sidebar {
       width: 220px;
-      background: #07163a;
+      background: var(--navy);
       color: white;
       padding: 28px 0;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      position: sticky;
+      top: 0;
+      height: 100vh;
     }
 
     .sidebar-top {
@@ -105,7 +135,7 @@
     .logout-btn {
       width: 100%;
       border: none;
-      background: #dc2626;
+      background: var(--red);
       color: white;
       text-align: center;
       padding: 12px 16px;
@@ -113,6 +143,11 @@
       font-size: 14px;
       font-weight: 700;
       border-radius: 12px;
+      opacity: 0.9;
+    }
+
+    .logout-btn:hover {
+      opacity: 1;
     }
 
     .content {
@@ -134,7 +169,7 @@
     }
 
     .subtext {
-      color: #6b7280;
+      color: var(--muted);
       margin-bottom: 24px;
     }
 
@@ -146,34 +181,28 @@
     }
 
     .card {
-      background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 16px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
       padding: 16px;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+      box-shadow: var(--shadow);
     }
 
     .stat-title {
       font-size: 14px;
-      color: #6b7280;
+      color: var(--muted);
       margin-bottom: 8px;
     }
 
     .stat-value {
       font-size: 22px;
       font-weight: 700;
-      color: #07163a;
+      color: var(--navy);
     }
 
     .grid-2 {
       display: grid;
-      grid-template-columns: 1.45fr 0.95fr;
-      gap: 20px;
-    }
-
-    .grid-1 {
-      display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: 1.55fr 0.95fr;
       gap: 20px;
     }
 
@@ -181,6 +210,21 @@
       font-size: 18px;
       font-weight: 700;
       margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      margin: 4px 0 10px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .form-divider {
+      border-top: 1px solid #f1f5f9;
+      margin: 6px 0 14px;
+      padding-top: 12px;
     }
 
     .toolbar {
@@ -207,6 +251,14 @@
       padding: 12px 14px;
       outline: none;
       background: white;
+      color: var(--text);
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #93c5fd;
+      box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.25);
     }
 
     textarea {
@@ -219,32 +271,43 @@
       min-width: 240px;
     }
 
+    .filter-select {
+      min-width: 170px;
+      max-width: 200px;
+    }
+
     .btn {
       border: none;
       border-radius: 12px;
       padding: 12px 16px;
       cursor: pointer;
       font-weight: 600;
+      white-space: nowrap;
     }
 
     .btn-primary {
-      background: #16a34a;
+      background: var(--green);
       color: white;
     }
 
     .btn-secondary {
-      background: #eef2ff;
-      color: #3730a3;
+      background: var(--purple-soft);
+      color: var(--purple-text);
     }
 
     .btn-warning {
-      background: #ea580c;
+      background: var(--orange);
       color: white;
     }
 
     .btn-danger {
-      background: #dc2626;
+      background: var(--red);
       color: white;
+      opacity: 0.9;
+    }
+
+    .btn-danger:hover {
+      opacity: 1;
     }
 
     .small-btn {
@@ -259,29 +322,51 @@
     .table-wrap {
       width: 100%;
       overflow-x: auto;
-      border: 1px solid #e5e7eb;
+      border: 1px solid var(--border);
       border-radius: 14px;
       background: white;
     }
 
     table {
       width: 100%;
-      min-width: 1000px;
+      min-width: 760px;
       border-collapse: collapse;
+    }
+
+    .table-wide {
+      min-width: 1000px;
     }
 
     th,
     td {
       text-align: left;
-      padding: 14px 12px;
+      padding: 10px 12px;
       border-bottom: 1px solid #f1f5f9;
-      vertical-align: top;
+      vertical-align: middle;
       font-size: 14px;
       white-space: nowrap;
     }
 
+    tbody tr:hover {
+      background: #f9fafb;
+    }
+
     th {
       background: #f9fafb;
+      font-weight: 700;
+    }
+
+    .customer-primary {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .customer-sub {
+      color: var(--muted);
+      font-size: 12px;
+      white-space: normal;
+      line-height: 1.35;
     }
 
     .form-grid {
@@ -312,20 +397,22 @@
     }
 
     .message.success {
-      background: #dcfce7;
-      color: #166534;
+      background: var(--green-soft);
+      color: var(--green-text);
       border: 1px solid #bbf7d0;
     }
 
     .message.error {
-      background: #fee2e2;
-      color: #991b1b;
+      background: var(--red-soft);
+      color: var(--red-text);
       border: 1px solid #fecaca;
     }
 
     .muted {
-      color: #6b7280;
+      color: var(--muted);
       font-size: 13px;
+      display: inline-block;
+      margin-bottom: 6px;
     }
 
     .action-row {
@@ -335,7 +422,7 @@
     }
 
     .positive {
-      color: #166534 !important;
+      color: var(--green-text) !important;
     }
 
     .negative {
@@ -350,22 +437,69 @@
 
     .badge {
       display: inline-block;
-      padding: 4px 8px;
+      padding: 5px 10px;
       border-radius: 999px;
       font-size: 12px;
       font-weight: 700;
-      background: #eef2ff;
-      color: #3730a3;
+      background: var(--purple-soft);
+      color: var(--purple-text);
     }
 
     .badge-danger {
-      background: #fee2e2;
-      color: #991b1b;
+      background: var(--red-soft);
+      color: var(--red-text);
     }
 
     .badge-success {
-      background: #dcfce7;
-      color: #166534;
+      background: var(--green-soft);
+      color: var(--green-text);
+    }
+
+    .badge-warning {
+      background: var(--orange-soft);
+      color: var(--orange-text);
+    }
+
+    .badge-gray {
+      background: var(--gray-soft);
+      color: var(--gray-text);
+    }
+
+    .badge-weekly {
+      background: var(--green-soft);
+      color: var(--green-text);
+    }
+
+    .badge-biweekly {
+      background: #ecfccb;
+      color: #3f6212;
+    }
+
+    .badge-monthly {
+      background: var(--blue-soft);
+      color: var(--blue-text);
+    }
+
+    .badge-quarterly {
+      background: #ede9fe;
+      color: #5b21b6;
+    }
+
+    .badge-yearly {
+      background: #ffe4e6;
+      color: #be123c;
+    }
+
+    .metric-list {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .empty-state {
+      color: var(--muted);
+      font-size: 14px;
     }
 
     @media (max-width: 1200px) {
@@ -376,6 +510,11 @@
       .grid-2,
       .dashboard-grid {
         grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: relative;
+        height: auto;
       }
     }
 
@@ -394,6 +533,10 @@
 
       .stats {
         grid-template-columns: 1fr;
+      }
+
+      .content {
+        padding: 18px;
       }
     }
   </style>
@@ -454,8 +597,8 @@
             <div class="stat-value" id="customersRecurringStat">0</div>
           </div>
           <div class="card">
-            <div class="stat-title">Search Results</div>
-            <div class="stat-value" id="customersSearchStat">0</div>
+            <div class="stat-title">Region Mix</div>
+            <div class="metric-list" id="customersRegionStats"></div>
           </div>
         </div>
 
@@ -464,8 +607,16 @@
             <div class="panel-title">Customer List</div>
 
             <div class="toolbar">
-              <input id="customerSearch" class="search-input" type="text" placeholder="Search by name, type, phone, email, address, region, status" autocomplete="off" />
-              <button class="btn btn-secondary" id="customerClearSearchBtn" type="button">Clear Search</button>
+              <input id="customerSearch" class="search-input" type="text" placeholder="Search by name, phone, email, address, notes" autocomplete="off" />
+              <select id="customerRegionFilter" class="filter-select">
+                <option value="">All Regions</option>
+                <option value="North">North</option>
+                <option value="South">South</option>
+                <option value="East">East</option>
+                <option value="West">West</option>
+                <option value="Central">Central</option>
+              </select>
+              <button class="btn btn-secondary" id="customerClearSearchBtn" type="button">Clear</button>
               <button class="btn btn-secondary" id="customerRefreshBtn" type="button">Refresh</button>
             </div>
 
@@ -474,14 +625,10 @@
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Customer Type</th>
-                    <th>Recurring Contract</th>
-                    <th>Customer Name</th>
+                    <th>Name</th>
                     <th>Phone</th>
-                    <th>Email</th>
-                    <th>Address</th>
                     <th>Region</th>
-                    <th>Notes</th>
+                    <th>Contract</th>
                     <th>Status</th>
                     <th>Actions</th>
                   </tr>
@@ -496,6 +643,7 @@
           <div class="card">
             <div class="panel-title">Add Customer</div>
 
+            <div class="section-title">Identity</div>
             <div class="form-grid">
               <div class="form-group">
                 <label class="muted">Customer Type</label>
@@ -521,38 +669,60 @@
                 <label class="muted">Customer Name</label>
                 <input id="customerName" type="text" autocomplete="off" />
               </div>
+            </div>
 
-              <div class="form-group">
-                <label class="muted">Phone</label>
-                <input id="customerPhone" type="text" autocomplete="off" />
+            <div class="form-divider">
+              <div class="section-title">Contact</div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="muted">Phone</label>
+                  <input id="customerPhone" type="text" autocomplete="off" />
+                </div>
+
+                <div class="form-group">
+                  <label class="muted">Email</label>
+                  <input id="customerEmail" type="email" autocomplete="off" />
+                </div>
               </div>
+            </div>
 
-              <div class="form-group">
-                <label class="muted">Email</label>
-                <input id="customerEmail" type="email" autocomplete="off" />
+            <div class="form-divider">
+              <div class="section-title">Location</div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="muted">Region</label>
+                  <select id="customerRegion">
+                    <option value="">Select Region</option>
+                    <option value="North">North</option>
+                    <option value="South">South</option>
+                    <option value="East">East</option>
+                    <option value="West">West</option>
+                    <option value="Central">Central</option>
+                  </select>
+                </div>
+
+                <div class="form-group full">
+                  <label class="muted">Address</label>
+                  <textarea id="customerAddress" autocomplete="off"></textarea>
+                </div>
               </div>
+            </div>
 
-              <div class="form-group full">
-                <label class="muted">Address</label>
-                <textarea id="customerAddress" autocomplete="off"></textarea>
-              </div>
+            <div class="form-divider">
+              <div class="section-title">Meta</div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label class="muted">Status</label>
+                  <select id="customerStatus">
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                  </select>
+                </div>
 
-              <div class="form-group">
-                <label class="muted">Region</label>
-                <input id="customerRegion" type="text" autocomplete="off" />
-              </div>
-
-              <div class="form-group">
-                <label class="muted">Status</label>
-                <select id="customerStatus">
-                  <option value="Active">Active</option>
-                  <option value="Inactive">Inactive</option>
-                </select>
-              </div>
-
-              <div class="form-group full">
-                <label class="muted">Notes</label>
-                <textarea id="customerNotes" autocomplete="off"></textarea>
+                <div class="form-group full">
+                  <label class="muted">Notes</label>
+                  <textarea id="customerNotes" autocomplete="off"></textarea>
+                </div>
               </div>
             </div>
 
@@ -600,7 +770,7 @@
             </div>
 
             <div class="table-wrap">
-              <table>
+              <table class="table-wide">
                 <thead>
                   <tr>
                     <th>#</th>
@@ -716,7 +886,7 @@
             </div>
 
             <div class="table-wrap">
-              <table>
+              <table class="table-wide">
                 <thead>
                   <tr>
                     <th>#</th>
@@ -908,6 +1078,8 @@
 
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    const REGION_OPTIONS = ["North", "South", "East", "West", "Central"];
+
     let customers = [];
     let invoices = [];
     let expenses = [];
@@ -967,9 +1139,33 @@
       return value;
     }
 
+    function normalizeRegion(value) {
+      const v = String(value || "").trim();
+      const match = REGION_OPTIONS.find((r) => r.toLowerCase() === v.toLowerCase());
+      return match || "";
+    }
+
     function customerNameById(customerId) {
       const found = customers.find((c) => String(c.id) === String(customerId));
       return found ? (found.customer_name || "") : "Unknown Customer";
+    }
+
+    function contractBadgeClass(value) {
+      const v = String(normalizeRecurringLabel(value)).toLowerCase();
+      if (v === "weekly") return "badge badge-weekly";
+      if (v === "bi-weekly") return "badge badge-biweekly";
+      if (v === "monthly") return "badge badge-monthly";
+      if (v === "quarterly") return "badge badge-quarterly";
+      if (v === "yearly") return "badge badge-yearly";
+      return "badge badge-gray";
+    }
+
+    function statusBadgeClass(value) {
+      const v = String(value || "").toLowerCase();
+      if (v === "active" || v === "paid") return "badge badge-success";
+      if (v === "open" || v === "unpaid") return "badge badge-danger";
+      if (v === "cancelled" || v === "inactive") return "badge badge-gray";
+      return "badge";
     }
 
     function populateCustomerDropdown() {
@@ -1062,7 +1258,13 @@
         return false;
       }
 
-      customers = Array.isArray(data) ? data : [];
+      customers = Array.isArray(data)
+        ? data.map((row) => ({
+            ...row,
+            region: normalizeRegion(row.region)
+          }))
+        : [];
+
       renderCustomers();
       populateCustomerDropdown();
       renderDashboard();
@@ -1076,21 +1278,25 @@
 
     function renderCustomers() {
       const searchValue = document.getElementById("customerSearch").value.trim().toLowerCase();
+      const regionFilter = document.getElementById("customerRegionFilter").value;
 
       const filtered = customers.filter((row) => {
         const haystack = [
-          row.customer_type,
-          row.recurring_contract,
           row.customer_name,
           row.phone,
           row.email,
           row.address,
-          row.region,
           row.notes,
+          row.customer_type,
+          row.recurring_contract,
+          row.region,
           row.status
         ].join(" ").toLowerCase();
 
-        return haystack.includes(searchValue);
+        const matchesSearch = haystack.includes(searchValue);
+        const matchesRegion = !regionFilter || row.region === regionFilter;
+
+        return matchesSearch && matchesRegion;
       });
 
       document.getElementById("customersTotalStat").textContent = customers.length;
@@ -1099,27 +1305,41 @@
         const v = String(c.recurring_contract || "").toLowerCase();
         return v && v !== "no contract" && v !== "no";
       }).length;
-      document.getElementById("customersSearchStat").textContent = filtered.length;
+
+      const regionCounts = REGION_OPTIONS.map((region) => ({
+        region,
+        count: customers.filter((c) => c.region === region).length
+      })).filter((x) => x.count > 0);
+
+      const regionStatsEl = document.getElementById("customersRegionStats");
+      if (!regionCounts.length) {
+        regionStatsEl.innerHTML = `<span class="empty-state">No region data</span>`;
+      } else {
+        regionStatsEl.innerHTML = regionCounts
+          .map((item) => `<span class="badge badge-gray">${escapeHtml(item.region)} (${item.count})</span>`)
+          .join("");
+      }
 
       const tbody = document.getElementById("customersTableBody");
 
       if (!filtered.length) {
-        tbody.innerHTML = `<tr><td colspan="11">No customers found.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7">No customers found.</td></tr>`;
         return;
       }
 
       tbody.innerHTML = filtered.map((row, index) => `
         <tr>
           <td>${index + 1}</td>
-          <td>${escapeHtml(row.customer_type || "")}</td>
-          <td>${escapeHtml(normalizeRecurringLabel(row.recurring_contract || ""))}</td>
-          <td>${escapeHtml(row.customer_name || "")}</td>
+          <td>
+            <div class="customer-primary">
+              <strong>${escapeHtml(row.customer_name || "")}</strong>
+              <div class="customer-sub">${escapeHtml(row.customer_type || "")}${row.email ? ` · ${escapeHtml(row.email)}` : ""}</div>
+            </div>
+          </td>
           <td>${escapeHtml(row.phone || "")}</td>
-          <td>${escapeHtml(row.email || "")}</td>
-          <td>${escapeHtml(row.address || "")}</td>
           <td>${escapeHtml(row.region || "")}</td>
-          <td>${escapeHtml(row.notes || "")}</td>
-          <td>${escapeHtml(row.status || "")}</td>
+          <td><span class="${contractBadgeClass(row.recurring_contract)}">${escapeHtml(normalizeRecurringLabel(row.recurring_contract || ""))}</span></td>
+          <td><span class="${statusBadgeClass(row.status)}">${escapeHtml(row.status || "")}</span></td>
           <td>
             <div class="action-row">
               <button class="small-btn btn-danger" type="button" onclick="deleteCustomer('${row.id}')">Delete</button>
@@ -1138,12 +1358,17 @@
       const phone = document.getElementById("customerPhone").value.trim();
       const email = document.getElementById("customerEmail").value.trim();
       const address = document.getElementById("customerAddress").value.trim();
-      const region = document.getElementById("customerRegion").value.trim();
+      const region = normalizeRegion(document.getElementById("customerRegion").value);
       const notes = document.getElementById("customerNotes").value.trim();
       const status = document.getElementById("customerStatus").value;
 
       if (!customer_name) {
         showMessage("customerMessage", "Customer name is required.", "error");
+        return;
+      }
+
+      if (!region) {
+        showMessage("customerMessage", "Region is required.", "error");
         return;
       }
 
@@ -1168,6 +1393,7 @@
 
       clearCustomerForm();
       document.getElementById("customerSearch").value = "";
+      document.getElementById("customerRegionFilter").value = "";
       await loadCustomers();
       showMessage("customerMessage", "Customer saved successfully.", "success");
     }
@@ -1272,7 +1498,7 @@
           <td>${escapeHtml(row.service_type || "")}</td>
           <td>${escapeHtml(row.description || "")}</td>
           <td>${escapeHtml(formatMoney(row.amount))}</td>
-          <td>${escapeHtml(row.status || "")}</td>
+          <td><span class="${statusBadgeClass(row.status)}">${escapeHtml(row.status || "")}</span></td>
           <td>${escapeHtml(row.payment_date || "")}</td>
           <td>
             <div class="action-row">
@@ -1535,7 +1761,7 @@
           <td>${escapeHtml(row.description || "")}</td>
           <td>${escapeHtml(formatMoney(row.amount))}</td>
           <td>${escapeHtml(row.payment_method || "")}</td>
-          <td>${escapeHtml(row.status || "")}</td>
+          <td><span class="${statusBadgeClass(row.status)}">${escapeHtml(row.status || "")}</span></td>
           <td>${row.receipt_url ? `<a href="${escapeHtml(row.receipt_url)}" target="_blank" rel="noopener noreferrer">Open</a>` : ""}</td>
           <td>${escapeHtml(row.notes || "")}</td>
           <td>
@@ -1741,7 +1967,10 @@
         `).join("");
       }
 
-      const recentExpenses = [...expenses].sort((a, b) => String(b.expense_date || "").localeCompare(String(a.expense_date || ""))).slice(0, 10);
+      const recentExpenses = [...expenses]
+        .sort((a, b) => String(b.expense_date || "").localeCompare(String(a.expense_date || "")))
+        .slice(0, 10);
+
       const recentBody = document.getElementById("dashboardRecentExpensesBody");
       if (!recentExpenses.length) {
         recentBody.innerHTML = `<tr><td colspan="5">No expenses found.</td></tr>`;
@@ -1758,6 +1987,7 @@
       }
 
       const alerts = [];
+
       openInvoices.forEach((row) => {
         alerts.push({
           type: "Open Invoice",
@@ -1801,6 +2031,7 @@
           pages.forEach((p) => p.classList.remove("active"));
           btn.classList.add("active");
           document.getElementById(btn.dataset.page).classList.add("active");
+
           if (btn.dataset.page === "dashboardPage") {
             renderDashboard();
           }
@@ -1819,8 +2050,10 @@
       });
 
       document.getElementById("customerSearch").addEventListener("input", renderCustomers);
+      document.getElementById("customerRegionFilter").addEventListener("change", renderCustomers);
       document.getElementById("customerClearSearchBtn").addEventListener("click", function () {
         document.getElementById("customerSearch").value = "";
+        document.getElementById("customerRegionFilter").value = "";
         renderCustomers();
       });
       document.getElementById("customerRefreshBtn").addEventListener("click", function () {
