@@ -6,155 +6,321 @@
   <title>GregLandscape App</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    :root{
-      --bg:#f6f8fb;
-      --card:#ffffff;
-      --line:#e5e7eb;
-      --text:#111827;
-      --muted:#6b7280;
-      --green:#166534;
-      --green2:#22c55e;
-      --red:#b91c1c;
-      --blue:#3b82f6;
-      --yellow:#92400e;
-      --shadow:0 8px 24px rgba(17,24,39,.06);
-      --radius:16px;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
     }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
-    .app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
-    .sidebar{background:#0f172a;color:#fff;padding:24px 16px}
-    .brand{font-size:28px;font-weight:700;margin-bottom:24px}
-    .nav a{
-      display:block;color:#cbd5e1;text-decoration:none;padding:12px 14px;
-      border-radius:12px;margin-bottom:8px;font-weight:600;cursor:pointer
+
+    body {
+      background: #f3f4f6;
+      color: #111827;
     }
-    .nav a.active{background:#1e293b;color:#fff}
-    .main{padding:28px}
-    .module{display:none}
-    .module.active{display:block}
-    .title h1{margin:0 0 6px;font-size:32px}
-    .title p{margin:0;color:var(--muted)}
-    .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin:24px 0}
-    .kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:16px 18px}
-    .kpi-label{color:var(--muted);font-size:13px;margin-bottom:8px}
-    .kpi-value{font-size:28px;font-weight:700}
-    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:24px}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
-    .card-header{padding:18px 20px;border-bottom:1px solid var(--line)}
-    .card-header h2{margin:0;font-size:20px}
-    .card-body{padding:20px}
-    .search-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
-    input, textarea, select{
-      width:100%;padding:12px 14px;border:1px solid var(--line);
-      border-radius:12px;font-size:14px;outline:none;background:#fff
+
+    .app {
+      display: flex;
+      min-height: 100vh;
     }
-    textarea{min-height:88px;resize:vertical}
-    input:focus, textarea:focus, select:focus{
-      border-color:var(--blue);box-shadow:0 0 0 4px rgba(59,130,246,.12)
+
+    .sidebar {
+      width: 220px;
+      background: #07163a;
+      color: white;
+      padding: 28px 0;
     }
-    .search{flex:1;min-width:240px}
-    .btn{
-      border:none;border-radius:12px;padding:12px 14px;
-      font-weight:700;cursor:pointer
+
+    .brand {
+      font-size: 22px;
+      font-weight: 700;
+      padding: 0 24px 28px;
     }
-    .btn-primary{background:var(--green2);color:#062f14}
-    .btn-secondary{background:#eef2ff;color:#3730a3}
-    .btn-danger{background:#fee2e2;color:var(--red)}
-    .btn-small{padding:8px 10px;font-size:12px}
-    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    .full{grid-column:1 / -1}
-    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}
-    table{width:100%;border-collapse:collapse;min-width:1200px}
-    th,td{
-      text-align:left;padding:14px 12px;border-bottom:1px solid var(--line);
-      vertical-align:top;font-size:14px
+
+    .nav-btn {
+      display: block;
+      width: 100%;
+      border: none;
+      background: transparent;
+      color: white;
+      text-align: left;
+      padding: 16px 24px;
+      cursor: pointer;
+      font-size: 16px;
     }
-    th{background:#f8fafc;color:#334155;position:sticky;top:0}
-    .tag{
-      display:inline-block;padding:6px 10px;border-radius:999px;
-      font-size:12px;font-weight:700
+
+    .nav-btn.active,
+    .nav-btn:hover {
+      background: rgba(255,255,255,0.08);
     }
-    .tag-active{background:#dcfce7;color:var(--green)}
-    .tag-inactive{background:#fee2e2;color:var(--red)}
-    .tag-contract{background:#e0f2fe;color:#075985}
-    .tag-paused{background:#fef3c7;color:var(--yellow)}
-    .tag-open{background:#fee2e2;color:#991b1b}
-    .tag-paid{background:#dcfce7;color:#166534}
-    .muted{color:var(--muted)}
-    .empty{text-align:center;color:var(--muted);padding:28px}
-    .actions{display:flex;gap:8px;flex-wrap:wrap}
-    .notice{
-      display:none;margin-top:14px;padding:12px 14px;border-radius:12px;
-      background:#eff6ff;color:#1d4ed8;font-size:13px
+
+    .content {
+      flex: 1;
+      padding: 28px;
     }
-    .notice.show{display:block}
-    .error{
-      display:none;margin-top:14px;padding:12px 14px;border-radius:12px;
-      background:#fee2e2;color:#991b1b;font-size:13px;white-space:pre-wrap
+
+    .page {
+      display: none;
     }
-    .error.show{display:block}
-    .top-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-    .status-line{font-size:13px;color:var(--muted)}
-    .placeholder{
-      background:var(--card);border:1px dashed var(--line);border-radius:16px;
-      padding:28px;color:var(--muted)
+
+    .page.active {
+      display: block;
     }
-    @media (max-width:1100px){
-      .grid{grid-template-columns:1fr}
-      .kpis{grid-template-columns:repeat(2,1fr)}
+
+    h1 {
+      font-size: 26px;
+      margin-bottom: 8px;
     }
-    @media (max-width:760px){
-      .app{grid-template-columns:1fr}
-      .sidebar{padding:18px}
-      .main{padding:18px}
-      .kpis{grid-template-columns:1fr}
-      .form-grid{grid-template-columns:1fr}
-      .title h1{font-size:26px}
+
+    .subtext {
+      color: #6b7280;
+      margin-bottom: 24px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .stat-title {
+      font-size: 14px;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: #07163a;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.4fr 0.9fr;
+      gap: 20px;
+    }
+
+    .panel-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    input,
+    select,
+    textarea,
+    button {
+      font-size: 14px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      padding: 12px 14px;
+      outline: none;
+      background: white;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .btn-primary {
+      background: #16a34a;
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #eef2ff;
+      color: #3730a3;
+    }
+
+    .btn-danger {
+      background: #dc2626;
+      color: white;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      background: white;
+    }
+
+    table {
+      width: 100%;
+      min-width: 900px;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 14px 12px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: top;
+    }
+
+    th {
+      background: #f9fafb;
+      font-size: 14px;
+    }
+
+    td {
+      font-size: 14px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    .message {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      display: none;
+      white-space: pre-wrap;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .message.success {
+      background: #dcfce7;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .message.error {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    .muted {
+      color: #6b7280;
+      font-size: 13px;
+    }
+
+    .small-btn {
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 1200px) {
+      .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .app {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar">
-    <div class="brand">GregLandscape</div>
-    <nav class="nav">
-      <a id="navCustomers" class="active" onclick="showModule('customers')">Customers</a>
-      <a id="navInvoices" onclick="showModule('invoices')">Invoices</a>
-      <a id="navExpenses" onclick="showModule('expenses')">Expenses</a>
-      <a id="navDashboard" onclick="showModule('dashboard')">Dashboard</a>
-    </nav>
-  </aside>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">GregLandscape</div>
+      <button class="nav-btn active" data-page="customersPage">Customers</button>
+      <button class="nav-btn" data-page="invoicesPage">Invoices</button>
+      <button class="nav-btn" data-page="expensesPage">Expenses</button>
+      <button class="nav-btn" data-page="dashboardPage">Dashboard</button>
+    </aside>
 
-  <main class="main">
-    <!-- CUSTOMERS -->
-    <section id="moduleCustomers" class="module active">
-      <div class="title">
+    <main class="content">
+      <!-- CUSTOMERS -->
+      <section id="customersPage" class="page active">
         <h1>Customers</h1>
-        <p>Customer master list for GregLandscape.</p>
-      </div>
+        <p class="subtext">Manage customer records.</p>
 
-      <div class="kpis">
-        <div class="kpi"><div class="kpi-label">Total Customers</div><div class="kpi-value" id="kpiTotalCustomers">0</div></div>
-        <div class="kpi"><div class="kpi-label">Active</div><div class="kpi-value" id="kpiActiveCustomers">0</div></div>
-        <div class="kpi"><div class="kpi-label">Inactive</div><div class="kpi-value" id="kpiInactiveCustomers">0</div></div>
-        <div class="kpi"><div class="kpi-label">Active Contracts</div><div class="kpi-value" id="kpiActiveContracts">0</div></div>
-        <div class="kpi"><div class="kpi-label">Search Results</div><div class="kpi-value" id="kpiFilteredCustomers">0</div></div>
-      </div>
+        <div class="stats">
+          <div class="card">
+            <div class="stat-title">Total Customers</div>
+            <div class="stat-value" id="customersTotalStat">0</div>
+          </div>
+        </div>
 
-      <div class="grid">
-        <section class="card">
-          <div class="card-header"><h2>Customer List</h2></div>
-          <div class="card-body">
-            <div class="top-actions" style="margin-bottom:12px;">
-              <div class="status-line" id="customerSyncStatus">Loading customers from database...</div>
-            </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="panel-title">Customer List</div>
 
-            <div class="search-row">
-              <input class="search" id="customerSearchInput" type="text" placeholder="Search by name, phone, email, address, region, contract">
-              <button class="btn btn-secondary" onclick="clearCustomerSearch()">Clear Search</button>
-              <button class="btn btn-secondary" onclick="loadCustomers()">Refresh</button>
-              <button class="btn btn-secondary" onclick="exportCustomers()">Export JSON</button>
+            <div class="toolbar">
+              <input id="customerSearch" class="search-input" type="text" placeholder="Search by name, address, phone, email" />
+              <button class="btn btn-secondary" id="customerClearSearchBtn">Clear Search</button>
+              <button class="btn btn-secondary" id="customerRefreshBtn">Refresh</button>
             </div>
 
             <div class="table-wrap">
@@ -162,135 +328,97 @@
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Type</th>
-                    <th>Customer Name</th>
+                    <th>Name</th>
                     <th>Phone</th>
                     <th>Email</th>
                     <th>Address</th>
-                    <th>Region</th>
                     <th>Recurring Contract</th>
-                    <th>Notes</th>
-                    <th>Status</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
-                <tbody id="customerTableBody"></tbody>
+                <tbody id="customersTableBody"></tbody>
               </table>
             </div>
           </div>
-        </section>
 
-        <section class="card">
-          <div class="card-header"><h2 id="customerFormTitle">Add Customer</h2></div>
-          <div class="card-body">
-            <form id="customerForm">
-              <div class="form-grid">
-                <div>
-                  <label>Customer Type</label>
-                  <select id="customerType">
-                    <option value="Individual">Individual</option>
-                    <option value="Company">Company</option>
-                  </select>
-                </div>
+          <div class="card">
+            <div class="panel-title">Add Customer</div>
 
-                <div>
-                  <label>Status</label>
-                  <select id="customerStatus">
-                    <option value="Active">Active</option>
-                    <option value="Inactive">Inactive</option>
-                  </select>
-                </div>
-
-                <div class="full">
-                  <label>Customer Name</label>
-                  <input id="customerName" type="text" required>
-                </div>
-
-                <div>
-                  <label>Phone</label>
-                  <input id="customerPhone" type="text">
-                </div>
-
-                <div>
-                  <label>Email</label>
-                  <input id="customerEmail" type="email">
-                </div>
-
-                <div class="full">
-                  <label>Address</label>
-                  <input id="customerAddress" type="text">
-                </div>
-
-                <div>
-                  <label>Region</label>
-                  <select id="customerRegion">
-                    <option value="North">North</option>
-                    <option value="West">West</option>
-                    <option value="East">East</option>
-                    <option value="South">South</option>
-                    <option value="Central">Central</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label>Recurring Contract Status</label>
-                  <select id="customerRecurringContract">
-                    <option value="No Contract">No Contract</option>
-                    <option value="Active Contract">Active Contract</option>
-                    <option value="Paused Contract">Paused Contract</option>
-                  </select>
-                </div>
-
-                <div class="full">
-                  <label>Notes</label>
-                  <textarea id="customerNotes"></textarea>
-                </div>
-              </div>
-
-              <input type="hidden" id="editingCustomerId">
-
-              <div class="actions" style="margin-top:16px;">
-                <button class="btn btn-primary" type="submit" id="customerSaveBtn">Save Customer</button>
-                <button class="btn btn-secondary" type="button" onclick="resetCustomerForm()">Clear</button>
-                <button class="btn btn-danger" type="button" id="customerDeleteBtn" onclick="deleteCurrentCustomer()" style="display:none;">Delete</button>
-              </div>
-
-              <div class="notice" id="customerNotice"></div>
-              <div class="error" id="customerError"></div>
-            </form>
-          </div>
-        </section>
-      </div>
-    </section>
-
-    <!-- INVOICES -->
-    <section id="moduleInvoices" class="module">
-      <div class="title">
-        <h1>Invoices</h1>
-        <p>Invoice tracking linked to customers.</p>
-      </div>
-
-      <div class="kpis">
-        <div class="kpi"><div class="kpi-label">Total Invoices</div><div class="kpi-value" id="kpiTotalInvoices">0</div></div>
-        <div class="kpi"><div class="kpi-label">Open</div><div class="kpi-value" id="kpiOpenInvoices">0</div></div>
-        <div class="kpi"><div class="kpi-label">Paid</div><div class="kpi-value" id="kpiPaidInvoices">0</div></div>
-        <div class="kpi"><div class="kpi-label">Open Amount</div><div class="kpi-value" id="kpiOpenAmount">0</div></div>
-        <div class="kpi"><div class="kpi-label">Search Results</div><div class="kpi-value" id="kpiFilteredInvoices">0</div></div>
-      </div>
-
-      <div class="grid">
-        <section class="card">
-          <div class="card-header"><h2>Invoice List</h2></div>
-          <div class="card-body">
-            <div class="top-actions" style="margin-bottom:12px;">
-              <div class="status-line" id="invoiceSyncStatus">Loading invoices from database...</div>
+            <div class="form-group">
+              <label class="muted">Name</label>
+              <input id="customerName" type="text" />
             </div>
 
-            <div class="search-row">
-              <input class="search" id="invoiceSearchInput" type="text" placeholder="Search by customer, service type, description, status">
-              <button class="btn btn-secondary" onclick="clearInvoiceSearch()">Clear Search</button>
-              <button class="btn btn-secondary" onclick="loadInvoices()">Refresh</button>
-              <button class="btn btn-secondary" onclick="exportInvoices()">Export JSON</button>
+            <div class="form-group">
+              <label class="muted">Phone</label>
+              <input id="customerPhone" type="text" />
+            </div>
+
+            <div class="form-group">
+              <label class="muted">Email</label>
+              <input id="customerEmail" type="email" />
+            </div>
+
+            <div class="form-group">
+              <label class="muted">Address</label>
+              <textarea id="customerAddress"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="muted">Recurring Contract</label>
+              <select id="customerRecurringContract">
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+              </select>
+            </div>
+
+            <div class="toolbar">
+              <button class="btn btn-primary" id="saveCustomerBtn">Save Customer</button>
+              <button class="btn btn-secondary" id="clearCustomerBtn">Clear</button>
+            </div>
+
+            <div id="customerMessage" class="message"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- INVOICES -->
+      <section id="invoicesPage" class="page">
+        <h1>Invoices</h1>
+        <p class="subtext">Invoice tracking linked to customers.</p>
+
+        <div class="stats">
+          <div class="card">
+            <div class="stat-title">Total Invoices</div>
+            <div class="stat-value" id="invoiceTotalStat">0</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Open</div>
+            <div class="stat-value" id="invoiceOpenStat">0</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Paid</div>
+            <div class="stat-value" id="invoicePaidStat">0</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Open Amount</div>
+            <div class="stat-value" id="invoiceOpenAmountStat">0</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Search Results</div>
+            <div class="stat-value" id="invoiceSearchStat">0</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="panel-title">Invoice List</div>
+
+            <div class="toolbar">
+              <input id="invoiceSearch" class="search-input" type="text" placeholder="Search by customer, service type, description, status" />
+              <button class="btn btn-secondary" id="invoiceClearSearchBtn">Clear Search</button>
+              <button class="btn btn-secondary" id="invoiceRefreshBtn">Refresh</button>
+              <button class="btn btn-secondary" id="exportInvoicesBtn">Export JSON</button>
             </div>
 
             <div class="table-wrap">
@@ -308,683 +436,523 @@
                     <th>Actions</th>
                   </tr>
                 </thead>
-                <tbody id="invoiceTableBody"></tbody>
+                <tbody id="invoicesTableBody"></tbody>
               </table>
             </div>
+
+            <div id="invoiceListMessage" class="message"></div>
           </div>
-        </section>
 
-        <section class="card">
-          <div class="card-header"><h2 id="invoiceFormTitle">Add Invoice</h2></div>
-          <div class="card-body">
-            <form id="invoiceForm">
-              <div class="form-grid">
-                <div class="full">
-                  <label>Customer</label>
-                  <select id="invoiceCustomerId" required></select>
-                </div>
+          <div class="card">
+            <div class="panel-title">Add Invoice</div>
 
-                <div>
-                  <label>Invoice Date</label>
-                  <input id="invoiceDate" type="date" required>
-                </div>
+            <div class="form-group">
+              <label class="muted">Customer</label>
+              <select id="invoiceCustomer"></select>
+            </div>
 
-                <div>
-                  <label>Status</label>
-                  <select id="invoiceStatus" onchange="togglePaymentDate()">
-                    <option value="Open">Open</option>
-                    <option value="Paid">Paid</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label>Service Type</label>
-                  <select id="invoiceServiceType">
-                    <option value="Grass Cutting">Grass Cutting</option>
-                    <option value="Garden Maintenance">Garden Maintenance</option>
-                    <option value="Landscaping">Landscaping</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label>Amount</label>
-                  <input id="invoiceAmount" type="number" step="0.01" min="0" required>
-                </div>
-
-                <div class="full">
-                  <label>Description</label>
-                  <textarea id="invoiceDescription"></textarea>
-                </div>
-
-                <div>
-                  <label>Payment Date</label>
-                  <input id="invoicePaymentDate" type="date">
-                </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="muted">Invoice Date</label>
+                <input id="invoiceDate" type="date" />
               </div>
 
-              <input type="hidden" id="editingInvoiceId">
-
-              <div class="actions" style="margin-top:16px;">
-                <button class="btn btn-primary" type="submit" id="invoiceSaveBtn">Save Invoice</button>
-                <button class="btn btn-secondary" type="button" onclick="resetInvoiceForm()">Clear</button>
-                <button class="btn btn-danger" type="button" id="invoiceDeleteBtn" onclick="deleteCurrentInvoice()" style="display:none;">Delete</button>
+              <div class="form-group">
+                <label class="muted">Status</label>
+                <select id="invoiceStatus">
+                  <option value="Open">Open</option>
+                  <option value="Paid">Paid</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
               </div>
 
-              <div class="notice" id="invoiceNotice"></div>
-              <div class="error" id="invoiceError"></div>
-            </form>
-          </div>
-        </section>
-      </div>
-    </section>
+              <div class="form-group">
+                <label class="muted">Service Type</label>
+                <select id="invoiceServiceType">
+                  <option value="Grass Cutting">Grass Cutting</option>
+                  <option value="Hedge Trimming">Hedge Trimming</option>
+                  <option value="Cleaning">Cleaning</option>
+                  <option value="Landscaping">Landscaping</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
 
-    <!-- PLACEHOLDERS -->
-    <section id="moduleExpenses" class="module">
-      <div class="title">
+              <div class="form-group">
+                <label class="muted">Amount</label>
+                <input id="invoiceAmount" type="number" step="0.01" />
+              </div>
+
+              <div class="form-group full">
+                <label class="muted">Description</label>
+                <textarea id="invoiceDescription"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="muted">Payment Date</label>
+                <input id="invoicePaymentDate" type="date" />
+              </div>
+            </div>
+
+            <div class="toolbar">
+              <button class="btn btn-primary" id="saveInvoiceBtn">Save Invoice</button>
+              <button class="btn btn-secondary" id="clearInvoiceBtn">Clear</button>
+            </div>
+
+            <div id="invoiceMessage" class="message"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- EXPENSES -->
+      <section id="expensesPage" class="page">
         <h1>Expenses</h1>
-        <p>Next module.</p>
-      </div>
-      <div class="placeholder">Expenses page comes next.</div>
-    </section>
+        <p class="subtext">Placeholder page for future expense module.</p>
+        <div class="card">
+          Expenses module not yet connected in this version.
+        </div>
+      </section>
 
-    <section id="moduleDashboard" class="module">
-      <div class="title">
+      <!-- DASHBOARD -->
+      <section id="dashboardPage" class="page">
         <h1>Dashboard</h1>
-        <p>Next module.</p>
-      </div>
-      <div class="placeholder">Dashboard comes after invoices and expenses are stable.</div>
-    </section>
-  </main>
-</div>
+        <p class="subtext">Quick business overview.</p>
+        <div class="card">
+          Dashboard module not yet connected in this version.
+        </div>
+      </section>
+    </main>
+  </div>
 
-<script>
-  const SUPABASE_URL = "https://nmbobbmqkvyuucwapaoj.supabase.co";
-  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_BDY1Xh-8Nx2vfHvk0KOsOA_cma_8Lpc";
-  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+  <script>
+    const SUPABASE_URL = "https://YOUR_PROJECT_URL.supabase.co";
+    const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
 
-  let customers = [];
-  let filteredCustomers = [];
-  let invoices = [];
-  let filteredInvoices = [];
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  function showModule(module) {
-    document.querySelectorAll(".module").forEach(el => el.classList.remove("active"));
-    document.querySelectorAll(".nav a").forEach(el => el.classList.remove("active"));
+    let customers = [];
+    let invoices = [];
 
-    if (module === "customers") {
-      document.getElementById("moduleCustomers").classList.add("active");
-      document.getElementById("navCustomers").classList.add("active");
-    } else if (module === "invoices") {
-      document.getElementById("moduleInvoices").classList.add("active");
-      document.getElementById("navInvoices").classList.add("active");
-    } else if (module === "expenses") {
-      document.getElementById("moduleExpenses").classList.add("active");
-      document.getElementById("navExpenses").classList.add("active");
-    } else if (module === "dashboard") {
-      document.getElementById("moduleDashboard").classList.add("active");
-      document.getElementById("navDashboard").classList.add("active");
-    }
-  }
+    const navButtons = document.querySelectorAll(".nav-btn");
+    const pages = document.querySelectorAll(".page");
 
-  function setCustomerSyncStatus(text) {
-    document.getElementById("customerSyncStatus").textContent = text;
-  }
-
-  function setInvoiceSyncStatus(text) {
-    document.getElementById("invoiceSyncStatus").textContent = text;
-  }
-
-  function showNotice(id, message) {
-    const el = document.getElementById(id);
-    el.textContent = message;
-    el.classList.add("show");
-  }
-
-  function hideNotice(id) {
-    document.getElementById(id).classList.remove("show");
-  }
-
-  function showError(id, message) {
-    const el = document.getElementById(id);
-    el.textContent = message;
-    el.classList.add("show");
-  }
-
-  function hideError(id) {
-    document.getElementById(id).classList.remove("show");
-  }
-
-  function escapeHtml(str) {
-    return String(str ?? "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-  }
-
-  function formatMoney(value) {
-    const n = Number(value || 0);
-    return n.toFixed(2);
-  }
-
-  function getCustomerName(customerId) {
-    const customer = customers.find(c => c.id === customerId);
-    return customer ? customer.customer_name : "Unknown Customer";
-  }
-
-  function contractTagClass(value) {
-    if (value === "Active Contract") return "tag tag-contract";
-    if (value === "Paused Contract") return "tag tag-paused";
-    return "tag";
-  }
-
-  function invoiceStatusClass(value) {
-    return value === "Paid" ? "tag tag-paid" : "tag tag-open";
-  }
-
-  function populateCustomerDropdown() {
-    const select = document.getElementById("invoiceCustomerId");
-    const currentValue = select.value;
-    select.innerHTML = "";
-
-    if (!customers.length) {
-      select.innerHTML = `<option value="">No customers available</option>`;
-      return;
-    }
-
-    const sorted = [...customers].sort((a, b) => a.customer_name.localeCompare(b.customer_name));
-
-    sorted.forEach(c => {
-      const opt = document.createElement("option");
-      opt.value = c.id;
-      opt.textContent = c.customer_name;
-      select.appendChild(opt);
+    navButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        navButtons.forEach((b) => b.classList.remove("active"));
+        pages.forEach((p) => p.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById(btn.dataset.page).classList.add("active");
+      });
     });
 
-    if (sorted.some(c => c.id === currentValue)) {
-      select.value = currentValue;
-    }
-  }
-
-  async function loadCustomers() {
-    hideError("customerError");
-    setCustomerSyncStatus("Loading customers from database...");
-
-    const { data, error } = await supabaseClient
-      .from("customers")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      console.error(error);
-      setCustomerSyncStatus("Database load failed");
-      showError("customerError", "Could not load customers from Supabase.\n\n" + error.message);
-      return;
+    function showMessage(elementId, text, type = "success") {
+      const el = document.getElementById(elementId);
+      el.textContent = text;
+      el.className = "message show " + type;
     }
 
-    customers = data || [];
-    filteredCustomers = [...customers];
-    renderCustomers();
-    populateCustomerDropdown();
-    setCustomerSyncStatus(`Loaded ${customers.length} customer(s) from database`);
-  }
-
-  async function loadInvoices() {
-    hideError("invoiceError");
-    setInvoiceSyncStatus("Loading invoices from database...");
-
-    const { data, error } = await supabaseClient
-      .from("invoices")
-      .select("*")
-      .order("invoice_date", { ascending: false });
-
-    if (error) {
-      console.error(error);
-      setInvoiceSyncStatus("Database load failed");
-      showError("invoiceError", "Could not load invoices from Supabase.\n\n" + error.message);
-      return;
+    function clearMessage(elementId) {
+      const el = document.getElementById(elementId);
+      el.textContent = "";
+      el.className = "message";
     }
 
-    invoices = data || [];
-    filteredInvoices = [...invoices];
-    renderInvoices();
-    setInvoiceSyncStatus(`Loaded ${invoices.length} invoice(s) from database`);
-  }
-
-  function updateCustomerKpis() {
-    const total = customers.length;
-    const active = customers.filter(c => c.status === "Active").length;
-    const activeContracts = customers.filter(c => c.recurring_contract === "Active Contract").length;
-
-    document.getElementById("kpiTotalCustomers").textContent = total;
-    document.getElementById("kpiActiveCustomers").textContent = active;
-    document.getElementById("kpiInactiveCustomers").textContent = total - active;
-    document.getElementById("kpiActiveContracts").textContent = activeContracts;
-    document.getElementById("kpiFilteredCustomers").textContent = filteredCustomers.length;
-  }
-
-  function renderCustomerTable() {
-    const tbody = document.getElementById("customerTableBody");
-    tbody.innerHTML = "";
-
-    if (!filteredCustomers.length) {
-      tbody.innerHTML = '<tr><td colspan="11" class="empty">No customers found.</td></tr>';
-      return;
+    function formatMoney(value) {
+      const num = Number(value || 0);
+      return Number.isFinite(num) ? num.toFixed(2) : "0.00";
     }
 
-    filteredCustomers.forEach((c, i) => {
-      const contract = c.recurring_contract || "No Contract";
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${i + 1}</td>
-        <td>${escapeHtml(c.customer_type)}</td>
-        <td><strong>${escapeHtml(c.customer_name)}</strong></td>
-        <td>${escapeHtml(c.phone)}</td>
-        <td>${escapeHtml(c.email)}</td>
-        <td>${escapeHtml(c.address)}</td>
-        <td>${escapeHtml(c.region)}</td>
-        <td><span class="${contractTagClass(contract)}">${escapeHtml(contract)}</span></td>
-        <td>${escapeHtml(c.notes)}</td>
-        <td><span class="tag ${c.status === "Active" ? "tag-active" : "tag-inactive"}">${escapeHtml(c.status)}</span></td>
-        <td>
-          <div class="actions">
-            <button class="btn btn-small btn-secondary" onclick="editCustomer('${c.id}')">Edit</button>
-            <button class="btn btn-small btn-danger" onclick="deleteCustomer('${c.id}')">Delete</button>
-          </div>
-        </td>
+    function todayInputDate() {
+      const d = new Date();
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function normalizeRecurringValue(row) {
+      return row.recurring_contract ?? row.recurring ?? row.is_recurring ?? row.recurring_customer ?? "No";
+    }
+
+    async function loadCustomers() {
+      clearMessage("customerMessage");
+
+      const { data, error } = await supabaseClient
+        .from("customers")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        showMessage("customerMessage", "Could not load customers.\n" + error.message, "error");
+        customers = [];
+        renderCustomers();
+        populateCustomerDropdown();
+        return;
+      }
+
+      customers = data || [];
+      renderCustomers();
+      populateCustomerDropdown();
+    }
+
+    function renderCustomers() {
+      const searchValue = document.getElementById("customerSearch").value.trim().toLowerCase();
+
+      const filtered = customers.filter((row) => {
+        const haystack = [
+          row.name,
+          row.phone,
+          row.email,
+          row.address,
+          normalizeRecurringValue(row)
+        ]
+          .join(" ")
+          .toLowerCase();
+
+        return haystack.includes(searchValue);
+      });
+
+      document.getElementById("customersTotalStat").textContent = filtered.length;
+
+      const tbody = document.getElementById("customersTableBody");
+
+      if (!filtered.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7">No customers found.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map((row, index) => {
+        return `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${escapeHtml(row.name || "")}</td>
+            <td>${escapeHtml(row.phone || "")}</td>
+            <td>${escapeHtml(row.email || "")}</td>
+            <td>${escapeHtml(row.address || "")}</td>
+            <td>${escapeHtml(normalizeRecurringValue(row) || "No")}</td>
+            <td>
+              <div class="action-row">
+                <button class="small-btn btn-danger" onclick="deleteCustomer('${row.id}')">Delete</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function populateCustomerDropdown() {
+      const select = document.getElementById("invoiceCustomer");
+
+      if (!customers.length) {
+        select.innerHTML = `<option value="">No customers found</option>`;
+        return;
+      }
+
+      select.innerHTML = `
+        <option value="">Select customer</option>
+        ${customers.map((row) => `
+          <option value="${row.id}">${escapeHtml(row.name || "Unnamed Customer")}</option>
+        `).join("")}
       `;
-      tbody.appendChild(tr);
+    }
+
+    async function saveCustomer() {
+      clearMessage("customerMessage");
+
+      const name = document.getElementById("customerName").value.trim();
+      const phone = document.getElementById("customerPhone").value.trim();
+      const email = document.getElementById("customerEmail").value.trim();
+      const address = document.getElementById("customerAddress").value.trim();
+      const recurringContract = document.getElementById("customerRecurringContract").value;
+
+      if (!name) {
+        showMessage("customerMessage", "Customer name is required.", "error");
+        return;
+      }
+
+      const payload = {
+        name,
+        phone,
+        email,
+        address,
+        recurring_contract: recurringContract
+      };
+
+      const { error } = await supabaseClient
+        .from("customers")
+        .insert([payload]);
+
+      if (error) {
+        showMessage("customerMessage", "Could not save customer.\n" + error.message, "error");
+        return;
+      }
+
+      showMessage("customerMessage", "Customer saved successfully.", "success");
+      clearCustomerForm();
+      await loadCustomers();
+      await loadInvoices();
+    }
+
+    function clearCustomerForm() {
+      document.getElementById("customerName").value = "";
+      document.getElementById("customerPhone").value = "";
+      document.getElementById("customerEmail").value = "";
+      document.getElementById("customerAddress").value = "";
+      document.getElementById("customerRecurringContract").value = "No";
+    }
+
+    async function deleteCustomer(id) {
+      const linkedInvoices = invoices.filter(inv => inv.customer_id === id);
+      if (linkedInvoices.length > 0) {
+        showMessage("customerMessage", "Cannot delete this customer because invoices are linked to it.", "error");
+        return;
+      }
+
+      const confirmed = confirm("Delete this customer?");
+      if (!confirmed) return;
+
+      const { error } = await supabaseClient
+        .from("customers")
+        .delete()
+        .eq("id", id);
+
+      if (error) {
+        showMessage("customerMessage", "Could not delete customer.\n" + error.message, "error");
+        return;
+      }
+
+      showMessage("customerMessage", "Customer deleted successfully.", "success");
+      await loadCustomers();
+    }
+
+    async function loadInvoices() {
+      clearMessage("invoiceListMessage");
+
+      const { data, error } = await supabaseClient
+        .from("invoices")
+        .select(`
+          id,
+          customer_id,
+          invoice_date,
+          service_type,
+          description,
+          amount,
+          status,
+          payment_date,
+          customers (
+            id,
+            name
+          )
+        `)
+        .order("invoice_date", { ascending: false });
+
+      if (error) {
+        showMessage("invoiceListMessage", "Could not load invoices.\n" + error.message, "error");
+        invoices = [];
+        renderInvoices();
+        return;
+      }
+
+      invoices = data || [];
+      renderInvoices();
+    }
+
+    function renderInvoices() {
+      const searchValue = document.getElementById("invoiceSearch").value.trim().toLowerCase();
+
+      const filtered = invoices.filter((row) => {
+        const customerName = row.customers?.name || "";
+        const haystack = [
+          customerName,
+          row.service_type,
+          row.description,
+          row.status,
+          row.invoice_date,
+          row.payment_date,
+          row.amount
+        ]
+          .join(" ")
+          .toLowerCase();
+
+        return haystack.includes(searchValue);
+      });
+
+      const totalCount = invoices.length;
+      const openCount = invoices.filter(i => (i.status || "").toLowerCase() === "open").length;
+      const paidCount = invoices.filter(i => (i.status || "").toLowerCase() === "paid").length;
+      const openAmount = invoices
+        .filter(i => (i.status || "").toLowerCase() === "open")
+        .reduce((sum, i) => sum + Number(i.amount || 0), 0);
+
+      document.getElementById("invoiceTotalStat").textContent = totalCount;
+      document.getElementById("invoiceOpenStat").textContent = openCount;
+      document.getElementById("invoicePaidStat").textContent = paidCount;
+      document.getElementById("invoiceOpenAmountStat").textContent = formatMoney(openAmount);
+      document.getElementById("invoiceSearchStat").textContent = filtered.length;
+
+      const tbody = document.getElementById("invoicesTableBody");
+
+      if (!filtered.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="9">No invoices found.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map((row, index) => {
+        const customerName = row.customers?.name || "Unknown Customer";
+
+        return `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${escapeHtml(row.invoice_date || "")}</td>
+            <td>${escapeHtml(customerName)}</td>
+            <td>${escapeHtml(row.service_type || "")}</td>
+            <td>${escapeHtml(row.description || "")}</td>
+            <td>${escapeHtml(formatMoney(row.amount))}</td>
+            <td>${escapeHtml(row.status || "")}</td>
+            <td>${escapeHtml(row.payment_date || "")}</td>
+            <td>
+              <div class="action-row">
+                <button class="small-btn btn-danger" onclick="deleteInvoice('${row.id}')">Delete</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    async function saveInvoice() {
+      clearMessage("invoiceMessage");
+
+      const customerId = document.getElementById("invoiceCustomer").value;
+      const invoiceDate = document.getElementById("invoiceDate").value;
+      const status = document.getElementById("invoiceStatus").value;
+      const serviceType = document.getElementById("invoiceServiceType").value;
+      const amount = document.getElementById("invoiceAmount").value;
+      const description = document.getElementById("invoiceDescription").value.trim();
+      const paymentDate = document.getElementById("invoicePaymentDate").value || null;
+
+      if (!customerId) {
+        showMessage("invoiceMessage", "Please select a customer.", "error");
+        return;
+      }
+
+      if (!invoiceDate) {
+        showMessage("invoiceMessage", "Invoice date is required.", "error");
+        return;
+      }
+
+      if (!amount || Number(amount) <= 0) {
+        showMessage("invoiceMessage", "Amount must be greater than 0.", "error");
+        return;
+      }
+
+      const payload = {
+        customer_id: customerId,
+        invoice_date: invoiceDate,
+        service_type: serviceType,
+        description,
+        amount: Number(amount),
+        status,
+        payment_date: paymentDate
+      };
+
+      const { error } = await supabaseClient
+        .from("invoices")
+        .insert([payload]);
+
+      if (error) {
+        showMessage("invoiceMessage", "Could not save invoice.\n" + error.message, "error");
+        return;
+      }
+
+      showMessage("invoiceMessage", "Invoice saved successfully.", "success");
+      clearInvoiceForm();
+      await loadInvoices();
+    }
+
+    function clearInvoiceForm() {
+      document.getElementById("invoiceCustomer").value = "";
+      document.getElementById("invoiceDate").value = todayInputDate();
+      document.getElementById("invoiceStatus").value = "Open";
+      document.getElementById("invoiceServiceType").value = "Grass Cutting";
+      document.getElementById("invoiceAmount").value = "";
+      document.getElementById("invoiceDescription").value = "";
+      document.getElementById("invoicePaymentDate").value = "";
+    }
+
+    async function deleteInvoice(id) {
+      const confirmed = confirm("Delete this invoice?");
+      if (!confirmed) return;
+
+      const { error } = await supabaseClient
+        .from("invoices")
+        .delete()
+        .eq("id", id);
+
+      if (error) {
+        showMessage("invoiceListMessage", "Could not delete invoice.\n" + error.message, "error");
+        return;
+      }
+
+      showMessage("invoiceListMessage", "Invoice deleted successfully.", "success");
+      await loadInvoices();
+    }
+
+    function exportInvoices() {
+      const dataStr = JSON.stringify(invoices, null, 2);
+      const blob = new Blob([dataStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "invoices.json";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    document.getElementById("saveCustomerBtn").addEventListener("click", saveCustomer);
+    document.getElementById("clearCustomerBtn").addEventListener("click", clearCustomerForm);
+    document.getElementById("customerRefreshBtn").addEventListener("click", loadCustomers);
+    document.getElementById("customerClearSearchBtn").addEventListener("click", () => {
+      document.getElementById("customerSearch").value = "";
+      renderCustomers();
     });
-  }
+    document.getElementById("customerSearch").addEventListener("input", renderCustomers);
 
-  function renderCustomers() {
-    updateCustomerKpis();
-    renderCustomerTable();
-  }
-
-  function applyCustomerSearch() {
-    const q = document.getElementById("customerSearchInput").value.trim().toLowerCase();
-    filteredCustomers = customers.filter(c =>
-      [c.customer_type, c.customer_name, c.phone, c.email, c.address, c.region, c.notes, c.status, c.recurring_contract]
-        .filter(Boolean)
-        .some(v => String(v).toLowerCase().includes(q))
-    );
-    renderCustomers();
-  }
-
-  function clearCustomerSearch() {
-    document.getElementById("customerSearchInput").value = "";
-    filteredCustomers = [...customers];
-    renderCustomers();
-  }
-
-  function resetCustomerForm() {
-    document.getElementById("customerForm").reset();
-    document.getElementById("editingCustomerId").value = "";
-    document.getElementById("customerFormTitle").textContent = "Add Customer";
-    document.getElementById("customerSaveBtn").textContent = "Save Customer";
-    document.getElementById("customerDeleteBtn").style.display = "none";
-    document.getElementById("customerType").value = "Individual";
-    document.getElementById("customerRegion").value = "North";
-    document.getElementById("customerStatus").value = "Active";
-    document.getElementById("customerRecurringContract").value = "No Contract";
-    hideNotice("customerNotice");
-    hideError("customerError");
-  }
-
-  function editCustomer(id) {
-    const c = customers.find(x => x.id === id);
-    if (!c) return;
-
-    document.getElementById("editingCustomerId").value = c.id;
-    document.getElementById("customerType").value = c.customer_type || "Individual";
-    document.getElementById("customerName").value = c.customer_name || "";
-    document.getElementById("customerPhone").value = c.phone || "";
-    document.getElementById("customerEmail").value = c.email || "";
-    document.getElementById("customerAddress").value = c.address || "";
-    document.getElementById("customerRegion").value = c.region || "North";
-    document.getElementById("customerRecurringContract").value = c.recurring_contract || "No Contract";
-    document.getElementById("customerNotes").value = c.notes || "";
-    document.getElementById("customerStatus").value = c.status || "Active";
-
-    document.getElementById("customerFormTitle").textContent = "Edit Customer";
-    document.getElementById("customerSaveBtn").textContent = "Update Customer";
-    document.getElementById("customerDeleteBtn").style.display = "inline-block";
-    showNotice("customerNotice", "Editing customer: " + c.customer_name);
-    hideError("customerError");
-    showModule("customers");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  async function deleteCustomer(id) {
-    const c = customers.find(x => x.id === id);
-    if (!c) return;
-    if (!confirm("Delete customer: " + c.customer_name + "?")) return;
-
-    hideError("customerError");
-    setCustomerSyncStatus("Deleting customer...");
-
-    const { error } = await supabaseClient.from("customers").delete().eq("id", id);
-
-    if (error) {
-      console.error(error);
-      setCustomerSyncStatus("Delete failed");
-      showError("customerError", "Could not delete customer.\n\n" + error.message);
-      return;
-    }
-
-    showNotice("customerNotice", "Customer deleted.");
-    resetCustomerForm();
-    await loadCustomers();
-    await loadInvoices();
-  }
-
-  function deleteCurrentCustomer() {
-    const id = document.getElementById("editingCustomerId").value;
-    if (id) deleteCustomer(id);
-  }
-
-  function exportCustomers() {
-    const blob = new Blob([JSON.stringify(customers, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "greglandscape-customers.json";
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  document.getElementById("customerForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
-    hideError("customerError");
-
-    const id = document.getElementById("editingCustomerId").value;
-    const payload = {
-      customer_type: document.getElementById("customerType").value,
-      customer_name: document.getElementById("customerName").value.trim(),
-      phone: document.getElementById("customerPhone").value.trim() || null,
-      email: document.getElementById("customerEmail").value.trim() || null,
-      address: document.getElementById("customerAddress").value.trim() || null,
-      region: document.getElementById("customerRegion").value,
-      recurring_contract: document.getElementById("customerRecurringContract").value,
-      notes: document.getElementById("customerNotes").value.trim() || null,
-      status: document.getElementById("customerStatus").value
-    };
-
-    if (!payload.customer_name) {
-      showError("customerError", "Customer Name is required.");
-      return;
-    }
-
-    setCustomerSyncStatus(id ? "Updating customer..." : "Saving customer...");
-
-    if (id) {
-      const { error } = await supabaseClient.from("customers").update(payload).eq("id", id);
-      if (error) {
-        console.error(error);
-        setCustomerSyncStatus("Save failed");
-        showError("customerError", "Could not update customer.\n\n" + error.message);
-        return;
-      }
-      showNotice("customerNotice", "Customer updated.");
-    } else {
-      const { error } = await supabaseClient.from("customers").insert([payload]);
-      if (error) {
-        console.error(error);
-        setCustomerSyncStatus("Save failed");
-        showError("customerError", "Could not save customer to Supabase.\n\n" + error.message);
-        return;
-      }
-      showNotice("customerNotice", "Customer added.");
-    }
-
-    resetCustomerForm();
-    await loadCustomers();
-  });
-
-  function updateInvoiceKpis() {
-    const total = invoices.length;
-    const open = invoices.filter(i => i.status === "Open").length;
-    const paid = invoices.filter(i => i.status === "Paid").length;
-    const openAmount = invoices
-      .filter(i => i.status === "Open")
-      .reduce((sum, i) => sum + Number(i.amount || 0), 0);
-
-    document.getElementById("kpiTotalInvoices").textContent = total;
-    document.getElementById("kpiOpenInvoices").textContent = open;
-    document.getElementById("kpiPaidInvoices").textContent = paid;
-    document.getElementById("kpiOpenAmount").textContent = formatMoney(openAmount);
-    document.getElementById("kpiFilteredInvoices").textContent = filteredInvoices.length;
-  }
-
-  function renderInvoiceTable() {
-    const tbody = document.getElementById("invoiceTableBody");
-    tbody.innerHTML = "";
-
-    if (!filteredInvoices.length) {
-      tbody.innerHTML = '<tr><td colspan="9" class="empty">No invoices found.</td></tr>';
-      return;
-    }
-
-    filteredInvoices.forEach((inv, i) => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${i + 1}</td>
-        <td>${escapeHtml(inv.invoice_date)}</td>
-        <td><strong>${escapeHtml(getCustomerName(inv.customer_id))}</strong></td>
-        <td>${escapeHtml(inv.service_type)}</td>
-        <td>${escapeHtml(inv.description)}</td>
-        <td>${formatMoney(inv.amount)}</td>
-        <td><span class="${invoiceStatusClass(inv.status)}">${escapeHtml(inv.status)}</span></td>
-        <td>${escapeHtml(inv.payment_date || "")}</td>
-        <td>
-          <div class="actions">
-            <button class="btn btn-small btn-secondary" onclick="editInvoice('${inv.id}')">Edit</button>
-            <button class="btn btn-small btn-danger" onclick="deleteInvoice('${inv.id}')">Delete</button>
-          </div>
-        </td>
-      `;
-      tbody.appendChild(tr);
+    document.getElementById("saveInvoiceBtn").addEventListener("click", saveInvoice);
+    document.getElementById("clearInvoiceBtn").addEventListener("click", clearInvoiceForm);
+    document.getElementById("invoiceRefreshBtn").addEventListener("click", loadInvoices);
+    document.getElementById("invoiceClearSearchBtn").addEventListener("click", () => {
+      document.getElementById("invoiceSearch").value = "";
+      renderInvoices();
     });
-  }
+    document.getElementById("invoiceSearch").addEventListener("input", renderInvoices);
+    document.getElementById("exportInvoicesBtn").addEventListener("click", exportInvoices);
 
-  function renderInvoices() {
-    updateInvoiceKpis();
-    renderInvoiceTable();
-  }
-
-  function applyInvoiceSearch() {
-    const q = document.getElementById("invoiceSearchInput").value.trim().toLowerCase();
-    filteredInvoices = invoices.filter(inv => {
-      const customerName = getCustomerName(inv.customer_id);
-      return [
-        customerName,
-        inv.invoice_date,
-        inv.service_type,
-        inv.description,
-        inv.amount,
-        inv.status,
-        inv.payment_date
-      ]
-      .filter(Boolean)
-      .some(v => String(v).toLowerCase().includes(q));
-    });
-    renderInvoices();
-  }
-
-  function clearInvoiceSearch() {
-    document.getElementById("invoiceSearchInput").value = "";
-    filteredInvoices = [...invoices];
-    renderInvoices();
-  }
-
-  function togglePaymentDate() {
-    const status = document.getElementById("invoiceStatus").value;
-    const paymentDate = document.getElementById("invoicePaymentDate");
-
-    if (status === "Paid") {
-      paymentDate.disabled = false;
-    } else {
-      paymentDate.value = "";
-      paymentDate.disabled = true;
-    }
-  }
-
-  function resetInvoiceForm() {
-    document.getElementById("invoiceForm").reset();
-    document.getElementById("editingInvoiceId").value = "";
-    document.getElementById("invoiceFormTitle").textContent = "Add Invoice";
-    document.getElementById("invoiceSaveBtn").textContent = "Save Invoice";
-    document.getElementById("invoiceDeleteBtn").style.display = "none";
-    document.getElementById("invoiceStatus").value = "Open";
-    document.getElementById("invoiceServiceType").value = "Grass Cutting";
-    document.getElementById("invoiceDate").value = new Date().toISOString().slice(0, 10);
-    hideNotice("invoiceNotice");
-    hideError("invoiceError");
-    populateCustomerDropdown();
-    togglePaymentDate();
-  }
-
-  function editInvoice(id) {
-    const inv = invoices.find(x => x.id === id);
-    if (!inv) return;
-
-    document.getElementById("editingInvoiceId").value = inv.id;
-    document.getElementById("invoiceCustomerId").value = inv.customer_id || "";
-    document.getElementById("invoiceDate").value = inv.invoice_date || "";
-    document.getElementById("invoiceServiceType").value = inv.service_type || "Grass Cutting";
-    document.getElementById("invoiceDescription").value = inv.description || "";
-    document.getElementById("invoiceAmount").value = inv.amount || "";
-    document.getElementById("invoiceStatus").value = inv.status || "Open";
-    document.getElementById("invoicePaymentDate").value = inv.payment_date || "";
-
-    document.getElementById("invoiceFormTitle").textContent = "Edit Invoice";
-    document.getElementById("invoiceSaveBtn").textContent = "Update Invoice";
-    document.getElementById("invoiceDeleteBtn").style.display = "inline-block";
-    showNotice("invoiceNotice", "Editing invoice for: " + getCustomerName(inv.customer_id));
-    hideError("invoiceError");
-    togglePaymentDate();
-    showModule("invoices");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  async function deleteInvoice(id) {
-    const inv = invoices.find(x => x.id === id);
-    if (!inv) return;
-    if (!confirm("Delete this invoice?")) return;
-
-    hideError("invoiceError");
-    setInvoiceSyncStatus("Deleting invoice...");
-
-    const { error } = await supabaseClient.from("invoices").delete().eq("id", id);
-
-    if (error) {
-      console.error(error);
-      setInvoiceSyncStatus("Delete failed");
-      showError("invoiceError", "Could not delete invoice.\n\n" + error.message);
-      return;
+    async function initApp() {
+      document.getElementById("invoiceDate").value = todayInputDate();
+      await loadCustomers();
+      await loadInvoices();
     }
 
-    showNotice("invoiceNotice", "Invoice deleted.");
-    resetInvoiceForm();
-    await loadInvoices();
-  }
-
-  function deleteCurrentInvoice() {
-    const id = document.getElementById("editingInvoiceId").value;
-    if (id) deleteInvoice(id);
-  }
-
-  function exportInvoices() {
-    const exportRows = invoices.map(inv => ({
-      ...inv,
-      customer_name: getCustomerName(inv.customer_id)
-    }));
-    const blob = new Blob([JSON.stringify(exportRows, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "greglandscape-invoices.json";
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  document.getElementById("invoiceForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
-    hideError("invoiceError");
-
-    const id = document.getElementById("editingInvoiceId").value;
-    const status = document.getElementById("invoiceStatus").value;
-
-    const payload = {
-      customer_id: document.getElementById("invoiceCustomerId").value || null,
-      invoice_date: document.getElementById("invoiceDate").value || null,
-      service_type: document.getElementById("invoiceServiceType").value,
-      description: document.getElementById("invoiceDescription").value.trim() || null,
-      amount: Number(document.getElementById("invoiceAmount").value || 0),
-      status: status,
-      payment_date: status === "Paid" ? (document.getElementById("invoicePaymentDate").value || null) : null
-    };
-
-    if (!payload.customer_id) {
-      showError("invoiceError", "Customer is required.");
-      return;
-    }
-
-    if (!payload.invoice_date) {
-      showError("invoiceError", "Invoice Date is required.");
-      return;
-    }
-
-    if (!payload.amount || payload.amount <= 0) {
-      showError("invoiceError", "Amount must be more than 0.");
-      return;
-    }
-
-    if (status === "Paid" && !payload.payment_date) {
-      showError("invoiceError", "Payment Date is required when status is Paid.");
-      return;
-    }
-
-    setInvoiceSyncStatus(id ? "Updating invoice..." : "Saving invoice...");
-
-    if (id) {
-      const { error } = await supabaseClient.from("invoices").update(payload).eq("id", id);
-      if (error) {
-        console.error(error);
-        setInvoiceSyncStatus("Save failed");
-        showError("invoiceError", "Could not update invoice.\n\n" + error.message);
-        return;
-      }
-      showNotice("invoiceNotice", "Invoice updated.");
-    } else {
-      const { error } = await supabaseClient.from("invoices").insert([payload]);
-      if (error) {
-        console.error(error);
-        setInvoiceSyncStatus("Save failed");
-        showError("invoiceError", "Could not save invoice.\n\n" + error.message);
-        return;
-      }
-      showNotice("invoiceNotice", "Invoice added.");
-    }
-
-    resetInvoiceForm();
-    await loadInvoices();
-  });
-
-  document.getElementById("customerSearchInput").addEventListener("input", applyCustomerSearch);
-  document.getElementById("invoiceSearchInput").addEventListener("input", applyInvoiceSearch);
-
-  async function initApp() {
-    await loadCustomers();
-    await loadInvoices();
-    resetCustomerForm();
-    resetInvoiceForm();
-  }
-
-  initApp();
-</script>
+    initApp();
+  </script>
 </body>
 </html>
