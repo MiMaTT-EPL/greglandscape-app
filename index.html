@@ -352,7 +352,6 @@
 </head>
 <body>
 
-  <!-- LOGIN SCREEN -->
   <div id="loginScreen" class="login-shell">
     <div class="login-card">
       <div class="login-title">GregLandscape</div>
@@ -360,12 +359,12 @@
 
       <div class="form-group">
         <label class="muted">Email</label>
-        <input id="loginEmail" type="email" placeholder="Enter your email" />
+        <input id="loginEmail" type="email" placeholder="Enter your email" autocomplete="username" />
       </div>
 
       <div class="form-group">
         <label class="muted">Password</label>
-        <input id="loginPassword" type="password" placeholder="Enter your password" />
+        <input id="loginPassword" type="password" placeholder="Enter your password" autocomplete="current-password" />
       </div>
 
       <div class="login-actions">
@@ -376,7 +375,6 @@
     </div>
   </div>
 
-  <!-- APP -->
   <div id="appShell" class="app hidden">
     <aside class="sidebar">
       <div class="sidebar-top">
@@ -388,12 +386,11 @@
       </div>
 
       <div class="sidebar-bottom">
-        <button id="logoutBtn" class="logout-btn">Logout</button>
+        <button id="logoutBtn" class="logout-btn" type="button">Logout</button>
       </div>
     </aside>
 
     <main class="content">
-      <!-- CUSTOMERS -->
       <section id="customersPage" class="page active">
         <h1>Customers</h1>
         <p class="subtext">Manage customer records.</p>
@@ -418,9 +415,9 @@
             <div class="panel-title">Customer List</div>
 
             <div class="toolbar">
-              <input id="customerSearch" class="search-input" type="text" placeholder="Search by name, type, phone, email, address, region, status" />
-              <button class="btn btn-secondary" id="customerClearSearchBtn">Clear Search</button>
-              <button class="btn btn-secondary" id="customerRefreshBtn">Refresh</button>
+              <input id="customerSearch" class="search-input" type="text" placeholder="Search by name, type, phone, email, address, region, status" autocomplete="off" />
+              <button class="btn btn-secondary" id="customerClearSearchBtn" type="button">Clear Search</button>
+              <button class="btn btn-secondary" id="customerRefreshBtn" type="button">Refresh</button>
             </div>
 
             <div class="table-wrap">
@@ -453,7 +450,7 @@
             <div class="form-grid">
               <div class="form-group">
                 <label class="muted">Customer Type</label>
-                <select id="customerType">
+                <select id="customerType" autocomplete="off">
                   <option value="Individual">Individual</option>
                   <option value="Company">Company</option>
                 </select>
@@ -461,7 +458,7 @@
 
               <div class="form-group">
                 <label class="muted">Recurring Contract</label>
-                <select id="customerRecurringContract">
+                <select id="customerRecurringContract" autocomplete="off">
                   <option value="No Contract">No Contract</option>
                   <option value="Weekly">Weekly</option>
                   <option value="Bi-Weekly">Bi-Weekly</option>
@@ -473,32 +470,32 @@
 
               <div class="form-group full">
                 <label class="muted">Customer Name</label>
-                <input id="customerName" type="text" />
+                <input id="customerName" type="text" autocomplete="off" />
               </div>
 
               <div class="form-group">
                 <label class="muted">Phone</label>
-                <input id="customerPhone" type="text" />
+                <input id="customerPhone" type="text" autocomplete="off" />
               </div>
 
               <div class="form-group">
                 <label class="muted">Email</label>
-                <input id="customerEmail" type="email" />
+                <input id="customerEmail" type="email" autocomplete="off" />
               </div>
 
               <div class="form-group full">
                 <label class="muted">Address</label>
-                <textarea id="customerAddress"></textarea>
+                <textarea id="customerAddress" autocomplete="off"></textarea>
               </div>
 
               <div class="form-group">
                 <label class="muted">Region</label>
-                <input id="customerRegion" type="text" />
+                <input id="customerRegion" type="text" autocomplete="off" />
               </div>
 
               <div class="form-group">
                 <label class="muted">Status</label>
-                <select id="customerStatus">
+                <select id="customerStatus" autocomplete="off">
                   <option value="Active">Active</option>
                   <option value="Inactive">Inactive</option>
                 </select>
@@ -506,13 +503,13 @@
 
               <div class="form-group full">
                 <label class="muted">Notes</label>
-                <textarea id="customerNotes"></textarea>
+                <textarea id="customerNotes" autocomplete="off"></textarea>
               </div>
             </div>
 
             <div class="toolbar">
-              <button class="btn btn-primary" id="saveCustomerBtn">Save Customer</button>
-              <button class="btn btn-secondary" id="clearCustomerBtn">Clear</button>
+              <button class="btn btn-primary" id="saveCustomerBtn" type="button">Save Customer</button>
+              <button class="btn btn-secondary" id="clearCustomerBtn" type="button">Clear</button>
             </div>
 
             <div id="customerMessage" class="message"></div>
@@ -520,7 +517,6 @@
         </div>
       </section>
 
-      <!-- INVOICES -->
       <section id="invoicesPage" class="page">
         <h1>Invoices</h1>
         <p class="subtext">Invoice tracking linked to customers.</p>
@@ -553,10 +549,10 @@
             <div class="panel-title">Invoice List</div>
 
             <div class="toolbar">
-              <input id="invoiceSearch" class="search-input" type="text" placeholder="Search by customer, service type, description, status" />
-              <button class="btn btn-secondary" id="invoiceClearSearchBtn">Clear Search</button>
-              <button class="btn btn-secondary" id="invoiceRefreshBtn">Refresh</button>
-              <button class="btn btn-secondary" id="exportInvoicesBtn">Export JSON</button>
+              <input id="invoiceSearch" class="search-input" type="text" placeholder="Search by customer, service type, description, status" autocomplete="off" />
+              <button class="btn btn-secondary" id="invoiceClearSearchBtn" type="button">Clear Search</button>
+              <button class="btn btn-secondary" id="invoiceRefreshBtn" type="button">Refresh</button>
+              <button class="btn btn-secondary" id="exportInvoicesBtn" type="button">Export JSON</button>
             </div>
 
             <div class="table-wrap">
@@ -586,18 +582,18 @@
 
             <div class="form-group">
               <label class="muted">Customer</label>
-              <select id="invoiceCustomer"></select>
+              <select id="invoiceCustomer" autocomplete="off"></select>
             </div>
 
             <div class="form-grid">
               <div class="form-group">
                 <label class="muted">Invoice Date</label>
-                <input id="invoiceDate" type="date" />
+                <input id="invoiceDate" type="date" autocomplete="off" />
               </div>
 
               <div class="form-group">
                 <label class="muted">Status</label>
-                <select id="invoiceStatus">
+                <select id="invoiceStatus" autocomplete="off">
                   <option value="Open">Open</option>
                   <option value="Paid">Paid</option>
                   <option value="Cancelled">Cancelled</option>
@@ -606,7 +602,7 @@
 
               <div class="form-group">
                 <label class="muted">Service Type</label>
-                <select id="invoiceServiceType">
+                <select id="invoiceServiceType" autocomplete="off">
                   <option value="Grass Cutting">Grass Cutting</option>
                   <option value="Hedge Trimming">Hedge Trimming</option>
                   <option value="Cleaning">Cleaning</option>
@@ -617,24 +613,24 @@
 
               <div class="form-group">
                 <label class="muted">Amount</label>
-                <input id="invoiceAmount" type="number" step="0.01" />
+                <input id="invoiceAmount" type="number" step="0.01" autocomplete="off" />
               </div>
 
               <div class="form-group full">
                 <label class="muted">Description</label>
-                <textarea id="invoiceDescription"></textarea>
+                <textarea id="invoiceDescription" autocomplete="off"></textarea>
               </div>
 
               <div class="form-group">
                 <label class="muted">Payment Date</label>
-                <input id="invoicePaymentDate" type="date" />
+                <input id="invoicePaymentDate" type="date" autocomplete="off" />
               </div>
             </div>
 
             <div class="toolbar">
-              <button class="btn btn-primary" id="saveInvoiceBtn">Save Invoice</button>
-              <button class="btn btn-warning" id="updateInvoiceBtn">Update Invoice</button>
-              <button class="btn btn-secondary" id="clearInvoiceBtn">Clear</button>
+              <button class="btn btn-primary" id="saveInvoiceBtn" type="button">Save Invoice</button>
+              <button class="btn btn-warning" id="updateInvoiceBtn" type="button">Update Invoice</button>
+              <button class="btn btn-secondary" id="clearInvoiceBtn" type="button">Clear</button>
             </div>
 
             <div id="invoiceMessage" class="message"></div>
@@ -642,7 +638,6 @@
         </div>
       </section>
 
-      <!-- EXPENSES -->
       <section id="expensesPage" class="page">
         <h1>Expenses</h1>
         <p class="subtext">Track business expenses.</p>
@@ -675,10 +670,10 @@
             <div class="panel-title">Expense List</div>
 
             <div class="toolbar">
-              <input id="expenseSearch" class="search-input" type="text" placeholder="Search by category, vendor, description, payment method, status, notes" />
-              <button class="btn btn-secondary" id="expenseClearSearchBtn">Clear Search</button>
-              <button class="btn btn-secondary" id="expenseRefreshBtn">Refresh</button>
-              <button class="btn btn-secondary" id="exportExpensesBtn">Export JSON</button>
+              <input id="expenseSearch" class="search-input" type="text" placeholder="Search by category, vendor, description, payment method, status, notes" autocomplete="off" />
+              <button class="btn btn-secondary" id="expenseClearSearchBtn" type="button">Clear Search</button>
+              <button class="btn btn-secondary" id="expenseRefreshBtn" type="button">Refresh</button>
+              <button class="btn btn-secondary" id="exportExpensesBtn" type="button">Export JSON</button>
             </div>
 
             <div class="table-wrap">
@@ -711,12 +706,12 @@
             <div class="form-grid">
               <div class="form-group">
                 <label class="muted">Expense Date</label>
-                <input id="expenseDate" type="date" />
+                <input id="expenseDate" type="date" autocomplete="off" />
               </div>
 
               <div class="form-group">
                 <label class="muted">Category</label>
-                <select id="expenseCategory">
+                <select id="expenseCategory" autocomplete="off">
                   <option value="Fuel">Fuel</option>
                   <option value="Salary">Salary</option>
                   <option value="Supplies">Supplies</option>
@@ -732,17 +727,17 @@
 
               <div class="form-group">
                 <label class="muted">Vendor</label>
-                <input id="expenseVendor" type="text" />
+                <input id="expenseVendor" type="text" autocomplete="off" />
               </div>
 
               <div class="form-group">
                 <label class="muted">Amount</label>
-                <input id="expenseAmount" type="number" step="0.01" />
+                <input id="expenseAmount" type="number" step="0.01" autocomplete="off" />
               </div>
 
               <div class="form-group">
                 <label class="muted">Payment Method</label>
-                <select id="expensePaymentMethod">
+                <select id="expensePaymentMethod" autocomplete="off">
                   <option value="">Select method</option>
                   <option value="Cash">Cash</option>
                   <option value="Bank Transfer">Bank Transfer</option>
@@ -754,7 +749,7 @@
 
               <div class="form-group">
                 <label class="muted">Status</label>
-                <select id="expenseStatus">
+                <select id="expenseStatus" autocomplete="off">
                   <option value="Unpaid">Unpaid</option>
                   <option value="Paid">Paid</option>
                 </select>
@@ -762,24 +757,24 @@
 
               <div class="form-group full">
                 <label class="muted">Description</label>
-                <textarea id="expenseDescription"></textarea>
+                <textarea id="expenseDescription" autocomplete="off"></textarea>
               </div>
 
               <div class="form-group full">
                 <label class="muted">Receipt URL</label>
-                <input id="expenseReceiptUrl" type="text" />
+                <input id="expenseReceiptUrl" type="text" autocomplete="off" />
               </div>
 
               <div class="form-group full">
                 <label class="muted">Notes</label>
-                <textarea id="expenseNotes"></textarea>
+                <textarea id="expenseNotes" autocomplete="off"></textarea>
               </div>
             </div>
 
             <div class="toolbar">
-              <button class="btn btn-primary" id="saveExpenseBtn">Save Expense</button>
-              <button class="btn btn-warning" id="updateExpenseBtn">Update Expense</button>
-              <button class="btn btn-secondary" id="clearExpenseBtn">Clear</button>
+              <button class="btn btn-primary" id="saveExpenseBtn" type="button">Save Expense</button>
+              <button class="btn btn-warning" id="updateExpenseBtn" type="button">Update Expense</button>
+              <button class="btn btn-secondary" id="clearExpenseBtn" type="button">Clear</button>
             </div>
 
             <div id="expenseMessage" class="message"></div>
@@ -787,7 +782,6 @@
         </div>
       </section>
 
-      <!-- DASHBOARD -->
       <section id="dashboardPage" class="page">
         <h1>Dashboard v2</h1>
         <p class="subtext">Accounting view with monthly P&amp;L, receivables, aging and YTD trends.</p>
@@ -795,9 +789,9 @@
         <div class="dashboard-filter-box">
           <div class="filter-item">
             <label class="muted">Dashboard Year</label>
-            <select id="dashboardYear"></select>
+            <select id="dashboardYear" autocomplete="off"></select>
           </div>
-          <button class="btn btn-secondary" id="dashboardRefreshBtn">Refresh Dashboard</button>
+          <button class="btn btn-secondary" id="dashboardRefreshBtn" type="button">Refresh Dashboard</button>
         </div>
 
         <div class="dashboard-kpis">
@@ -996,7 +990,7 @@
 
   <script>
     const SUPABASE_URL = "https://nmbobbmqkvyuucwapaoj.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5tYm9iYm1xa3Z5dXVjd2FwYW9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyNDM5MDgsImV4cCI6MjA5MDgxOTkwOH0.L-e_JF5YnZQejSvz3hieWM3gVOdwJ91nuetFy4gv4N4";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm9iYm1xa3Z5dXVjd2FwYW9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyNDM5MDgsImV4cCI6MjA5MDgxOTkwOH0.L-e_JF5YnZQejSvz3hieWM3gVOdwJ91nuetFy4gv4N4";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let customers = [];
@@ -1004,38 +998,23 @@
     let expenses = [];
     let editingInvoiceId = null;
     let editingExpenseId = null;
-
     let revenueExpenseChart = null;
     let profitTrendChart = null;
     let outstandingTrendChart = null;
-
-    let appInitialized = false;
+    let initRan = false;
 
     const MONTH_NAMES = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
-    const navButtons = document.querySelectorAll(".nav-btn");
-    const pages = document.querySelectorAll(".page");
-
-    navButtons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        navButtons.forEach((b) => b.classList.remove("active"));
-        pages.forEach((p) => p.classList.remove("active"));
-        btn.classList.add("active");
-        document.getElementById(btn.dataset.page).classList.add("active");
-        if (btn.dataset.page === "dashboardPage") {
-          renderDashboardV2();
-        }
-      });
-    });
-
     function showMessage(elementId, text, type = "success") {
       const el = document.getElementById(elementId);
+      if (!el) return;
       el.textContent = text;
       el.className = "message show " + type;
     }
 
     function clearMessage(elementId) {
       const el = document.getElementById(elementId);
+      if (!el) return;
       el.textContent = "";
       el.className = "message";
     }
@@ -1074,9 +1053,7 @@
 
     function normalizeRecurringLabel(value) {
       const v = String(value || "").trim().toLowerCase();
-      if (!v) return "No Contract";
-      if (v === "no") return "No Contract";
-      if (v === "none") return "No Contract";
+      if (!v || v === "no" || v === "none") return "No Contract";
       return value;
     }
 
@@ -1111,6 +1088,7 @@
 
     function setProfitColor(elementId, value) {
       const el = document.getElementById(elementId);
+      if (!el) return;
       el.classList.remove("positive", "negative", "neutral");
       if (value > 0) el.classList.add("positive");
       else if (value < 0) el.classList.add("negative");
@@ -1150,7 +1128,6 @@
       }
     }
 
-    // AUTH
     async function handleLogin() {
       clearMessage("loginMessage");
 
@@ -1167,10 +1144,7 @@
         return;
       }
 
-      const { error } = await supabaseClient.auth.signInWithPassword({
-        email,
-        password
-      });
+      const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
       if (error) {
         showMessage("loginMessage", error.message, "error");
@@ -1183,14 +1157,27 @@
     }
 
     async function handleLogout() {
-      await supabaseClient.auth.signOut();
-      appInitialized = false;
+      clearMessage("customerMessage");
+      clearMessage("customerListMessage");
+      clearMessage("invoiceMessage");
+      clearMessage("invoiceListMessage");
+      clearMessage("expenseMessage");
+      clearMessage("expenseListMessage");
+
+      const { error } = await supabaseClient.auth.signOut();
+
+      if (error) {
+        showMessage("customerListMessage", "Logout failed: " + error.message, "error");
+        return;
+      }
+
+      initRan = false;
       customers = [];
       invoices = [];
       expenses = [];
       editingInvoiceId = null;
       editingExpenseId = null;
-      clearMessage("loginMessage");
+
       showLoginScreen();
     }
 
@@ -1206,10 +1193,10 @@
       await initApp();
     }
 
-    // CUSTOMERS
-    async function loadCustomers() {
-      clearMessage("customerMessage");
-      clearMessage("customerListMessage");
+    async function loadCustomers(preserveMessage = false) {
+      if (!preserveMessage) {
+        clearMessage("customerListMessage");
+      }
 
       const { data, error } = await supabaseClient
         .from("customers")
@@ -1223,7 +1210,7 @@
         showMessage("customerListMessage", "Could not load customers.\n" + error.message, "error");
         populateDashboardYears();
         renderDashboardV2();
-        return;
+        return false;
       }
 
       customers = Array.isArray(data) ? data : [];
@@ -1231,6 +1218,7 @@
       populateCustomerDropdown();
       populateDashboardYears();
       renderDashboardV2();
+      return true;
     }
 
     function renderCustomers() {
@@ -1280,7 +1268,7 @@
           <td>${escapeHtml(row.status || "")}</td>
           <td>
             <div class="action-row">
-              <button class="small-btn btn-danger" onclick="deleteCustomer('${row.id}')">Delete</button>
+              <button class="small-btn btn-danger" type="button" onclick="deleteCustomer('${row.id}')">Delete</button>
             </div>
           </td>
         </tr>
@@ -1343,10 +1331,18 @@
         return;
       }
 
-      showMessage("customerMessage", "Customer saved successfully.", "success");
+      document.getElementById("customerSearch").value = "";
       clearCustomerForm();
-      await loadCustomers();
-      await loadInvoices();
+
+      const loaded = await loadCustomers(true);
+
+      if (!loaded) {
+        showMessage("customerMessage", "Customer was saved, but list reload failed.", "error");
+        return;
+      }
+
+      showMessage("customerMessage", "Customer saved successfully.", "success");
+      showMessage("customerListMessage", "Customer list refreshed.", "success");
     }
 
     function clearCustomerForm() {
@@ -1381,11 +1377,10 @@
         return;
       }
 
+      await loadCustomers(true);
       showMessage("customerMessage", "Customer deleted successfully.", "success");
-      await loadCustomers();
     }
 
-    // INVOICES
     async function loadInvoices() {
       clearMessage("invoiceListMessage");
 
@@ -1400,13 +1395,14 @@
         showMessage("invoiceListMessage", "Could not load invoices.\n" + error.message, "error");
         populateDashboardYears();
         renderDashboardV2();
-        return;
+        return false;
       }
 
       invoices = Array.isArray(data) ? data : [];
       renderInvoices();
       populateDashboardYears();
       renderDashboardV2();
+      return true;
     }
 
     function renderInvoices() {
@@ -1431,9 +1427,7 @@
       document.getElementById("invoiceOpenStat").textContent = invoices.filter(i => String(i.status || "").toLowerCase() === "open").length;
       document.getElementById("invoicePaidStat").textContent = invoices.filter(i => String(i.status || "").toLowerCase() === "paid").length;
       document.getElementById("invoiceOpenAmountStat").textContent = formatMoney(
-        invoices
-          .filter(i => String(i.status || "").toLowerCase() === "open")
-          .reduce((sum, i) => sum + Number(i.amount || 0), 0)
+        invoices.filter(i => String(i.status || "").toLowerCase() === "open").reduce((sum, i) => sum + Number(i.amount || 0), 0)
       );
       document.getElementById("invoiceSearchStat").textContent = filtered.length;
 
@@ -1456,8 +1450,8 @@
           <td>${escapeHtml(row.payment_date || "")}</td>
           <td>
             <div class="action-row">
-              <button class="small-btn btn-warning" onclick="editInvoice('${row.id}')">Edit</button>
-              <button class="small-btn btn-danger" onclick="deleteInvoice('${row.id}')">Delete</button>
+              <button class="small-btn btn-warning" type="button" onclick="editInvoice('${row.id}')">Edit</button>
+              <button class="small-btn btn-danger" type="button" onclick="deleteInvoice('${row.id}')">Delete</button>
             </div>
           </td>
         </tr>
@@ -1533,9 +1527,9 @@
         return;
       }
 
-      showMessage("invoiceMessage", "Invoice saved successfully.", "success");
       clearInvoiceForm();
       await loadInvoices();
+      showMessage("invoiceMessage", "Invoice saved successfully.", "success");
     }
 
     async function updateInvoice() {
@@ -1595,9 +1589,9 @@
         return;
       }
 
-      showMessage("invoiceMessage", "Invoice updated successfully.", "success");
       clearInvoiceForm();
       await loadInvoices();
+      showMessage("invoiceMessage", "Invoice updated successfully.", "success");
     }
 
     async function deleteInvoice(id) {
@@ -1618,8 +1612,8 @@
         clearInvoiceForm();
       }
 
-      showMessage("invoiceListMessage", "Invoice deleted successfully.", "success");
       await loadInvoices();
+      showMessage("invoiceListMessage", "Invoice deleted successfully.", "success");
     }
 
     function editInvoice(id) {
@@ -1667,7 +1661,6 @@
       URL.revokeObjectURL(url);
     }
 
-    // EXPENSES
     async function loadExpenses() {
       clearMessage("expenseListMessage");
 
@@ -1682,13 +1675,14 @@
         showMessage("expenseListMessage", "Could not load expenses.\n" + error.message, "error");
         populateDashboardYears();
         renderDashboardV2();
-        return;
+        return false;
       }
 
       expenses = Array.isArray(data) ? data : [];
       renderExpenses();
       populateDashboardYears();
       renderDashboardV2();
+      return true;
     }
 
     function renderExpenses() {
@@ -1713,9 +1707,7 @@
       document.getElementById("expensesTotalStat").textContent = expenses.length;
       document.getElementById("expensesPaidStat").textContent = expenses.filter(e => String(e.status || "").toLowerCase() === "paid").length;
       document.getElementById("expensesUnpaidStat").textContent = expenses.filter(e => String(e.status || "").toLowerCase() === "unpaid").length;
-      document.getElementById("expensesAmountStat").textContent = formatMoney(
-        expenses.reduce((sum, e) => sum + Number(e.amount || 0), 0)
-      );
+      document.getElementById("expensesAmountStat").textContent = formatMoney(expenses.reduce((sum, e) => sum + Number(e.amount || 0), 0));
       document.getElementById("expensesSearchStat").textContent = filtered.length;
 
       const tbody = document.getElementById("expensesTableBody");
@@ -1739,8 +1731,8 @@
           <td>${escapeHtml(row.notes || "")}</td>
           <td>
             <div class="action-row">
-              <button class="small-btn btn-warning" onclick="editExpense('${row.id}')">Edit</button>
-              <button class="small-btn btn-danger" onclick="deleteExpense('${row.id}')">Delete</button>
+              <button class="small-btn btn-warning" type="button" onclick="editExpense('${row.id}')">Edit</button>
+              <button class="small-btn btn-danger" type="button" onclick="deleteExpense('${row.id}')">Delete</button>
             </div>
           </td>
         </tr>
@@ -1796,9 +1788,9 @@
         return;
       }
 
-      showMessage("expenseMessage", "Expense saved successfully.", "success");
       clearExpenseForm();
       await loadExpenses();
+      showMessage("expenseMessage", "Expense saved successfully.", "success");
     }
 
     async function updateExpense() {
@@ -1856,9 +1848,9 @@
         return;
       }
 
-      showMessage("expenseMessage", "Expense updated successfully.", "success");
       clearExpenseForm();
       await loadExpenses();
+      showMessage("expenseMessage", "Expense updated successfully.", "success");
     }
 
     async function deleteExpense(id) {
@@ -1879,8 +1871,8 @@
         clearExpenseForm();
       }
 
-      showMessage("expenseListMessage", "Expense deleted successfully.", "success");
       await loadExpenses();
+      showMessage("expenseListMessage", "Expense deleted successfully.", "success");
     }
 
     function editExpense(id) {
@@ -1932,7 +1924,6 @@
       URL.revokeObjectURL(url);
     }
 
-    // DASHBOARD V2
     function getSelectedDashboardYear() {
       return Number(document.getElementById("dashboardYear").value || new Date().getFullYear());
     }
@@ -1951,38 +1942,21 @@
         const payMonth = monthIndexFromDate(inv.payment_date);
         const status = String(inv.status || "").toLowerCase();
 
-        if (invYear === year && invMonth >= 0) {
-          invoiced[invMonth] += amount;
-        }
-
-        if (status === "paid" && payYear === year && payMonth >= 0) {
-          collected[payMonth] += amount;
-        }
-
-        if (status === "open" && invYear === year && invMonth >= 0) {
-          outstanding[invMonth] += amount;
-        }
+        if (invYear === year && invMonth >= 0) invoiced[invMonth] += amount;
+        if (status === "paid" && payYear === year && payMonth >= 0) collected[payMonth] += amount;
+        if (status === "open" && invYear === year && invMonth >= 0) outstanding[invMonth] += amount;
       });
 
       expenses.forEach(exp => {
         const amount = Number(exp.amount || 0);
         const expYear = yearFromDate(exp.expense_date);
         const expMonth = monthIndexFromDate(exp.expense_date);
-
-        if (expYear === year && expMonth >= 0) {
-          expenseArr[expMonth] += amount;
-        }
+        if (expYear === year && expMonth >= 0) expenseArr[expMonth] += amount;
       });
 
       const profit = invoiced.map((val, idx) => val - expenseArr[idx]);
 
-      return {
-        invoiced,
-        collected,
-        expenseArr,
-        outstanding,
-        profit
-      };
+      return { invoiced, collected, expenseArr, outstanding, profit };
     }
 
     function renderMonthlyPnlTable(metrics) {
@@ -2012,7 +1986,6 @@
 
     function getOutstandingByCustomerData(year) {
       const openInvoices = invoices.filter(inv => String(inv.status || "").toLowerCase() === "open" && yearFromDate(inv.invoice_date) === year);
-
       const map = new Map();
 
       openInvoices.forEach(inv => {
@@ -2079,11 +2052,7 @@
         .filter(inv => String(inv.status || "").toLowerCase() === "open" && yearFromDate(inv.invoice_date) === year)
         .map(inv => {
           const days = daysBetween(inv.invoice_date);
-          return {
-            ...inv,
-            daysOutstanding: days,
-            bucket: getAgingBucket(days)
-          };
+          return { ...inv, daysOutstanding: days, bucket: getAgingBucket(days) };
         })
         .sort((a, b) => b.daysOutstanding - a.daysOutstanding);
 
@@ -2132,19 +2101,13 @@
     function renderExpenseCategory(year) {
       const filteredExpenses = expenses.filter(exp => yearFromDate(exp.expense_date) === year);
       const totalExpenseAmount = filteredExpenses.reduce((sum, exp) => sum + Number(exp.amount || 0), 0);
-
       const map = new Map();
 
       filteredExpenses.forEach(exp => {
         const key = exp.category || "Other";
         if (!map.has(key)) {
-          map.set(key, {
-            category: key,
-            count: 0,
-            amount: 0
-          });
+          map.set(key, { category: key, count: 0, amount: 0 });
         }
-
         const row = map.get(key);
         row.count += 1;
         row.amount += Number(exp.amount || 0);
@@ -2181,32 +2144,30 @@
           alerts.push({
             type: "Overdue Invoice",
             details: `${customerNameById(inv.customer_id)} - ${inv.invoice_date || ""}`,
-            amount: amount,
+            amount,
             flag: "90+ Days"
           });
         } else if (amount >= 10000) {
           alerts.push({
             type: "Large Open Invoice",
             details: `${customerNameById(inv.customer_id)} - ${inv.invoice_date || ""}`,
-            amount: amount,
+            amount,
             flag: "High Value"
           });
         }
       });
 
-      expenses
-        .filter(exp => yearFromDate(exp.expense_date) === year)
-        .forEach(exp => {
-          const amount = Number(exp.amount || 0);
-          if (!exp.receipt_url && amount >= 1000) {
-            alerts.push({
-              type: "Missing Receipt",
-              details: `${exp.category || "Expense"} - ${exp.vendor || ""}`.trim(),
-              amount: amount,
-              flag: "Check Receipt"
-            });
-          }
-        });
+      expenses.filter(exp => yearFromDate(exp.expense_date) === year).forEach(exp => {
+        const amount = Number(exp.amount || 0);
+        if (!exp.receipt_url && amount >= 1000) {
+          alerts.push({
+            type: "Missing Receipt",
+            details: `${exp.category || "Expense"} - ${exp.vendor || ""}`.trim(),
+            amount,
+            flag: "Check Receipt"
+          });
+        }
+      });
 
       const tbody = document.getElementById("alertsBody");
 
@@ -2215,24 +2176,22 @@
         return;
       }
 
-      tbody.innerHTML = alerts
-        .sort((a, b) => b.amount - a.amount)
-        .map((row, index) => {
-          let badgeClass = "badge";
-          if (row.flag === "90+ Days") badgeClass += " badge-danger";
-          else if (row.flag === "High Value" || row.flag === "Check Receipt") badgeClass += " badge-warning";
-          else badgeClass += " badge-success";
+      tbody.innerHTML = alerts.sort((a, b) => b.amount - a.amount).map((row, index) => {
+        let badgeClass = "badge";
+        if (row.flag === "90+ Days") badgeClass += " badge-danger";
+        else if (row.flag === "High Value" || row.flag === "Check Receipt") badgeClass += " badge-warning";
+        else badgeClass += " badge-success";
 
-          return `
-            <tr>
-              <td>${index + 1}</td>
-              <td>${escapeHtml(row.type)}</td>
-              <td>${escapeHtml(row.details)}</td>
-              <td>${escapeHtml(formatMoney(row.amount))}</td>
-              <td><span class="${badgeClass}">${escapeHtml(row.flag)}</span></td>
-            </tr>
-          `;
-        }).join("");
+        return `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${escapeHtml(row.type)}</td>
+            <td>${escapeHtml(row.details)}</td>
+            <td>${escapeHtml(formatMoney(row.amount))}</td>
+            <td><span class="${badgeClass}">${escapeHtml(row.flag)}</span></td>
+          </tr>
+        `;
+      }).join("");
     }
 
     function renderYearSummary(year, metrics) {
@@ -2266,10 +2225,10 @@
     }
 
     function createOrUpdateChart(chartRef, canvasId, config) {
-      if (chartRef) {
-        chartRef.destroy();
-      }
-      const ctx = document.getElementById(canvasId).getContext("2d");
+      if (chartRef) chartRef.destroy();
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return null;
+      const ctx = canvas.getContext("2d");
       return new Chart(ctx, config);
     }
 
@@ -2279,21 +2238,9 @@
         data: {
           labels: MONTH_NAMES,
           datasets: [
-            {
-              label: "Revenue Invoiced",
-              data: metrics.invoiced,
-              backgroundColor: "rgba(37, 99, 235, 0.75)"
-            },
-            {
-              label: "Cash Collected",
-              data: metrics.collected,
-              backgroundColor: "rgba(22, 163, 74, 0.75)"
-            },
-            {
-              label: "Expenses",
-              data: metrics.expenseArr,
-              backgroundColor: "rgba(220, 38, 38, 0.75)"
-            }
+            { label: "Revenue Invoiced", data: metrics.invoiced, backgroundColor: "rgba(37, 99, 235, 0.75)" },
+            { label: "Cash Collected", data: metrics.collected, backgroundColor: "rgba(22, 163, 74, 0.75)" },
+            { label: "Expenses", data: metrics.expenseArr, backgroundColor: "rgba(220, 38, 38, 0.75)" }
           ]
         },
         options: {
@@ -2329,11 +2276,7 @@
         data: {
           labels: MONTH_NAMES,
           datasets: [
-            {
-              label: "Outstanding Invoices",
-              data: metrics.outstanding,
-              backgroundColor: "rgba(234, 88, 12, 0.75)"
-            }
+            { label: "Outstanding Invoices", data: metrics.outstanding, backgroundColor: "rgba(234, 88, 12, 0.75)" }
           ]
         },
         options: {
@@ -2380,59 +2323,78 @@
       renderCharts(metrics);
     }
 
-    // EVENTS
-    document.getElementById("loginBtn").addEventListener("click", handleLogin);
-    document.getElementById("logoutBtn").addEventListener("click", handleLogout);
+    function bindNavigation() {
+      const navButtons = document.querySelectorAll(".nav-btn");
+      const pages = document.querySelectorAll(".page");
 
-    document.getElementById("loginPassword").addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        handleLogin();
-      }
-    });
+      navButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          navButtons.forEach((b) => b.classList.remove("active"));
+          pages.forEach((p) => p.classList.remove("active"));
+          btn.classList.add("active");
+          document.getElementById(btn.dataset.page).classList.add("active");
+          if (btn.dataset.page === "dashboardPage") renderDashboardV2();
+        });
+      });
+    }
 
-    document.getElementById("saveCustomerBtn").addEventListener("click", saveCustomer);
-    document.getElementById("clearCustomerBtn").addEventListener("click", clearCustomerForm);
-    document.getElementById("customerRefreshBtn").addEventListener("click", loadCustomers);
-    document.getElementById("customerClearSearchBtn").addEventListener("click", () => {
-      document.getElementById("customerSearch").value = "";
-      renderCustomers();
-    });
-    document.getElementById("customerSearch").addEventListener("input", renderCustomers);
+    function bindEvents() {
+      document.getElementById("loginBtn").addEventListener("click", handleLogin);
+      document.getElementById("logoutBtn").addEventListener("click", handleLogout);
 
-    document.getElementById("saveInvoiceBtn").addEventListener("click", saveInvoice);
-    document.getElementById("updateInvoiceBtn").addEventListener("click", updateInvoice);
-    document.getElementById("clearInvoiceBtn").addEventListener("click", clearInvoiceForm);
-    document.getElementById("invoiceRefreshBtn").addEventListener("click", loadInvoices);
-    document.getElementById("invoiceClearSearchBtn").addEventListener("click", () => {
-      document.getElementById("invoiceSearch").value = "";
-      renderInvoices();
-    });
-    document.getElementById("invoiceSearch").addEventListener("input", renderInvoices);
-    document.getElementById("exportInvoicesBtn").addEventListener("click", exportInvoices);
+      document.getElementById("loginPassword").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") handleLogin();
+      });
 
-    document.getElementById("invoicePaymentDate").addEventListener("change", () => {
-      const paymentDate = document.getElementById("invoicePaymentDate").value;
-      const status = document.getElementById("invoiceStatus").value;
-      if (paymentDate && status !== "Cancelled") {
-        document.getElementById("invoiceStatus").value = "Paid";
-      }
-    });
+      document.getElementById("saveCustomerBtn").addEventListener("click", saveCustomer);
+      document.getElementById("clearCustomerBtn").addEventListener("click", clearCustomerForm);
+      document.getElementById("customerRefreshBtn").addEventListener("click", async () => {
+        await loadCustomers();
+      });
+      document.getElementById("customerClearSearchBtn").addEventListener("click", () => {
+        document.getElementById("customerSearch").value = "";
+        renderCustomers();
+      });
+      document.getElementById("customerSearch").addEventListener("input", renderCustomers);
 
-    document.getElementById("saveExpenseBtn").addEventListener("click", saveExpense);
-    document.getElementById("updateExpenseBtn").addEventListener("click", updateExpense);
-    document.getElementById("clearExpenseBtn").addEventListener("click", clearExpenseForm);
-    document.getElementById("expenseRefreshBtn").addEventListener("click", loadExpenses);
-    document.getElementById("expenseClearSearchBtn").addEventListener("click", () => {
-      document.getElementById("expenseSearch").value = "";
-      renderExpenses();
-    });
-    document.getElementById("expenseSearch").addEventListener("input", renderExpenses);
-    document.getElementById("exportExpensesBtn").addEventListener("click", exportExpenses);
+      document.getElementById("saveInvoiceBtn").addEventListener("click", saveInvoice);
+      document.getElementById("updateInvoiceBtn").addEventListener("click", updateInvoice);
+      document.getElementById("clearInvoiceBtn").addEventListener("click", clearInvoiceForm);
+      document.getElementById("invoiceRefreshBtn").addEventListener("click", async () => {
+        await loadInvoices();
+      });
+      document.getElementById("invoiceClearSearchBtn").addEventListener("click", () => {
+        document.getElementById("invoiceSearch").value = "";
+        renderInvoices();
+      });
+      document.getElementById("invoiceSearch").addEventListener("input", renderInvoices);
+      document.getElementById("exportInvoicesBtn").addEventListener("click", exportInvoices);
 
-    document.getElementById("dashboardRefreshBtn").addEventListener("click", renderDashboardV2);
-    document.getElementById("dashboardYear").addEventListener("change", renderDashboardV2);
+      document.getElementById("invoicePaymentDate").addEventListener("change", () => {
+        const paymentDate = document.getElementById("invoicePaymentDate").value;
+        const status = document.getElementById("invoiceStatus").value;
+        if (paymentDate && status !== "Cancelled") {
+          document.getElementById("invoiceStatus").value = "Paid";
+        }
+      });
 
-    // INIT
+      document.getElementById("saveExpenseBtn").addEventListener("click", saveExpense);
+      document.getElementById("updateExpenseBtn").addEventListener("click", updateExpense);
+      document.getElementById("clearExpenseBtn").addEventListener("click", clearExpenseForm);
+      document.getElementById("expenseRefreshBtn").addEventListener("click", async () => {
+        await loadExpenses();
+      });
+      document.getElementById("expenseClearSearchBtn").addEventListener("click", () => {
+        document.getElementById("expenseSearch").value = "";
+        renderExpenses();
+      });
+      document.getElementById("expenseSearch").addEventListener("input", renderExpenses);
+      document.getElementById("exportExpensesBtn").addEventListener("click", exportExpenses);
+
+      document.getElementById("dashboardRefreshBtn").addEventListener("click", renderDashboardV2);
+      document.getElementById("dashboardYear").addEventListener("change", renderDashboardV2);
+    }
+
     async function initApp() {
       document.getElementById("invoiceDate").value = todayInputDate();
       document.getElementById("expenseDate").value = todayInputDate();
@@ -2444,29 +2406,26 @@
       populateDashboardYears();
       renderDashboardV2();
 
-      appInitialized = true;
+      initRan = true;
     }
-
-    supabaseClient.auth.onAuthStateChange(async (event, session) => {
-      if (session) {
-        showAppShell();
-        if (!appInitialized) {
-          await initApp();
-        }
-      } else {
-        appInitialized = false;
-        showLoginScreen();
-      }
-    });
-
-    checkAuthOnLoad();
 
     window.deleteCustomer = deleteCustomer;
     window.deleteInvoice = deleteInvoice;
     window.editInvoice = editInvoice;
     window.deleteExpense = deleteExpense;
     window.editExpense = editExpense;
-  </script>
 
+    bindNavigation();
+    bindEvents();
+
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (!session) {
+        initRan = false;
+        showLoginScreen();
+      }
+    });
+
+    checkAuthOnLoad();
+  </script>
 </body>
 </html>
