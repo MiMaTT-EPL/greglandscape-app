@@ -187,6 +187,7 @@
                   <option value="Company">Company</option>
                 </select>
               </div>
+
               <div>
                 <label>Status</label>
                 <select id="status">
@@ -251,7 +252,7 @@
 
 <script>
   const SUPABASE_URL = "https://nmbobbmqkvyuucwapaaj.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5tYm9iYm1xa3Z5dXVjd2FwYW9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyNDM5MDgsImV4cCI6MjA5MDgxOTkwOH0.L-e_JF5YnZQejSvz3hieWM3gVOdwJ91nuetFy4gv4N4";
+  const SUPABASE_ANON_KEY = "sb_publishable_BDY1Xh-8Nx2vfHvk0KOsOA_cma_8Lpc";
 
   const TABLE_URL = `${SUPABASE_URL}/rest/v1/customers`;
   let customers = [];
@@ -317,7 +318,7 @@
     } catch (err) {
       console.error(err);
       setSyncStatus("Database load failed");
-      showError("Could not load customers from Supabase. Check table, key, and network.");
+      showError("Could not load customers from Supabase.");
     }
   }
 
