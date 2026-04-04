@@ -38,6 +38,8 @@
       --purple-text: #3730a3;
       --gray-soft: #f3f4f6;
       --gray-text: #374151;
+      --teal-soft: #ccfbf1;
+      --teal-text: #0f766e;
       --shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
       --radius: 16px;
     }
@@ -195,7 +197,7 @@
     }
 
     .stat-value {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 700;
       color: var(--navy);
     }
@@ -231,6 +233,14 @@
       display: flex;
       gap: 10px;
       margin-bottom: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .toolbar-right {
+      margin-left: auto;
+      display: flex;
+      gap: 10px;
       flex-wrap: wrap;
       align-items: center;
     }
@@ -435,6 +445,65 @@
       gap: 20px;
     }
 
+    .dashboard-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .dashboard-filter-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .dashboard-filter-group select {
+      min-width: 150px;
+      max-width: 180px;
+    }
+
+    .dashboard-summary-note {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .kpi-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .kpi-label {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .kpi-number {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    .kpi-sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
     .badge {
       display: inline-block;
       padding: 5px 10px;
@@ -463,6 +532,11 @@
     .badge-gray {
       background: var(--gray-soft);
       color: var(--gray-text);
+    }
+
+    .badge-teal {
+      background: var(--teal-soft);
+      color: var(--teal-text);
     }
 
     .badge-weekly {
@@ -502,8 +576,95 @@
       font-size: 14px;
     }
 
+    .trend-card {
+      margin-bottom: 20px;
+    }
+
+    .trend-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .trend-legend {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .trend-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 12px;
+      align-items: end;
+      min-height: 230px;
+    }
+
+    .trend-col {
+      display: flex;
+      flex-direction: column;
+      justify-content: end;
+      gap: 8px;
+      height: 100%;
+    }
+
+    .trend-bar-wrap {
+      height: 150px;
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .trend-bar {
+      width: 22px;
+      border-radius: 8px 8px 0 0;
+      min-height: 6px;
+    }
+
+    .trend-bar.revenue {
+      background: #bfdbfe;
+    }
+
+    .trend-bar.expense {
+      background: #fecaca;
+    }
+
+    .trend-bar.net-positive {
+      background: #bbf7d0;
+    }
+
+    .trend-bar.net-negative {
+      background: #fed7aa;
+    }
+
+    .trend-label {
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .trend-values {
+      text-align: center;
+      font-size: 11px;
+      line-height: 1.35;
+      color: var(--gray-text);
+    }
+
+    @media (max-width: 1400px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
     @media (max-width: 1200px) {
-      .stats {
+      .stats,
+      .kpi-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
@@ -516,6 +677,10 @@
         position: relative;
         height: auto;
       }
+
+      .trend-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
     }
 
     @media (max-width: 720px) {
@@ -527,16 +692,23 @@
         width: 100%;
       }
 
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .stats {
+      .form-grid,
+      .stats,
+      .kpi-grid,
+      .trend-grid {
         grid-template-columns: 1fr;
       }
 
       .content {
         padding: 18px;
+      }
+
+      .dashboard-topbar {
+        align-items: stretch;
+      }
+
+      .toolbar-right {
+        margin-left: 0;
       }
     }
   </style>
@@ -728,7 +900,7 @@
 
             <div class="toolbar">
               <button class="btn btn-primary" id="saveCustomerBtn" type="button">Save Customer</button>
-              <button class="btn btn-warning" id="updateCustomerBtn" type="button">Update Customer</button>
+              <button class="btn btn-warning hidden" id="updateCustomerBtn" type="button">Update Customer</button>
               <button class="btn btn-secondary" id="clearCustomerBtn" type="button">Clear</button>
             </div>
 
@@ -822,7 +994,7 @@
                   <option value="Hedge Trimming">Hedge Trimming</option>
                   <option value="Cleaning">Cleaning</option>
                   <option value="Landscaping">Landscaping</option>
-                  <option value="Other">Other</option>
+                  <option value="Other">Other Income</option>
                 </select>
               </div>
 
@@ -994,25 +1166,98 @@
 
       <section id="dashboardPage" class="page">
         <h1>Dashboard</h1>
-        <p class="subtext">Quick business summary.</p>
+        <p class="subtext">Professional business summary with period filters and trend view.</p>
 
-        <div class="stats">
-          <div class="card">
-            <div class="stat-title">Total Customers</div>
-            <div class="stat-value" id="dashTotalCustomers">0</div>
+        <div class="dashboard-topbar">
+          <div class="dashboard-filter-group">
+            <select id="dashboardYearFilter"></select>
+            <select id="dashboardMonthFilter">
+              <option value="">All Months</option>
+              <option value="1">January</option>
+              <option value="2">February</option>
+              <option value="3">March</option>
+              <option value="4">April</option>
+              <option value="5">May</option>
+              <option value="6">June</option>
+              <option value="7">July</option>
+              <option value="8">August</option>
+              <option value="9">September</option>
+              <option value="10">October</option>
+              <option value="11">November</option>
+              <option value="12">December</option>
+            </select>
+            <button class="btn btn-secondary" id="dashboardRefreshBtn" type="button">Refresh</button>
           </div>
-          <div class="card">
-            <div class="stat-title">Open Invoice Amount</div>
-            <div class="stat-value" id="dashOpenInvoiceAmount">0.00</div>
+
+          <div class="dashboard-summary-note" id="dashboardPeriodLabel">Showing current period.</div>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label">Service Revenue</div>
+            <div class="kpi-number" id="dashServiceRevenue">0.00</div>
+            <div class="kpi-sub">Paid invoices excluding Other Income</div>
           </div>
-          <div class="card">
-            <div class="stat-title">Total Expenses</div>
-            <div class="stat-value" id="dashTotalExpenses">0.00</div>
+
+          <div class="kpi-card">
+            <div class="kpi-label">Other Income</div>
+            <div class="kpi-number" id="dashOtherIncome">0.00</div>
+            <div class="kpi-sub">Paid invoices with service type Other Income</div>
           </div>
-          <div class="card">
-            <div class="stat-title">Net Position</div>
-            <div class="stat-value" id="dashNetPosition">0.00</div>
+
+          <div class="kpi-card">
+            <div class="kpi-label">Expenses</div>
+            <div class="kpi-number" id="dashTotalExpenses">0.00</div>
+            <div class="kpi-sub">Recorded expenses in selected period</div>
           </div>
+
+          <div class="kpi-card">
+            <div class="kpi-label">Net Position</div>
+            <div class="kpi-number" id="dashNetPosition">0.00</div>
+            <div class="kpi-sub">Service Revenue + Other Income - Expenses</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-label">Open Invoice Amount</div>
+            <div class="kpi-number" id="dashOpenInvoiceAmount">0.00</div>
+            <div class="kpi-sub">Outstanding invoices in selected period</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-label">Paid Revenue</div>
+            <div class="kpi-number" id="dashPaidRevenue">0.00</div>
+            <div class="kpi-sub">Service Revenue + Other Income</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-label">Open Invoices</div>
+            <div class="kpi-number" id="dashOpenInvoicesCount">0</div>
+            <div class="kpi-sub">Count of open invoices in selected period</div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-label">Active Customers</div>
+            <div class="kpi-number" id="dashTotalCustomers">0</div>
+            <div class="kpi-sub">Current active customer records</div>
+          </div>
+        </div>
+
+        <div class="card trend-card">
+          <div class="trend-header">
+            <div>
+              <div class="panel-title" style="margin-bottom:6px;">Net Position Trend</div>
+              <div class="dashboard-summary-note">Last 6 months ending on the selected dashboard period.</div>
+            </div>
+
+            <div class="trend-legend">
+              <span class="badge badge-teal">Revenue</span>
+              <span class="badge badge-danger">Expenses</span>
+              <span class="badge badge-success">Net +</span>
+              <span class="badge badge-warning">Net -</span>
+            </div>
+          </div>
+
+          <div id="dashboardTrendGrid" class="trend-grid"></div>
         </div>
 
         <div class="dashboard-grid">
@@ -1025,6 +1270,7 @@
                     <th>#</th>
                     <th>Customer</th>
                     <th>Invoice Date</th>
+                    <th>Service Type</th>
                     <th>Amount</th>
                     <th>Status</th>
                   </tr>
@@ -1079,6 +1325,10 @@
 
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     const REGION_OPTIONS = ["North", "South", "East", "West", "Central"];
+    const MONTH_NAMES = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
 
     let customers = [];
     let invoices = [];
@@ -1086,7 +1336,6 @@
     let editingCustomerId = null;
     let editingInvoiceId = null;
     let editingExpenseId = null;
-    let appInitialized = false;
 
     function showMessage(elementId, text, type = "success") {
       const el = document.getElementById(elementId);
@@ -1123,15 +1372,17 @@
 
     function todayInputDate() {
       const d = new Date();
-      const year = d.getFullYear();
-      const month = String(d.getMonth() + 1).padStart(2, "0");
-      const day = String(d.getDate()).padStart(2, "0");
-      return `${year}-${month}-${day}`;
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
     }
 
     function formatMoney(value) {
       const num = Number(value || 0);
       return Number.isFinite(num) ? num.toFixed(2) : "0.00";
+    }
+
+    function monthLabel(monthNumber) {
+      const monthIndex = Number(monthNumber) - 1;
+      return MONTH_NAMES[monthIndex] || "";
     }
 
     function normalizeRecurringLabel(value) {
@@ -1146,6 +1397,13 @@
       return match || "";
     }
 
+    function normalizeServiceType(value) {
+      const v = String(value || "").trim().toLowerCase();
+      if (v === "other income") return "Other";
+      if (v === "other") return "Other";
+      return value || "";
+    }
+
     function customerNameById(customerId) {
       const found = customers.find((c) => String(c.id) === String(customerId));
       return found ? (found.customer_name || "") : "Unknown Customer";
@@ -1154,10 +1412,10 @@
     function contractBadgeClass(value) {
       const v = String(normalizeRecurringLabel(value)).toLowerCase();
       if (v === "weekly") return "badge badge-weekly";
-      if (v === "bi-weekly") return "badge badge-biweekly";
-      if (v === "monthly") return "badge badge-monthly";
-      if (v === "quarterly") return "badge badge-quarterly";
-      if (v === "yearly") return "badge badge-yearly";
+      if (v === "bi-weekly") return "badge badge-weekly";
+      if (v === "monthly") return "badge badge-teal";
+      if (v === "quarterly") return "badge badge-warning";
+      if (v === "yearly") return "badge badge-success";
       return "badge badge-gray";
     }
 
@@ -1173,6 +1431,186 @@
       document.getElementById("customerFormTitle").textContent = mode === "edit" ? "Edit Customer" : "Add Customer";
       document.getElementById("saveCustomerBtn").classList.toggle("hidden", mode === "edit");
       document.getElementById("updateCustomerBtn").classList.toggle("hidden", mode !== "edit");
+    }
+
+    function parseDateParts(dateString) {
+      if (!dateString || !/^\d{4}-\d{2}-\d{2}$/.test(dateString)) return null;
+      const [year, month, day] = dateString.split("-").map(Number);
+      return { year, month, day };
+    }
+
+    function isInPeriod(dateString, yearFilter, monthFilter) {
+      const parts = parseDateParts(dateString);
+      if (!parts) return false;
+      if (yearFilter && parts.year !== Number(yearFilter)) return false;
+      if (monthFilter && parts.month !== Number(monthFilter)) return false;
+      return true;
+    }
+
+    function getAllAvailableYears() {
+      const years = new Set();
+      customers.forEach((row) => {
+        const parts = parseDateParts(row.created_at ? String(row.created_at).slice(0, 10) : "");
+        if (parts) years.add(parts.year);
+      });
+      invoices.forEach((row) => {
+        const parts = parseDateParts(row.invoice_date);
+        if (parts) years.add(parts.year);
+      });
+      expenses.forEach((row) => {
+        const parts = parseDateParts(row.expense_date);
+        if (parts) years.add(parts.year);
+      });
+
+      const currentYear = new Date().getFullYear();
+      years.add(currentYear);
+
+      return Array.from(years).sort((a, b) => b - a);
+    }
+
+    function populateDashboardYearFilter() {
+      const yearSelect = document.getElementById("dashboardYearFilter");
+      const previousValue = yearSelect.value;
+      const years = getAllAvailableYears();
+      const currentYear = String(new Date().getFullYear());
+
+      yearSelect.innerHTML = years
+        .map((year) => `<option value="${year}">${year}</option>`)
+        .join("");
+
+      if (years.includes(Number(previousValue))) {
+        yearSelect.value = previousValue;
+      } else if (years.includes(Number(currentYear))) {
+        yearSelect.value = currentYear;
+      } else if (years.length) {
+        yearSelect.value = String(years[0]);
+      }
+    }
+
+    function getDashboardFilters() {
+      const year = document.getElementById("dashboardYearFilter").value;
+      const month = document.getElementById("dashboardMonthFilter").value;
+      return { year, month };
+    }
+
+    function filterInvoicesByPeriod() {
+      const { year, month } = getDashboardFilters();
+      return invoices.filter((row) => isInPeriod(row.invoice_date, year, month));
+    }
+
+    function filterExpensesByPeriod() {
+      const { year, month } = getDashboardFilters();
+      return expenses.filter((row) => isInPeriod(row.expense_date, year, month));
+    }
+
+    function periodLabelText() {
+      const { year, month } = getDashboardFilters();
+      if (!year) return "Showing all data.";
+      if (!month) return `Showing ${year} (all months).`;
+      return `Showing ${monthLabel(month)} ${year}.`;
+    }
+
+    function getTrendEndPeriod() {
+      const { year, month } = getDashboardFilters();
+      const currentDate = new Date();
+      const selectedYear = Number(year) || currentDate.getFullYear();
+
+      if (month) {
+        return { year: selectedYear, month: Number(month) };
+      }
+
+      if (selectedYear === currentDate.getFullYear()) {
+        return { year: selectedYear, month: currentDate.getMonth() + 1 };
+      }
+
+      return { year: selectedYear, month: 12 };
+    }
+
+    function getLastSixPeriods() {
+      const end = getTrendEndPeriod();
+      const periods = [];
+      let year = end.year;
+      let month = end.month;
+
+      for (let i = 0; i < 6; i++) {
+        periods.unshift({ year, month });
+        month -= 1;
+        if (month < 1) {
+          month = 12;
+          year -= 1;
+        }
+      }
+
+      return periods;
+    }
+
+    function getRevenueExpenseNetForPeriod(year, month) {
+      const paidInvoices = invoices.filter((row) => {
+        return isInPeriod(row.invoice_date, year, month) && String(row.status || "").toLowerCase() === "paid";
+      });
+
+      const serviceRevenue = paidInvoices
+        .filter((row) => String(normalizeServiceType(row.service_type)).toLowerCase() !== "other")
+        .reduce((sum, row) => sum + Number(row.amount || 0), 0);
+
+      const otherIncome = paidInvoices
+        .filter((row) => String(normalizeServiceType(row.service_type)).toLowerCase() === "other")
+        .reduce((sum, row) => sum + Number(row.amount || 0), 0);
+
+      const totalRevenue = serviceRevenue + otherIncome;
+
+      const totalExpenses = expenses
+        .filter((row) => isInPeriod(row.expense_date, year, month))
+        .reduce((sum, row) => sum + Number(row.amount || 0), 0);
+
+      const net = totalRevenue - totalExpenses;
+
+      return {
+        serviceRevenue,
+        otherIncome,
+        totalRevenue,
+        totalExpenses,
+        net
+      };
+    }
+
+    function renderDashboardTrend() {
+      const trendGrid = document.getElementById("dashboardTrendGrid");
+      const periods = getLastSixPeriods();
+      const trendData = periods.map((period) => ({
+        ...period,
+        ...getRevenueExpenseNetForPeriod(period.year, period.month)
+      }));
+
+      const maxValue = Math.max(
+        1,
+        ...trendData.map((item) => item.totalRevenue),
+        ...trendData.map((item) => item.totalExpenses),
+        ...trendData.map((item) => Math.abs(item.net))
+      );
+
+      trendGrid.innerHTML = trendData.map((item) => {
+        const revenueHeight = Math.max(6, Math.round((item.totalRevenue / maxValue) * 150));
+        const expenseHeight = Math.max(6, Math.round((item.totalExpenses / maxValue) * 150));
+        const netHeight = Math.max(6, Math.round((Math.abs(item.net) / maxValue) * 150));
+        const netClass = item.net >= 0 ? "net-positive" : "net-negative";
+
+        return `
+          <div class="trend-col">
+            <div class="trend-bar-wrap">
+              <div class="trend-bar revenue" style="height:${revenueHeight}px;" title="Revenue ${formatMoney(item.totalRevenue)}"></div>
+              <div class="trend-bar expense" style="height:${expenseHeight}px;" title="Expenses ${formatMoney(item.totalExpenses)}"></div>
+              <div class="trend-bar ${netClass}" style="height:${netHeight}px;" title="Net ${formatMoney(item.net)}"></div>
+            </div>
+            <div class="trend-label">${escapeHtml(monthLabel(item.month).slice(0, 3))} ${item.year}</div>
+            <div class="trend-values">
+              Rev ${formatMoney(item.totalRevenue)}<br />
+              Exp ${formatMoney(item.totalExpenses)}<br />
+              Net ${formatMoney(item.net)}
+            </div>
+          </div>
+        `;
+      }).join("");
     }
 
     function populateCustomerDropdown() {
@@ -1229,7 +1667,6 @@
       editingCustomerId = null;
       editingInvoiceId = null;
       editingExpenseId = null;
-      appInitialized = false;
 
       showLoginScreen();
     }
@@ -1272,6 +1709,7 @@
 
       renderCustomers();
       populateCustomerDropdown();
+      populateDashboardYearFilter();
       renderDashboard();
 
       if (showSuccessMessage) {
@@ -1298,10 +1736,7 @@
           row.status
         ].join(" ").toLowerCase();
 
-        const matchesSearch = haystack.includes(searchValue);
-        const matchesRegion = !regionFilter || row.region === regionFilter;
-
-        return matchesSearch && matchesRegion;
+        return haystack.includes(searchValue) && (!regionFilter || row.region === regionFilter);
       });
 
       document.getElementById("customersTotalStat").textContent = customers.length;
@@ -1314,16 +1749,12 @@
       const regionCounts = REGION_OPTIONS.map((region) => ({
         region,
         count: customers.filter((c) => c.region === region).length
-      })).filter((x) => x.count > 0);
+      }));
 
       const regionStatsEl = document.getElementById("customersRegionStats");
-      if (!regionCounts.length) {
-        regionStatsEl.innerHTML = `<span class="empty-state">No region data</span>`;
-      } else {
-        regionStatsEl.innerHTML = regionCounts
-          .map((item) => `<span class="badge badge-gray">${escapeHtml(item.region)} (${item.count})</span>`)
-          .join("");
-      }
+      regionStatsEl.innerHTML = regionCounts
+        .map((item) => `<span class="badge badge-gray">${escapeHtml(item.region)} (${item.count})</span>`)
+        .join("");
 
       const tbody = document.getElementById("customersTableBody");
 
@@ -1370,14 +1801,8 @@
     }
 
     function validateCustomerPayload(payload) {
-      if (!payload.customer_name) {
-        return "Customer name is required.";
-      }
-
-      if (!payload.region) {
-        return "Region is required.";
-      }
-
+      if (!payload.customer_name) return "Customer name is required.";
+      if (!payload.region) return "Region is required.";
       return "";
     }
 
@@ -1540,8 +1965,15 @@
         return false;
       }
 
-      invoices = Array.isArray(data) ? data : [];
+      invoices = Array.isArray(data)
+        ? data.map((row) => ({
+            ...row,
+            service_type: normalizeServiceType(row.service_type)
+          }))
+        : [];
+
       renderInvoices();
+      populateDashboardYearFilter();
       renderDashboard();
 
       if (showSuccessMessage) {
@@ -1588,7 +2020,7 @@
           <td>${index + 1}</td>
           <td>${escapeHtml(row.invoice_date || "")}</td>
           <td>${escapeHtml(customerNameById(row.customer_id))}</td>
-          <td>${escapeHtml(row.service_type || "")}</td>
+          <td>${escapeHtml(row.service_type || "") === "Other" ? "Other Income" : escapeHtml(row.service_type || "")}</td>
           <td>${escapeHtml(row.description || "")}</td>
           <td>${escapeHtml(formatMoney(row.amount))}</td>
           <td><span class="${statusBadgeClass(row.status)}">${escapeHtml(row.status || "")}</span></td>
@@ -1612,10 +2044,7 @@
       }
 
       if (!paymentDateEl.value && statusEl.value === "Paid") {
-        return {
-          ok: false,
-          message: "Payment date is required when status is Paid."
-        };
+        return { ok: false, message: "Payment date is required when status is Paid." };
       }
 
       return { ok: true };
@@ -1633,7 +2062,7 @@
       const customer_id = document.getElementById("invoiceCustomer").value;
       const invoice_date = document.getElementById("invoiceDate").value;
       const status = document.getElementById("invoiceStatus").value;
-      const service_type = document.getElementById("invoiceServiceType").value;
+      const service_type = normalizeServiceType(document.getElementById("invoiceServiceType").value);
       const amount = document.getElementById("invoiceAmount").value;
       const description = document.getElementById("invoiceDescription").value.trim();
       const payment_date = document.getElementById("invoicePaymentDate").value || null;
@@ -1692,7 +2121,7 @@
       const customer_id = document.getElementById("invoiceCustomer").value;
       const invoice_date = document.getElementById("invoiceDate").value;
       const status = document.getElementById("invoiceStatus").value;
-      const service_type = document.getElementById("invoiceServiceType").value;
+      const service_type = normalizeServiceType(document.getElementById("invoiceServiceType").value);
       const amount = document.getElementById("invoiceAmount").value;
       const description = document.getElementById("invoiceDescription").value.trim();
       const payment_date = document.getElementById("invoicePaymentDate").value || null;
@@ -1765,7 +2194,7 @@
       document.getElementById("invoiceCustomer").value = found.customer_id || "";
       document.getElementById("invoiceDate").value = found.invoice_date || "";
       document.getElementById("invoiceStatus").value = found.status || "Open";
-      document.getElementById("invoiceServiceType").value = found.service_type || "Grass Cutting";
+      document.getElementById("invoiceServiceType").value = normalizeServiceType(found.service_type || "Grass Cutting") === "Other" ? "Other" : (found.service_type || "Grass Cutting");
       document.getElementById("invoiceAmount").value = found.amount ?? "";
       document.getElementById("invoiceDescription").value = found.description || "";
       document.getElementById("invoicePaymentDate").value = found.payment_date || "";
@@ -1803,6 +2232,7 @@
 
       expenses = Array.isArray(data) ? data : [];
       renderExpenses();
+      populateDashboardYearFilter();
       renderDashboard();
 
       if (showSuccessMessage) {
@@ -2032,41 +2462,62 @@
     }
 
     function renderDashboard() {
-      const totalCustomers = customers.length;
-      const openInvoices = invoices.filter((i) => String(i.status || "").toLowerCase() === "open");
-      const openInvoiceAmount = openInvoices.reduce((sum, i) => sum + Number(i.amount || 0), 0);
-      const totalExpenses = expenses.reduce((sum, e) => sum + Number(e.amount || 0), 0);
-      const netPosition = openInvoiceAmount - totalExpenses;
+      document.getElementById("dashboardPeriodLabel").textContent = periodLabelText();
 
-      document.getElementById("dashTotalCustomers").textContent = totalCustomers;
-      document.getElementById("dashOpenInvoiceAmount").textContent = formatMoney(openInvoiceAmount);
+      const activeCustomers = customers.filter((c) => String(c.status || "").toLowerCase() === "active").length;
+      const periodInvoices = filterInvoicesByPeriod();
+      const periodExpenses = filterExpensesByPeriod();
+
+      const paidInvoices = periodInvoices.filter((row) => String(row.status || "").toLowerCase() === "paid");
+      const openInvoices = periodInvoices.filter((row) => String(row.status || "").toLowerCase() === "open");
+
+      const serviceRevenue = paidInvoices
+        .filter((row) => String(normalizeServiceType(row.service_type)).toLowerCase() !== "other")
+        .reduce((sum, row) => sum + Number(row.amount || 0), 0);
+
+      const otherIncome = paidInvoices
+        .filter((row) => String(normalizeServiceType(row.service_type)).toLowerCase() === "other")
+        .reduce((sum, row) => sum + Number(row.amount || 0), 0);
+
+      const paidRevenue = serviceRevenue + otherIncome;
+      const totalExpenses = periodExpenses.reduce((sum, row) => sum + Number(row.amount || 0), 0);
+      const openInvoiceAmount = openInvoices.reduce((sum, row) => sum + Number(row.amount || 0), 0);
+      const netPosition = paidRevenue - totalExpenses;
+
+      document.getElementById("dashServiceRevenue").textContent = formatMoney(serviceRevenue);
+      document.getElementById("dashOtherIncome").textContent = formatMoney(otherIncome);
       document.getElementById("dashTotalExpenses").textContent = formatMoney(totalExpenses);
+      document.getElementById("dashPaidRevenue").textContent = formatMoney(paidRevenue);
+      document.getElementById("dashOpenInvoiceAmount").textContent = formatMoney(openInvoiceAmount);
+      document.getElementById("dashOpenInvoicesCount").textContent = openInvoices.length;
+      document.getElementById("dashTotalCustomers").textContent = activeCustomers;
       document.getElementById("dashNetPosition").textContent = formatMoney(netPosition);
       document.getElementById("dashNetPosition").classList.remove("positive", "negative");
       document.getElementById("dashNetPosition").classList.add(netPosition >= 0 ? "positive" : "negative");
 
       const openBody = document.getElementById("dashboardOpenInvoicesBody");
       if (!openInvoices.length) {
-        openBody.innerHTML = `<tr><td colspan="5">No open invoices.</td></tr>`;
+        openBody.innerHTML = `<tr><td colspan="6">No open invoices in selected period.</td></tr>`;
       } else {
         openBody.innerHTML = openInvoices.slice(0, 10).map((row, index) => `
           <tr>
             <td>${index + 1}</td>
             <td>${escapeHtml(customerNameById(row.customer_id))}</td>
             <td>${escapeHtml(row.invoice_date || "")}</td>
+            <td>${escapeHtml(normalizeServiceType(row.service_type) === "Other" ? "Other Income" : (row.service_type || ""))}</td>
             <td>${escapeHtml(formatMoney(row.amount))}</td>
             <td><span class="badge badge-danger">${escapeHtml(row.status || "")}</span></td>
           </tr>
         `).join("");
       }
 
-      const recentExpenses = [...expenses]
+      const recentExpenses = [...periodExpenses]
         .sort((a, b) => String(b.expense_date || "").localeCompare(String(a.expense_date || "")))
         .slice(0, 10);
 
       const recentBody = document.getElementById("dashboardRecentExpensesBody");
       if (!recentExpenses.length) {
-        recentBody.innerHTML = `<tr><td colspan="5">No expenses found.</td></tr>`;
+        recentBody.innerHTML = `<tr><td colspan="5">No expenses in selected period.</td></tr>`;
       } else {
         recentBody.innerHTML = recentExpenses.map((row, index) => `
           <tr>
@@ -2089,8 +2540,8 @@
         });
       });
 
-      expenses
-        .filter((e) => String(e.status || "").toLowerCase() === "unpaid")
+      periodExpenses
+        .filter((row) => String(row.status || "").toLowerCase() === "unpaid")
         .forEach((row) => {
           alerts.push({
             type: "Unpaid Expense",
@@ -2101,7 +2552,7 @@
 
       const alertsBody = document.getElementById("dashboardAlertsBody");
       if (!alerts.length) {
-        alertsBody.innerHTML = `<tr><td colspan="4">No alerts.</td></tr>`;
+        alertsBody.innerHTML = `<tr><td colspan="4">No alerts in selected period.</td></tr>`;
       } else {
         alertsBody.innerHTML = alerts.slice(0, 15).map((row, index) => `
           <tr>
@@ -2112,6 +2563,8 @@
           </tr>
         `).join("");
       }
+
+      renderDashboardTrend();
     }
 
     function bindNavigation() {
@@ -2137,9 +2590,7 @@
       document.getElementById("logoutBtn").addEventListener("click", handleLogout);
 
       document.getElementById("loginPassword").addEventListener("keydown", function (e) {
-        if (e.key === "Enter") {
-          handleLogin();
-        }
+        if (e.key === "Enter") handleLogin();
       });
 
       document.getElementById("customerSearch").addEventListener("input", renderCustomers);
@@ -2186,6 +2637,12 @@
       document.getElementById("saveExpenseBtn").addEventListener("click", saveExpense);
       document.getElementById("updateExpenseBtn").addEventListener("click", updateExpense);
       document.getElementById("clearExpenseBtn").addEventListener("click", clearExpenseForm);
+
+      document.getElementById("dashboardYearFilter").addEventListener("change", renderDashboard);
+      document.getElementById("dashboardMonthFilter").addEventListener("change", renderDashboard);
+      document.getElementById("dashboardRefreshBtn").addEventListener("click", function () {
+        renderDashboard();
+      });
     }
 
     async function initApp() {
@@ -2194,27 +2651,28 @@
       clearCustomerForm();
       clearInvoiceForm();
       clearExpenseForm();
+      populateDashboardYearFilter();
+      document.getElementById("dashboardMonthFilter").value = String(new Date().getMonth() + 1);
 
       await loadCustomers();
       await loadInvoices();
       await loadExpenses();
 
-      appInitialized = true;
+      renderDashboard();
     }
 
     supabaseClient.auth.onAuthStateChange(function (_event, session) {
       if (!session) {
-        appInitialized = false;
         showLoginScreen();
       }
     });
 
     window.editCustomer = editCustomer;
     window.deleteCustomer = deleteCustomer;
-    window.deleteInvoice = deleteInvoice;
     window.editInvoice = editInvoice;
-    window.deleteExpense = deleteExpense;
+    window.deleteInvoice = deleteInvoice;
     window.editExpense = editExpense;
+    window.deleteExpense = deleteExpense;
 
     bindNavigation();
     bindEvents();
