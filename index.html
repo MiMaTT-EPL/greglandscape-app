@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>GregLandscape App</title>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -42,6 +42,7 @@
       --teal-text: #0f766e;
       --shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
       --radius: 16px;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
 
     body {
@@ -53,12 +54,20 @@
       display: none !important;
     }
 
+    .desktop-only {
+      display: none !important;
+    }
+
+    .mobile-only {
+      display: block;
+    }
+
     .login-shell {
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding: 20px;
       background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
     }
 
@@ -67,7 +76,7 @@
       max-width: 420px;
       background: white;
       border-radius: 18px;
-      padding: 28px;
+      padding: 24px;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
       border: 1px solid var(--border);
     }
@@ -81,80 +90,90 @@
 
     .login-subtext {
       color: var(--muted);
-      margin-bottom: 22px;
+      margin-bottom: 20px;
       line-height: 1.45;
     }
 
     .app {
-      display: flex;
       min-height: 100vh;
+      display: block;
     }
 
     .sidebar {
-      width: 220px;
-      background: var(--navy);
-      color: white;
-      padding: 28px 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+      display: none;
+    }
+
+    .mobile-topbar {
       position: sticky;
       top: 0;
-      height: 100vh;
+      z-index: 30;
+      background: var(--navy);
+      color: white;
+      padding: 14px 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
     }
 
-    .sidebar-top {
-      width: 100%;
+    .mobile-topbar-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
     }
 
-    .sidebar-bottom {
-      padding: 0 24px;
-    }
-
-    .brand {
-      font-size: 22px;
+    .mobile-brand {
+      font-size: 20px;
       font-weight: 700;
-      padding: 0 24px 28px;
     }
 
-    .nav-btn {
-      display: block;
-      width: 100%;
+    .mobile-page-label {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.75);
+      margin-top: 4px;
+    }
+
+    .logout-btn-top {
+      border: none;
+      background: rgba(255, 255, 255, 0.12);
+      color: white;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .mobile-bottom-nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 35;
+      background: white;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding-bottom: var(--safe-bottom);
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .mobile-nav-btn {
       border: none;
       background: transparent;
-      color: white;
-      text-align: left;
-      padding: 16px 24px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    .nav-btn.active,
-    .nav-btn:hover {
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    .logout-btn {
-      width: 100%;
-      border: none;
-      background: var(--red);
-      color: white;
-      text-align: center;
-      padding: 12px 16px;
-      cursor: pointer;
-      font-size: 14px;
+      padding: 12px 8px 11px;
+      font-size: 12px;
       font-weight: 700;
-      border-radius: 12px;
-      opacity: 0.9;
+      color: var(--muted);
+      cursor: pointer;
     }
 
-    .logout-btn:hover {
-      opacity: 1;
+    .mobile-nav-btn.active {
+      color: var(--navy);
+      background: #f8fafc;
     }
 
     .content {
-      flex: 1;
-      padding: 28px;
+      padding: 16px 16px calc(92px + var(--safe-bottom));
+      max-width: 100%;
     }
 
     .page {
@@ -166,58 +185,73 @@
     }
 
     h1 {
-      font-size: 28px;
-      margin-bottom: 8px;
+      font-size: 24px;
+      margin-bottom: 6px;
     }
 
     .subtext {
       color: var(--muted);
-      margin-bottom: 24px;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 16px;
-      margin-bottom: 22px;
+      margin-bottom: 18px;
+      line-height: 1.4;
+      font-size: 14px;
     }
 
     .card {
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 16px;
+      padding: 14px;
       box-shadow: var(--shadow);
+      margin-bottom: 14px;
     }
 
-    .stat-title {
-      font-size: 14px;
+    .panel-title {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .stats,
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .stat-title,
+    .kpi-label {
+      font-size: 13px;
       color: var(--muted);
       margin-bottom: 8px;
     }
 
-    .stat-value {
+    .stat-value,
+    .kpi-number {
       font-size: 24px;
       font-weight: 700;
       color: var(--navy);
+      line-height: 1.1;
     }
 
-    .grid-2 {
+    .kpi-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.35;
+    }
+
+    .grid-2,
+    .dashboard-grid {
       display: grid;
-      grid-template-columns: 1.55fr 0.95fr;
-      gap: 20px;
-    }
-
-    .panel-title {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 16px;
+      grid-template-columns: 1fr;
+      gap: 14px;
     }
 
     .section-title {
       font-size: 13px;
       font-weight: 700;
-      margin: 4px 0 10px;
+      margin: 0 0 10px;
       color: var(--muted);
       text-transform: uppercase;
       letter-spacing: 0.04em;
@@ -225,31 +259,45 @@
 
     .form-divider {
       border-top: 1px solid #f1f5f9;
-      margin: 6px 0 14px;
+      margin: 8px 0 14px;
       padding-top: 12px;
     }
 
-    .toolbar {
-      display: flex;
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .full {
+      grid-column: auto;
+    }
+
+    .toolbar,
+    .dashboard-filter-group {
+      display: grid;
+      grid-template-columns: 1fr;
       gap: 10px;
       margin-bottom: 14px;
-      flex-wrap: wrap;
-      align-items: center;
+      align-items: stretch;
     }
 
     .toolbar-right {
-      margin-left: auto;
-      display: flex;
+      margin-left: 0;
+      display: grid;
+      grid-template-columns: 1fr;
       gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
     }
 
     input,
     select,
     textarea,
     button {
-      font-size: 14px;
+      font-size: 16px;
     }
 
     input,
@@ -258,7 +306,7 @@
       width: 100%;
       border: 1px solid #d1d5db;
       border-radius: 12px;
-      padding: 12px 14px;
+      padding: 13px 14px;
       outline: none;
       background: white;
       color: var(--text);
@@ -272,27 +320,25 @@
     }
 
     textarea {
-      min-height: 90px;
+      min-height: 96px;
       resize: vertical;
     }
 
-    .search-input {
-      flex: 1;
-      min-width: 240px;
-    }
-
+    .search-input,
     .filter-select {
-      min-width: 170px;
-      max-width: 200px;
+      min-width: 0;
+      max-width: none;
+      width: 100%;
     }
 
     .btn {
       border: none;
       border-radius: 12px;
-      padding: 12px 16px;
+      padding: 13px 16px;
       cursor: pointer;
-      font-weight: 600;
+      font-weight: 700;
       white-space: nowrap;
+      width: 100%;
     }
 
     .btn-primary {
@@ -313,7 +359,7 @@
     .btn-danger {
       background: var(--red);
       color: white;
-      opacity: 0.9;
+      opacity: 0.95;
     }
 
     .btn-danger:hover {
@@ -321,15 +367,18 @@
     }
 
     .small-btn {
-      padding: 8px 12px;
+      padding: 10px 12px;
       border-radius: 10px;
       font-size: 13px;
       border: none;
       cursor: pointer;
-      font-weight: 600;
+      font-weight: 700;
+      flex: 1;
+      min-width: 0;
     }
 
     .table-wrap {
+      display: none;
       width: 100%;
       overflow-x: auto;
       border: 1px solid var(--border);
@@ -366,31 +415,77 @@
       font-weight: 700;
     }
 
-    .customer-primary {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
+    .mobile-list {
+      display: grid;
+      gap: 12px;
     }
 
-    .customer-sub {
-      color: var(--muted);
-      font-size: 12px;
-      white-space: normal;
+    .mobile-item {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: white;
+      padding: 14px;
+    }
+
+    .mobile-item-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .mobile-item-title {
+      font-size: 15px;
+      font-weight: 700;
       line-height: 1.35;
     }
 
-    .form-grid {
+    .mobile-item-subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+      line-height: 1.35;
+    }
+
+    .mobile-fields {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
+      gap: 8px;
+      margin-bottom: 12px;
     }
 
-    .form-group {
-      margin-bottom: 14px;
+    .mobile-field {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      border-bottom: 1px solid #f8fafc;
+      padding-bottom: 6px;
     }
 
-    .full {
-      grid-column: 1 / -1;
+    .mobile-field:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .mobile-field-label {
+      font-size: 12px;
+      color: var(--muted);
+      min-width: 92px;
+      flex-shrink: 0;
+    }
+
+    .mobile-field-value {
+      font-size: 13px;
+      color: var(--text);
+      text-align: right;
+      word-break: break-word;
+    }
+
+    .mobile-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
     .message {
@@ -439,69 +534,17 @@
       color: #b91c1c !important;
     }
 
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-
     .dashboard-topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 18px;
-      flex-wrap: wrap;
-    }
-
-    .dashboard-filter-group {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .dashboard-filter-group select {
-      min-width: 150px;
-      max-width: 180px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
     }
 
     .dashboard-summary-note {
       color: var(--muted);
       font-size: 13px;
-    }
-
-    .kpi-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 16px;
-      margin-bottom: 20px;
-    }
-
-    .kpi-card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 18px;
-      box-shadow: var(--shadow);
-    }
-
-    .kpi-label {
-      color: var(--muted);
-      font-size: 13px;
-      margin-bottom: 8px;
-    }
-
-    .kpi-number {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--navy);
-      margin-bottom: 6px;
-    }
-
-    .kpi-sub {
-      font-size: 12px;
-      color: var(--muted);
+      line-height: 1.4;
     }
 
     .badge {
@@ -544,31 +587,11 @@
       color: var(--green-text);
     }
 
-    .badge-biweekly {
-      background: #ecfccb;
-      color: #3f6212;
-    }
-
-    .badge-monthly {
-      background: var(--blue-soft);
-      color: var(--blue-text);
-    }
-
-    .badge-quarterly {
-      background: #ede9fe;
-      color: #5b21b6;
-    }
-
-    .badge-yearly {
-      background: #ffe4e6;
-      color: #be123c;
-    }
-
     .metric-list {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
-      margin-top: 10px;
+      margin-top: 8px;
     }
 
     .empty-state {
@@ -577,16 +600,14 @@
     }
 
     .trend-card {
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     .trend-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
     }
 
     .trend-legend {
@@ -598,22 +619,22 @@
 
     .trend-grid {
       display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
-      align-items: end;
-      min-height: 230px;
+      align-items: stretch;
     }
 
     .trend-col {
       display: flex;
       flex-direction: column;
-      justify-content: end;
       gap: 8px;
-      height: 100%;
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 10px;
     }
 
     .trend-bar-wrap {
-      height: 150px;
+      height: 120px;
       display: flex;
       align-items: flex-end;
       gap: 6px;
@@ -621,7 +642,7 @@
     }
 
     .trend-bar {
-      width: 22px;
+      width: 18px;
       border-radius: 8px 8px 0 0;
       min-height: 6px;
     }
@@ -656,26 +677,15 @@
       color: var(--gray-text);
     }
 
-    @media (max-width: 1400px) {
-      .kpi-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    @media (max-width: 1200px) {
+    @media (min-width: 700px) {
       .stats,
       .kpi-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
-      .grid-2,
-      .dashboard-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .sidebar {
-        position: relative;
-        height: auto;
+      .toolbar,
+      .dashboard-filter-group {
+        grid-template-columns: 1fr 1fr;
       }
 
       .trend-grid {
@@ -683,32 +693,225 @@
       }
     }
 
-    @media (max-width: 720px) {
+    @media (min-width: 1024px) {
+      .mobile-only {
+        display: none !important;
+      }
+
+      .desktop-only {
+        display: block !important;
+      }
+
       .app {
-        flex-direction: column;
+        display: flex;
       }
 
       .sidebar {
+        display: flex;
+        width: 220px;
+        background: var(--navy);
+        color: white;
+        padding: 28px 0;
+        flex-direction: column;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+      }
+
+      .sidebar-top {
         width: 100%;
       }
 
-      .form-grid,
-      .stats,
-      .kpi-grid,
-      .trend-grid {
-        grid-template-columns: 1fr;
+      .sidebar-bottom {
+        padding: 0 24px;
+      }
+
+      .brand {
+        font-size: 22px;
+        font-weight: 700;
+        padding: 0 24px 28px;
+      }
+
+      .nav-btn {
+        display: block;
+        width: 100%;
+        border: none;
+        background: transparent;
+        color: white;
+        text-align: left;
+        padding: 16px 24px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+
+      .nav-btn.active,
+      .nav-btn:hover {
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .logout-btn {
+        width: 100%;
+        border: none;
+        background: var(--red);
+        color: white;
+        text-align: center;
+        padding: 12px 16px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 700;
+        border-radius: 12px;
       }
 
       .content {
-        padding: 18px;
+        flex: 1;
+        padding: 28px;
+        max-width: none;
       }
 
-      .dashboard-topbar {
-        align-items: stretch;
+      h1 {
+        font-size: 28px;
+        margin-bottom: 8px;
+      }
+
+      .subtext {
+        margin-bottom: 24px;
+        font-size: 15px;
+      }
+
+      .stats,
+      .kpi-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 22px;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1.55fr 0.95fr;
+        gap: 20px;
+      }
+
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      .full {
+        grid-column: 1 / -1;
+      }
+
+      .toolbar {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 14px;
+        flex-wrap: wrap;
+        align-items: center;
       }
 
       .toolbar-right {
-        margin-left: 0;
+        margin-left: auto;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .search-input {
+        flex: 1;
+        min-width: 240px;
+      }
+
+      .filter-select {
+        min-width: 170px;
+        max-width: 200px;
+      }
+
+      .btn {
+        width: auto;
+        padding: 12px 16px;
+        font-size: 14px;
+      }
+
+      input,
+      select,
+      textarea,
+      button {
+        font-size: 14px;
+      }
+
+      .table-wrap {
+        display: block;
+      }
+
+      .desktop-table {
+        display: block;
+      }
+
+      .mobile-list {
+        display: none;
+      }
+
+      .dashboard-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 18px;
+        flex-wrap: wrap;
+      }
+
+      .dashboard-filter-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .dashboard-filter-group select {
+        min-width: 150px;
+        max-width: 180px;
+      }
+
+      .trend-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+      }
+
+      .trend-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 12px;
+        align-items: end;
+      }
+
+      .trend-col {
+        background: transparent;
+        padding: 0;
+        border-radius: 0;
+      }
+
+      .trend-bar-wrap {
+        height: 150px;
+      }
+
+      .trend-bar {
+        width: 22px;
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .kpi-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
       }
     }
   </style>
@@ -736,7 +939,17 @@
   </div>
 
   <div id="appShell" class="app hidden">
-    <aside class="sidebar">
+    <div class="mobile-topbar mobile-only">
+      <div class="mobile-topbar-row">
+        <div>
+          <div class="mobile-brand">GregLandscape</div>
+          <div class="mobile-page-label" id="mobilePageLabel">Customers</div>
+        </div>
+        <button id="logoutBtnMobile" class="logout-btn-top" type="button">Logout</button>
+      </div>
+    </div>
+
+    <aside class="sidebar desktop-only">
       <div class="sidebar-top">
         <div class="brand">GregLandscape</div>
         <button class="nav-btn active" data-page="customersPage" type="button">Customers</button>
@@ -792,7 +1005,7 @@
               <button class="btn btn-secondary" id="customerRefreshBtn" type="button">Refresh</button>
             </div>
 
-            <div class="table-wrap">
+            <div class="table-wrap desktop-table">
               <table>
                 <thead>
                   <tr>
@@ -808,6 +1021,8 @@
                 <tbody id="customersTableBody"></tbody>
               </table>
             </div>
+
+            <div id="customersMobileList" class="mobile-list mobile-only"></div>
 
             <div id="customerListMessage" class="message"></div>
           </div>
@@ -942,7 +1157,7 @@
               <button class="btn btn-secondary" id="invoiceRefreshBtn" type="button">Refresh</button>
             </div>
 
-            <div class="table-wrap">
+            <div class="table-wrap desktop-table">
               <table class="table-wide">
                 <thead>
                   <tr>
@@ -960,6 +1175,8 @@
                 <tbody id="invoicesTableBody"></tbody>
               </table>
             </div>
+
+            <div id="invoicesMobileList" class="mobile-list mobile-only"></div>
 
             <div id="invoiceListMessage" class="message"></div>
           </div>
@@ -1058,7 +1275,7 @@
               <button class="btn btn-secondary" id="expenseRefreshBtn" type="button">Refresh</button>
             </div>
 
-            <div class="table-wrap">
+            <div class="table-wrap desktop-table">
               <table class="table-wide">
                 <thead>
                   <tr>
@@ -1078,6 +1295,8 @@
                 <tbody id="expensesTableBody"></tbody>
               </table>
             </div>
+
+            <div id="expensesMobileList" class="mobile-list mobile-only"></div>
 
             <div id="expenseListMessage" class="message"></div>
           </div>
@@ -1193,49 +1412,49 @@
         </div>
 
         <div class="kpi-grid">
-          <div class="kpi-card">
+          <div class="card">
             <div class="kpi-label">Service Revenue</div>
             <div class="kpi-number" id="dashServiceRevenue">0.00</div>
             <div class="kpi-sub">Paid invoices excluding Other Income</div>
           </div>
 
-          <div class="kpi-card">
+          <div class="card">
             <div class="kpi-label">Other Income</div>
             <div class="kpi-number" id="dashOtherIncome">0.00</div>
             <div class="kpi-sub">Paid invoices with service type Other Income</div>
           </div>
 
-          <div class="kpi-card">
+          <div class="card">
             <div class="kpi-label">Expenses</div>
             <div class="kpi-number" id="dashTotalExpenses">0.00</div>
             <div class="kpi-sub">Recorded expenses in selected period</div>
           </div>
 
-          <div class="kpi-card">
+          <div class="card">
             <div class="kpi-label">Net Position</div>
             <div class="kpi-number" id="dashNetPosition">0.00</div>
             <div class="kpi-sub">Service Revenue + Other Income - Expenses</div>
           </div>
 
-          <div class="kpi-card">
+          <div class="card">
             <div class="kpi-label">Open Invoice Amount</div>
             <div class="kpi-number" id="dashOpenInvoiceAmount">0.00</div>
             <div class="kpi-sub">Outstanding invoices in selected period</div>
           </div>
 
-          <div class="kpi-card">
+          <div class="card">
             <div class="kpi-label">Paid Revenue</div>
             <div class="kpi-number" id="dashPaidRevenue">0.00</div>
             <div class="kpi-sub">Service Revenue + Other Income</div>
           </div>
 
-          <div class="kpi-card">
+          <div class="card">
             <div class="kpi-label">Open Invoices</div>
             <div class="kpi-number" id="dashOpenInvoicesCount">0</div>
             <div class="kpi-sub">Count of open invoices in selected period</div>
           </div>
 
-          <div class="kpi-card">
+          <div class="card">
             <div class="kpi-label">Active Customers</div>
             <div class="kpi-number" id="dashTotalCustomers">0</div>
             <div class="kpi-sub">Current active customer records</div>
@@ -1263,7 +1482,8 @@
         <div class="dashboard-grid">
           <div class="card">
             <div class="panel-title">Open Invoices</div>
-            <div class="table-wrap">
+
+            <div class="table-wrap desktop-table">
               <table>
                 <thead>
                   <tr>
@@ -1278,11 +1498,14 @@
                 <tbody id="dashboardOpenInvoicesBody"></tbody>
               </table>
             </div>
+
+            <div id="dashboardOpenInvoicesMobileList" class="mobile-list mobile-only"></div>
           </div>
 
           <div class="card">
             <div class="panel-title">Recent Expenses</div>
-            <div class="table-wrap">
+
+            <div class="table-wrap desktop-table">
               <table>
                 <thead>
                   <tr>
@@ -1296,12 +1519,15 @@
                 <tbody id="dashboardRecentExpensesBody"></tbody>
               </table>
             </div>
+
+            <div id="dashboardRecentExpensesMobileList" class="mobile-list mobile-only"></div>
           </div>
         </div>
 
-        <div class="card" style="margin-top:20px;">
+        <div class="card">
           <div class="panel-title">Alerts</div>
-          <div class="table-wrap">
+
+          <div class="table-wrap desktop-table">
             <table>
               <thead>
                 <tr>
@@ -1314,9 +1540,18 @@
               <tbody id="dashboardAlertsBody"></tbody>
             </table>
           </div>
+
+          <div id="dashboardAlertsMobileList" class="mobile-list mobile-only"></div>
         </div>
       </section>
     </main>
+
+    <nav class="mobile-bottom-nav mobile-only">
+      <button class="mobile-nav-btn active" data-page="customersPage" type="button">Customers</button>
+      <button class="mobile-nav-btn" data-page="invoicesPage" type="button">Invoices</button>
+      <button class="mobile-nav-btn" data-page="expensesPage" type="button">Expenses</button>
+      <button class="mobile-nav-btn" data-page="dashboardPage" type="button">Dashboard</button>
+    </nav>
   </div>
 
   <script>
@@ -1433,6 +1668,17 @@
       document.getElementById("updateCustomerBtn").classList.toggle("hidden", mode !== "edit");
     }
 
+    function updatePageLabel(pageId) {
+      const labels = {
+        customersPage: "Customers",
+        invoicesPage: "Invoices",
+        expensesPage: "Expenses",
+        dashboardPage: "Dashboard"
+      };
+      const el = document.getElementById("mobilePageLabel");
+      if (el) el.textContent = labels[pageId] || "GregLandscape";
+    }
+
     function parseDateParts(dateString) {
       if (!dateString || !/^\d{4}-\d{2}-\d{2}$/.test(dateString)) return null;
       const [year, month, day] = dateString.split("-").map(Number);
@@ -1488,9 +1734,10 @@
     }
 
     function getDashboardFilters() {
-      const year = document.getElementById("dashboardYearFilter").value;
-      const month = document.getElementById("dashboardMonthFilter").value;
-      return { year, month };
+      return {
+        year: document.getElementById("dashboardYearFilter").value,
+        month: document.getElementById("dashboardMonthFilter").value
+      };
     }
 
     function filterInvoicesByPeriod() {
@@ -1515,14 +1762,8 @@
       const currentDate = new Date();
       const selectedYear = Number(year) || currentDate.getFullYear();
 
-      if (month) {
-        return { year: selectedYear, month: Number(month) };
-      }
-
-      if (selectedYear === currentDate.getFullYear()) {
-        return { year: selectedYear, month: currentDate.getMonth() + 1 };
-      }
-
+      if (month) return { year: selectedYear, month: Number(month) };
+      if (selectedYear === currentDate.getFullYear()) return { year: selectedYear, month: currentDate.getMonth() + 1 };
       return { year: selectedYear, month: 12 };
     }
 
@@ -1563,14 +1804,12 @@
         .filter((row) => isInPeriod(row.expense_date, year, month))
         .reduce((sum, row) => sum + Number(row.amount || 0), 0);
 
-      const net = totalRevenue - totalExpenses;
-
       return {
         serviceRevenue,
         otherIncome,
         totalRevenue,
         totalExpenses,
-        net
+        net: totalRevenue - totalExpenses
       };
     }
 
@@ -1611,6 +1850,12 @@
           </div>
         `;
       }).join("");
+    }
+
+    function setMobileList(elementId, html, emptyText) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      el.innerHTML = html || `<div class="mobile-item"><div class="empty-state">${escapeHtml(emptyText)}</div></div>`;
     }
 
     function populateCustomerDropdown() {
@@ -1760,6 +2005,7 @@
 
       if (!filtered.length) {
         tbody.innerHTML = `<tr><td colspan="7">No customers found.</td></tr>`;
+        setMobileList("customersMobileList", "", "No customers found.");
         return;
       }
 
@@ -1784,6 +2030,42 @@
           </td>
         </tr>
       `).join("");
+
+      setMobileList(
+        "customersMobileList",
+        filtered.map((row) => `
+          <div class="mobile-item">
+            <div class="mobile-item-head">
+              <div>
+                <div class="mobile-item-title">${escapeHtml(row.customer_name || "")}</div>
+                <div class="mobile-item-subtitle">${escapeHtml(row.customer_type || "")}${row.email ? ` · ${escapeHtml(row.email)}` : ""}</div>
+              </div>
+              <span class="${statusBadgeClass(row.status)}">${escapeHtml(row.status || "")}</span>
+            </div>
+
+            <div class="mobile-fields">
+              <div class="mobile-field">
+                <div class="mobile-field-label">Phone</div>
+                <div class="mobile-field-value">${escapeHtml(row.phone || "-")}</div>
+              </div>
+              <div class="mobile-field">
+                <div class="mobile-field-label">Region</div>
+                <div class="mobile-field-value">${escapeHtml(row.region || "-")}</div>
+              </div>
+              <div class="mobile-field">
+                <div class="mobile-field-label">Contract</div>
+                <div class="mobile-field-value"><span class="${contractBadgeClass(row.recurring_contract)}">${escapeHtml(normalizeRecurringLabel(row.recurring_contract || ""))}</span></div>
+              </div>
+            </div>
+
+            <div class="mobile-actions">
+              <button class="small-btn btn-warning" type="button" onclick="editCustomer('${row.id}')">Edit</button>
+              <button class="small-btn btn-danger" type="button" onclick="deleteCustomer('${row.id}')">Delete</button>
+            </div>
+          </div>
+        `).join(""),
+        "No customers found."
+      );
     }
 
     function getCustomerFormPayload() {
@@ -1904,7 +2186,7 @@
 
       setCustomerFormMode("edit");
       showMessage("customerMessage", "Customer loaded for update. Change the fields, then click Update Customer.", "success");
-      document.querySelector('[data-page="customersPage"]').click();
+      activatePage("customersPage");
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -2012,6 +2294,7 @@
 
       if (!filtered.length) {
         tbody.innerHTML = `<tr><td colspan="9">No invoices found.</td></tr>`;
+        setMobileList("invoicesMobileList", "", "No invoices found.");
         return;
       }
 
@@ -2033,6 +2316,46 @@
           </td>
         </tr>
       `).join("");
+
+      setMobileList(
+        "invoicesMobileList",
+        filtered.map((row) => `
+          <div class="mobile-item">
+            <div class="mobile-item-head">
+              <div>
+                <div class="mobile-item-title">${escapeHtml(customerNameById(row.customer_id))}</div>
+                <div class="mobile-item-subtitle">${escapeHtml(row.invoice_date || "")}</div>
+              </div>
+              <span class="${statusBadgeClass(row.status)}">${escapeHtml(row.status || "")}</span>
+            </div>
+
+            <div class="mobile-fields">
+              <div class="mobile-field">
+                <div class="mobile-field-label">Service</div>
+                <div class="mobile-field-value">${escapeHtml(normalizeServiceType(row.service_type) === "Other" ? "Other Income" : (row.service_type || "-"))}</div>
+              </div>
+              <div class="mobile-field">
+                <div class="mobile-field-label">Amount</div>
+                <div class="mobile-field-value">${escapeHtml(formatMoney(row.amount))}</div>
+              </div>
+              <div class="mobile-field">
+                <div class="mobile-field-label">Paid Date</div>
+                <div class="mobile-field-value">${escapeHtml(row.payment_date || "-")}</div>
+              </div>
+              <div class="mobile-field">
+                <div class="mobile-field-label">Description</div>
+                <div class="mobile-field-value">${escapeHtml(row.description || "-")}</div>
+              </div>
+            </div>
+
+            <div class="mobile-actions">
+              <button class="small-btn btn-warning" type="button" onclick="editInvoice('${row.id}')">Edit</button>
+              <button class="small-btn btn-danger" type="button" onclick="deleteInvoice('${row.id}')">Delete</button>
+            </div>
+          </div>
+        `).join(""),
+        "No invoices found."
+      );
     }
 
     function normalizeInvoiceBeforeSave() {
@@ -2200,7 +2523,8 @@
       document.getElementById("invoicePaymentDate").value = found.payment_date || "";
 
       showMessage("invoiceMessage", "Invoice loaded for update. Change the fields, then click Update Invoice.", "success");
-      document.querySelector('[data-page="invoicesPage"]').click();
+      activatePage("invoicesPage");
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     function clearInvoiceForm() {
@@ -2231,6 +2555,7 @@
       }
 
       expenses = Array.isArray(data) ? data : [];
+
       renderExpenses();
       populateDashboardYearFilter();
       renderDashboard();
@@ -2272,6 +2597,7 @@
 
       if (!filtered.length) {
         tbody.innerHTML = `<tr><td colspan="11">No expenses found.</td></tr>`;
+        setMobileList("expensesMobileList", "", "No expenses found.");
         return;
       }
 
@@ -2295,6 +2621,46 @@
           </td>
         </tr>
       `).join("");
+
+      setMobileList(
+        "expensesMobileList",
+        filtered.map((row) => `
+          <div class="mobile-item">
+            <div class="mobile-item-head">
+              <div>
+                <div class="mobile-item-title">${escapeHtml(row.category || "")}</div>
+                <div class="mobile-item-subtitle">${escapeHtml(row.expense_date || "")}${row.vendor ? ` · ${escapeHtml(row.vendor)}` : ""}</div>
+              </div>
+              <span class="${statusBadgeClass(row.status)}">${escapeHtml(row.status || "")}</span>
+            </div>
+
+            <div class="mobile-fields">
+              <div class="mobile-field">
+                <div class="mobile-field-label">Amount</div>
+                <div class="mobile-field-value">${escapeHtml(formatMoney(row.amount))}</div>
+              </div>
+              <div class="mobile-field">
+                <div class="mobile-field-label">Method</div>
+                <div class="mobile-field-value">${escapeHtml(row.payment_method || "-")}</div>
+              </div>
+              <div class="mobile-field">
+                <div class="mobile-field-label">Receipt</div>
+                <div class="mobile-field-value">${row.receipt_url ? `<a href="${escapeHtml(row.receipt_url)}" target="_blank" rel="noopener noreferrer">Open</a>` : "-"}</div>
+              </div>
+              <div class="mobile-field">
+                <div class="mobile-field-label">Description</div>
+                <div class="mobile-field-value">${escapeHtml(row.description || "-")}</div>
+              </div>
+            </div>
+
+            <div class="mobile-actions">
+              <button class="small-btn btn-warning" type="button" onclick="editExpense('${row.id}')">Edit</button>
+              <button class="small-btn btn-danger" type="button" onclick="deleteExpense('${row.id}')">Delete</button>
+            </div>
+          </div>
+        `).join(""),
+        "No expenses found."
+      );
     }
 
     async function saveExpense() {
@@ -2445,7 +2811,8 @@
       document.getElementById("expenseNotes").value = found.notes || "";
 
       showMessage("expenseMessage", "Expense loaded for update. Change the fields, then click Update Expense.", "success");
-      document.querySelector('[data-page="expensesPage"]').click();
+      activatePage("expensesPage");
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     function clearExpenseForm() {
@@ -2498,6 +2865,7 @@
       const openBody = document.getElementById("dashboardOpenInvoicesBody");
       if (!openInvoices.length) {
         openBody.innerHTML = `<tr><td colspan="6">No open invoices in selected period.</td></tr>`;
+        setMobileList("dashboardOpenInvoicesMobileList", "", "No open invoices in selected period.");
       } else {
         openBody.innerHTML = openInvoices.slice(0, 10).map((row, index) => `
           <tr>
@@ -2509,6 +2877,32 @@
             <td><span class="badge badge-danger">${escapeHtml(row.status || "")}</span></td>
           </tr>
         `).join("");
+
+        setMobileList(
+          "dashboardOpenInvoicesMobileList",
+          openInvoices.slice(0, 10).map((row) => `
+            <div class="mobile-item">
+              <div class="mobile-item-head">
+                <div>
+                  <div class="mobile-item-title">${escapeHtml(customerNameById(row.customer_id))}</div>
+                  <div class="mobile-item-subtitle">${escapeHtml(row.invoice_date || "")}</div>
+                </div>
+                <span class="badge badge-danger">${escapeHtml(row.status || "")}</span>
+              </div>
+              <div class="mobile-fields">
+                <div class="mobile-field">
+                  <div class="mobile-field-label">Service</div>
+                  <div class="mobile-field-value">${escapeHtml(normalizeServiceType(row.service_type) === "Other" ? "Other Income" : (row.service_type || "-"))}</div>
+                </div>
+                <div class="mobile-field">
+                  <div class="mobile-field-label">Amount</div>
+                  <div class="mobile-field-value">${escapeHtml(formatMoney(row.amount))}</div>
+                </div>
+              </div>
+            </div>
+          `).join(""),
+          "No open invoices in selected period."
+        );
       }
 
       const recentExpenses = [...periodExpenses]
@@ -2518,6 +2912,7 @@
       const recentBody = document.getElementById("dashboardRecentExpensesBody");
       if (!recentExpenses.length) {
         recentBody.innerHTML = `<tr><td colspan="5">No expenses in selected period.</td></tr>`;
+        setMobileList("dashboardRecentExpensesMobileList", "", "No expenses in selected period.");
       } else {
         recentBody.innerHTML = recentExpenses.map((row, index) => `
           <tr>
@@ -2528,6 +2923,28 @@
             <td>${escapeHtml(formatMoney(row.amount))}</td>
           </tr>
         `).join("");
+
+        setMobileList(
+          "dashboardRecentExpensesMobileList",
+          recentExpenses.map((row) => `
+            <div class="mobile-item">
+              <div class="mobile-item-head">
+                <div>
+                  <div class="mobile-item-title">${escapeHtml(row.category || "")}</div>
+                  <div class="mobile-item-subtitle">${escapeHtml(row.expense_date || "")}${row.vendor ? ` · ${escapeHtml(row.vendor)}` : ""}</div>
+                </div>
+                <span class="${statusBadgeClass(row.status)}">${escapeHtml(row.status || "")}</span>
+              </div>
+              <div class="mobile-fields">
+                <div class="mobile-field">
+                  <div class="mobile-field-label">Amount</div>
+                  <div class="mobile-field-value">${escapeHtml(formatMoney(row.amount))}</div>
+                </div>
+              </div>
+            </div>
+          `).join(""),
+          "No expenses in selected period."
+        );
       }
 
       const alerts = [];
@@ -2553,6 +2970,7 @@
       const alertsBody = document.getElementById("dashboardAlertsBody");
       if (!alerts.length) {
         alertsBody.innerHTML = `<tr><td colspan="4">No alerts in selected period.</td></tr>`;
+        setMobileList("dashboardAlertsMobileList", "", "No alerts in selected period.");
       } else {
         alertsBody.innerHTML = alerts.slice(0, 15).map((row, index) => `
           <tr>
@@ -2562,25 +2980,51 @@
             <td><span class="badge">${escapeHtml(row.flag)}</span></td>
           </tr>
         `).join("");
+
+        setMobileList(
+          "dashboardAlertsMobileList",
+          alerts.slice(0, 15).map((row) => `
+            <div class="mobile-item">
+              <div class="mobile-item-head">
+                <div>
+                  <div class="mobile-item-title">${escapeHtml(row.type)}</div>
+                  <div class="mobile-item-subtitle">${escapeHtml(row.flag)}</div>
+                </div>
+                <span class="badge">${escapeHtml(row.flag)}</span>
+              </div>
+              <div class="mobile-fields">
+                <div class="mobile-field">
+                  <div class="mobile-field-label">Details</div>
+                  <div class="mobile-field-value">${escapeHtml(row.details)}</div>
+                </div>
+              </div>
+            </div>
+          `).join(""),
+          "No alerts in selected period."
+        );
       }
 
       renderDashboardTrend();
     }
 
-    function bindNavigation() {
-      const navButtons = document.querySelectorAll(".nav-btn");
+    function activatePage(pageId) {
+      const allNavButtons = document.querySelectorAll("[data-page]");
       const pages = document.querySelectorAll(".page");
 
-      navButtons.forEach((btn) => {
-        btn.addEventListener("click", () => {
-          navButtons.forEach((b) => b.classList.remove("active"));
-          pages.forEach((p) => p.classList.remove("active"));
-          btn.classList.add("active");
-          document.getElementById(btn.dataset.page).classList.add("active");
+      allNavButtons.forEach((btn) => btn.classList.remove("active"));
+      pages.forEach((page) => page.classList.remove("active"));
 
-          if (btn.dataset.page === "dashboardPage") {
-            renderDashboard();
-          }
+      document.querySelectorAll(`[data-page="${pageId}"]`).forEach((btn) => btn.classList.add("active"));
+      document.getElementById(pageId).classList.add("active");
+      updatePageLabel(pageId);
+
+      if (pageId === "dashboardPage") renderDashboard();
+    }
+
+    function bindNavigation() {
+      document.querySelectorAll("[data-page]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          activatePage(btn.dataset.page);
         });
       });
     }
@@ -2588,6 +3032,7 @@
     function bindEvents() {
       document.getElementById("loginBtn").addEventListener("click", handleLogin);
       document.getElementById("logoutBtn").addEventListener("click", handleLogout);
+      document.getElementById("logoutBtnMobile").addEventListener("click", handleLogout);
 
       document.getElementById("loginPassword").addEventListener("keydown", function (e) {
         if (e.key === "Enter") handleLogin();
@@ -2658,6 +3103,7 @@
       await loadInvoices();
       await loadExpenses();
 
+      activatePage("customersPage");
       renderDashboard();
     }
 
