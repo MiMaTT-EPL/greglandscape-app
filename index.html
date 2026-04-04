@@ -9,9 +9,67 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
     body { background: #f3f4f6; color: #111827; }
+
+    .hidden { display: none !important; }
+
+    .login-shell {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: linear-gradient(135deg, #07163a 0%, #0f265f 100%);
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: white;
+      border-radius: 18px;
+      padding: 28px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      border: 1px solid #e5e7eb;
+    }
+
+    .login-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #07163a;
+      margin-bottom: 8px;
+    }
+
+    .login-subtext {
+      color: #6b7280;
+      margin-bottom: 22px;
+      line-height: 1.45;
+    }
+
+    .login-actions {
+      margin-top: 12px;
+    }
+
     .app { display: flex; min-height: 100vh; }
-    .sidebar { width: 220px; background: #07163a; color: white; padding: 28px 0; }
+
+    .sidebar {
+      width: 220px;
+      background: #07163a;
+      color: white;
+      padding: 28px 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .sidebar-top {
+      width: 100%;
+    }
+
+    .sidebar-bottom {
+      padding: 0 24px;
+    }
+
     .brand { font-size: 22px; font-weight: 700; padding: 0 24px 28px; }
+
     .nav-btn {
       display: block;
       width: 100%;
@@ -23,7 +81,21 @@
       cursor: pointer;
       font-size: 16px;
     }
+
     .nav-btn.active, .nav-btn:hover { background: rgba(255,255,255,0.08); }
+
+    .logout-btn {
+      width: 100%;
+      border: none;
+      background: #dc2626;
+      color: white;
+      text-align: center;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: 12px;
+    }
 
     .content { flex: 1; padding: 28px; }
     .page { display: none; }
@@ -185,11 +257,13 @@
     }
 
     .message.show { display: block; }
+
     .message.success {
       background: #dcfce7;
       color: #166534;
       border: 1px solid #bbf7d0;
     }
+
     .message.error {
       background: #fee2e2;
       color: #991b1b;
@@ -277,13 +351,45 @@
   </style>
 </head>
 <body>
-  <div class="app">
+
+  <!-- LOGIN SCREEN -->
+  <div id="loginScreen" class="login-shell">
+    <div class="login-card">
+      <div class="login-title">GregLandscape</div>
+      <div class="login-subtext">Sign in with the email and password you created in Supabase Auth.</div>
+
+      <div class="form-group">
+        <label class="muted">Email</label>
+        <input id="loginEmail" type="email" placeholder="Enter your email" />
+      </div>
+
+      <div class="form-group">
+        <label class="muted">Password</label>
+        <input id="loginPassword" type="password" placeholder="Enter your password" />
+      </div>
+
+      <div class="login-actions">
+        <button class="btn btn-primary" id="loginBtn" style="width:100%;">Log In</button>
+      </div>
+
+      <div id="loginMessage" class="message"></div>
+    </div>
+  </div>
+
+  <!-- APP -->
+  <div id="appShell" class="app hidden">
     <aside class="sidebar">
-      <div class="brand">GregLandscape</div>
-      <button class="nav-btn active" data-page="customersPage">Customers</button>
-      <button class="nav-btn" data-page="invoicesPage">Invoices</button>
-      <button class="nav-btn" data-page="expensesPage">Expenses</button>
-      <button class="nav-btn" data-page="dashboardPage">Dashboard</button>
+      <div class="sidebar-top">
+        <div class="brand">GregLandscape</div>
+        <button class="nav-btn active" data-page="customersPage">Customers</button>
+        <button class="nav-btn" data-page="invoicesPage">Invoices</button>
+        <button class="nav-btn" data-page="expensesPage">Expenses</button>
+        <button class="nav-btn" data-page="dashboardPage">Dashboard</button>
+      </div>
+
+      <div class="sidebar-bottom">
+        <button id="logoutBtn" class="logout-btn">Logout</button>
+      </div>
     </aside>
 
     <main class="content">
@@ -903,6 +1009,8 @@
     let profitTrendChart = null;
     let outstandingTrendChart = null;
 
+    let appInitialized = false;
+
     const MONTH_NAMES = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
     const navButtons = document.querySelectorAll(".nav-btn");
@@ -930,6 +1038,16 @@
       const el = document.getElementById(elementId);
       el.textContent = "";
       el.className = "message";
+    }
+
+    function showLoginScreen() {
+      document.getElementById("loginScreen").classList.remove("hidden");
+      document.getElementById("appShell").classList.add("hidden");
+    }
+
+    function showAppShell() {
+      document.getElementById("loginScreen").classList.add("hidden");
+      document.getElementById("appShell").classList.remove("hidden");
     }
 
     function escapeHtml(value) {
@@ -1006,10 +1124,12 @@
       customers.forEach(row => {
         if (row.created_at) years.add(yearFromDate(row.created_at));
       });
+
       invoices.forEach(row => {
         if (row.invoice_date) years.add(yearFromDate(row.invoice_date));
         if (row.payment_date) years.add(yearFromDate(row.payment_date));
       });
+
       expenses.forEach(row => {
         if (row.expense_date) years.add(yearFromDate(row.expense_date));
       });
@@ -1019,8 +1139,8 @@
       years.add(currentYear - 1);
 
       const sortedYears = Array.from(years).filter(Boolean).sort((a, b) => b - a);
-
       const currentValue = select.value;
+
       select.innerHTML = sortedYears.map(y => `<option value="${y}">${y}</option>`).join("");
 
       if (sortedYears.includes(Number(currentValue))) {
@@ -1028,6 +1148,62 @@
       } else {
         select.value = String(currentYear);
       }
+    }
+
+    // AUTH
+    async function handleLogin() {
+      clearMessage("loginMessage");
+
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value;
+
+      if (!email) {
+        showMessage("loginMessage", "Email is required.", "error");
+        return;
+      }
+
+      if (!password) {
+        showMessage("loginMessage", "Password is required.", "error");
+        return;
+      }
+
+      const { error } = await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) {
+        showMessage("loginMessage", error.message, "error");
+        return;
+      }
+
+      document.getElementById("loginPassword").value = "";
+      showAppShell();
+      await initApp();
+    }
+
+    async function handleLogout() {
+      await supabaseClient.auth.signOut();
+      appInitialized = false;
+      customers = [];
+      invoices = [];
+      expenses = [];
+      editingInvoiceId = null;
+      editingExpenseId = null;
+      clearMessage("loginMessage");
+      showLoginScreen();
+    }
+
+    async function checkAuthOnLoad() {
+      const { data, error } = await supabaseClient.auth.getSession();
+
+      if (error || !data?.session) {
+        showLoginScreen();
+        return;
+      }
+
+      showAppShell();
+      await initApp();
     }
 
     // CUSTOMERS
@@ -2205,6 +2381,15 @@
     }
 
     // EVENTS
+    document.getElementById("loginBtn").addEventListener("click", handleLogin);
+    document.getElementById("logoutBtn").addEventListener("click", handleLogout);
+
+    document.getElementById("loginPassword").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        handleLogin();
+      }
+    });
+
     document.getElementById("saveCustomerBtn").addEventListener("click", saveCustomer);
     document.getElementById("clearCustomerBtn").addEventListener("click", clearCustomerForm);
     document.getElementById("customerRefreshBtn").addEventListener("click", loadCustomers);
@@ -2251,14 +2436,30 @@
     async function initApp() {
       document.getElementById("invoiceDate").value = todayInputDate();
       document.getElementById("expenseDate").value = todayInputDate();
+
       await loadCustomers();
       await loadInvoices();
       await loadExpenses();
+
       populateDashboardYears();
       renderDashboardV2();
+
+      appInitialized = true;
     }
 
-    initApp();
+    supabaseClient.auth.onAuthStateChange(async (event, session) => {
+      if (session) {
+        showAppShell();
+        if (!appInitialized) {
+          await initApp();
+        }
+      } else {
+        appInitialized = false;
+        showLoginScreen();
+      }
+    });
+
+    checkAuthOnLoad();
 
     window.deleteCustomer = deleteCustomer;
     window.deleteInvoice = deleteInvoice;
@@ -2266,5 +2467,6 @@
     window.deleteExpense = deleteExpense;
     window.editExpense = editExpense;
   </script>
+
 </body>
 </html>
