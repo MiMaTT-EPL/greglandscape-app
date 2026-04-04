@@ -23,6 +23,7 @@
       font-size: 16px;
     }
     .nav-btn.active, .nav-btn:hover { background: rgba(255,255,255,0.08); }
+
     .content { flex: 1; padding: 28px; }
     .page { display: none; }
     .page.active { display: block; }
@@ -35,6 +36,12 @@
       grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 16px;
       margin-bottom: 22px;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
     }
 
     .card {
@@ -161,10 +168,23 @@
 
     .muted { color: #6b7280; font-size: 13px; }
     .action-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid #eef2f7;
+      gap: 12px;
+    }
+    .summary-row:last-child { border-bottom: none; }
+    .summary-label { color: #6b7280; }
+    .summary-value { font-weight: 700; }
+    .positive { color: #166534; }
+    .negative { color: #b91c1c; }
 
     @media (max-width: 1200px) {
       .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .grid-2 { grid-template-columns: 1fr; }
+      .dashboard-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 720px) {
@@ -435,16 +455,236 @@
         </div>
       </section>
 
+      <!-- EXPENSES -->
       <section id="expensesPage" class="page">
         <h1>Expenses</h1>
-        <p class="subtext">Placeholder page for future expense module.</p>
-        <div class="card">Expenses module not yet connected in this version.</div>
+        <p class="subtext">Track business expenses.</p>
+
+        <div class="stats">
+          <div class="card">
+            <div class="stat-title">Total Expenses</div>
+            <div class="stat-value" id="expensesTotalStat">0</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Paid Expenses</div>
+            <div class="stat-value" id="expensesPaidStat">0</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Unpaid Expenses</div>
+            <div class="stat-value" id="expensesUnpaidStat">0</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Total Amount</div>
+            <div class="stat-value" id="expensesAmountStat">0.00</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Search Results</div>
+            <div class="stat-value" id="expensesSearchStat">0</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="panel-title">Expense List</div>
+
+            <div class="toolbar">
+              <input id="expenseSearch" class="search-input" type="text" placeholder="Search by category, vendor, description, payment method, status, notes" />
+              <button class="btn btn-secondary" id="expenseClearSearchBtn">Clear Search</button>
+              <button class="btn btn-secondary" id="expenseRefreshBtn">Refresh</button>
+              <button class="btn btn-secondary" id="exportExpensesBtn">Export JSON</button>
+            </div>
+
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Expense Date</th>
+                    <th>Category</th>
+                    <th>Vendor</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Payment Method</th>
+                    <th>Status</th>
+                    <th>Receipt URL</th>
+                    <th>Notes</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="expensesTableBody"></tbody>
+              </table>
+            </div>
+
+            <div id="expenseListMessage" class="message"></div>
+          </div>
+
+          <div class="card">
+            <div class="panel-title">Expense Form</div>
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="muted">Expense Date</label>
+                <input id="expenseDate" type="date" />
+              </div>
+
+              <div class="form-group">
+                <label class="muted">Category</label>
+                <select id="expenseCategory">
+                  <option value="Fuel">Fuel</option>
+                  <option value="Salary">Salary</option>
+                  <option value="Supplies">Supplies</option>
+                  <option value="Equipment">Equipment</option>
+                  <option value="Transport">Transport</option>
+                  <option value="Maintenance">Maintenance</option>
+                  <option value="Utilities">Utilities</option>
+                  <option value="Rent">Rent</option>
+                  <option value="Marketing">Marketing</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="muted">Vendor</label>
+                <input id="expenseVendor" type="text" />
+              </div>
+
+              <div class="form-group">
+                <label class="muted">Amount</label>
+                <input id="expenseAmount" type="number" step="0.01" />
+              </div>
+
+              <div class="form-group">
+                <label class="muted">Payment Method</label>
+                <select id="expensePaymentMethod">
+                  <option value="">Select method</option>
+                  <option value="Cash">Cash</option>
+                  <option value="Bank Transfer">Bank Transfer</option>
+                  <option value="Card">Card</option>
+                  <option value="Cheque">Cheque</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="muted">Status</label>
+                <select id="expenseStatus">
+                  <option value="Unpaid">Unpaid</option>
+                  <option value="Paid">Paid</option>
+                </select>
+              </div>
+
+              <div class="form-group full">
+                <label class="muted">Description</label>
+                <textarea id="expenseDescription"></textarea>
+              </div>
+
+              <div class="form-group full">
+                <label class="muted">Receipt URL</label>
+                <input id="expenseReceiptUrl" type="text" />
+              </div>
+
+              <div class="form-group full">
+                <label class="muted">Notes</label>
+                <textarea id="expenseNotes"></textarea>
+              </div>
+            </div>
+
+            <div class="toolbar">
+              <button class="btn btn-primary" id="saveExpenseBtn">Save Expense</button>
+              <button class="btn btn-warning" id="updateExpenseBtn">Update Expense</button>
+              <button class="btn btn-secondary" id="clearExpenseBtn">Clear</button>
+            </div>
+
+            <div id="expenseMessage" class="message"></div>
+          </div>
+        </div>
       </section>
 
+      <!-- DASHBOARD -->
       <section id="dashboardPage" class="page">
         <h1>Dashboard</h1>
-        <p class="subtext">Quick business overview.</p>
-        <div class="card">Dashboard module not yet connected in this version.</div>
+        <p class="subtext">Live business overview from customers, invoices and expenses.</p>
+
+        <div class="stats">
+          <div class="card">
+            <div class="stat-title">Revenue (Paid Invoices)</div>
+            <div class="stat-value" id="dashboardRevenueStat">0.00</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Outstanding Invoices</div>
+            <div class="stat-value" id="dashboardOutstandingStat">0.00</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Expenses</div>
+            <div class="stat-value" id="dashboardExpensesStat">0.00</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Profit</div>
+            <div class="stat-value" id="dashboardProfitStat">0.00</div>
+          </div>
+          <div class="card">
+            <div class="stat-title">Active Customers</div>
+            <div class="stat-value" id="dashboardCustomersStat">0</div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="card">
+            <div class="panel-title">Business Summary</div>
+            <div class="summary-row">
+              <div class="summary-label">Total Customers</div>
+              <div class="summary-value" id="dbTotalCustomers">0</div>
+            </div>
+            <div class="summary-row">
+              <div class="summary-label">Total Invoices</div>
+              <div class="summary-value" id="dbTotalInvoices">0</div>
+            </div>
+            <div class="summary-row">
+              <div class="summary-label">Paid Invoices</div>
+              <div class="summary-value" id="dbPaidInvoices">0</div>
+            </div>
+            <div class="summary-row">
+              <div class="summary-label">Open Invoices</div>
+              <div class="summary-value" id="dbOpenInvoices">0</div>
+            </div>
+            <div class="summary-row">
+              <div class="summary-label">Total Expenses</div>
+              <div class="summary-value" id="dbTotalExpenses">0</div>
+            </div>
+            <div class="summary-row">
+              <div class="summary-label">Paid Expenses</div>
+              <div class="summary-value" id="dbPaidExpenses">0</div>
+            </div>
+            <div class="summary-row">
+              <div class="summary-label">Unpaid Expenses</div>
+              <div class="summary-value" id="dbUnpaidExpenses">0</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="panel-title">Amounts</div>
+            <div class="summary-row">
+              <div class="summary-label">Revenue Collected</div>
+              <div class="summary-value positive" id="dbRevenue">0.00</div>
+            </div>
+            <div class="summary-row">
+              <div class="summary-label">Outstanding Revenue</div>
+              <div class="summary-value" id="dbOutstanding">0.00</div>
+            </div>
+            <div class="summary-row">
+              <div class="summary-label">Total Expenses</div>
+              <div class="summary-value negative" id="dbExpenses">0.00</div>
+            </div>
+            <div class="summary-row">
+              <div class="summary-label">Profit</div>
+              <div class="summary-value" id="dbProfit">0.00</div>
+            </div>
+            <div class="summary-row">
+              <div class="summary-label">Pending Expense Amount</div>
+              <div class="summary-value" id="dbPendingExpenses">0.00</div>
+            </div>
+          </div>
+        </div>
       </section>
     </main>
   </div>
@@ -456,7 +696,9 @@
 
     let customers = [];
     let invoices = [];
+    let expenses = [];
     let editingInvoiceId = null;
+    let editingExpenseId = null;
 
     const navButtons = document.querySelectorAll(".nav-btn");
     const pages = document.querySelectorAll(".page");
@@ -467,6 +709,9 @@
         pages.forEach((p) => p.classList.remove("active"));
         btn.classList.add("active");
         document.getElementById(btn.dataset.page).classList.add("active");
+        if (btn.dataset.page === "dashboardPage") {
+          renderDashboard();
+        }
       });
     });
 
@@ -512,15 +757,20 @@
       return value;
     }
 
-    function customerDisplayName(customer) {
-      return customer?.customer_name || "";
-    }
-
     function customerNameById(customerId) {
       const found = customers.find(c => String(c.id) === String(customerId));
-      return found ? customerDisplayName(found) : "Unknown Customer";
+      return found ? (found.customer_name || "") : "Unknown Customer";
     }
 
+    function refreshAllViews() {
+      renderCustomers();
+      populateCustomerDropdown();
+      renderInvoices();
+      renderExpenses();
+      renderDashboard();
+    }
+
+    // CUSTOMERS
     async function loadCustomers() {
       clearMessage("customerMessage");
       clearMessage("customerListMessage");
@@ -535,12 +785,14 @@
         renderCustomers();
         populateCustomerDropdown();
         showMessage("customerListMessage", "Could not load customers.\n" + error.message, "error");
+        renderDashboard();
         return;
       }
 
       customers = Array.isArray(data) ? data : [];
       renderCustomers();
       populateCustomerDropdown();
+      renderDashboard();
     }
 
     function renderCustomers() {
@@ -599,7 +851,6 @@
 
     function populateCustomerDropdown() {
       const select = document.getElementById("invoiceCustomer");
-
       const activeCustomers = customers.filter(c => String(c.status || "").toLowerCase() === "active");
 
       if (!activeCustomers.length) {
@@ -696,6 +947,7 @@
       await loadCustomers();
     }
 
+    // INVOICES
     async function loadInvoices() {
       clearMessage("invoiceListMessage");
 
@@ -708,11 +960,13 @@
         invoices = [];
         renderInvoices();
         showMessage("invoiceListMessage", "Could not load invoices.\n" + error.message, "error");
+        renderDashboard();
         return;
       }
 
       invoices = Array.isArray(data) ? data : [];
       renderInvoices();
+      renderDashboard();
     }
 
     function renderInvoices() {
@@ -945,7 +1199,6 @@
       document.getElementById("invoicePaymentDate").value = found.payment_date || "";
 
       showMessage("invoiceMessage", "Invoice loaded for update. Change the fields, then click Update Invoice.", "success");
-
       document.querySelector('[data-page="invoicesPage"]').click();
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
@@ -974,6 +1227,316 @@
       URL.revokeObjectURL(url);
     }
 
+    // EXPENSES
+    async function loadExpenses() {
+      clearMessage("expenseListMessage");
+
+      const { data, error } = await supabaseClient
+        .from("expenses")
+        .select("*")
+        .order("expense_date", { ascending: false });
+
+      if (error) {
+        expenses = [];
+        renderExpenses();
+        showMessage("expenseListMessage", "Could not load expenses.\n" + error.message, "error");
+        renderDashboard();
+        return;
+      }
+
+      expenses = Array.isArray(data) ? data : [];
+      renderExpenses();
+      renderDashboard();
+    }
+
+    function renderExpenses() {
+      const searchValue = document.getElementById("expenseSearch").value.trim().toLowerCase();
+
+      const filtered = expenses.filter(row => {
+        const haystack = [
+          row.category,
+          row.vendor,
+          row.description,
+          row.amount,
+          row.payment_method,
+          row.status,
+          row.receipt_url,
+          row.notes,
+          row.expense_date
+        ].join(" ").toLowerCase();
+
+        return haystack.includes(searchValue);
+      });
+
+      document.getElementById("expensesTotalStat").textContent = expenses.length;
+      document.getElementById("expensesPaidStat").textContent = expenses.filter(e => String(e.status || "").toLowerCase() === "paid").length;
+      document.getElementById("expensesUnpaidStat").textContent = expenses.filter(e => String(e.status || "").toLowerCase() === "unpaid").length;
+      document.getElementById("expensesAmountStat").textContent = formatMoney(
+        expenses.reduce((sum, e) => sum + Number(e.amount || 0), 0)
+      );
+      document.getElementById("expensesSearchStat").textContent = filtered.length;
+
+      const tbody = document.getElementById("expensesTableBody");
+
+      if (!filtered.length) {
+        tbody.innerHTML = `<tr><td colspan="11">No expenses found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map((row, index) => `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${escapeHtml(row.expense_date || "")}</td>
+          <td>${escapeHtml(row.category || "")}</td>
+          <td>${escapeHtml(row.vendor || "")}</td>
+          <td>${escapeHtml(row.description || "")}</td>
+          <td>${escapeHtml(formatMoney(row.amount))}</td>
+          <td>${escapeHtml(row.payment_method || "")}</td>
+          <td>${escapeHtml(row.status || "")}</td>
+          <td>${row.receipt_url ? `<a href="${escapeHtml(row.receipt_url)}" target="_blank" rel="noopener noreferrer">Open</a>` : ""}</td>
+          <td>${escapeHtml(row.notes || "")}</td>
+          <td>
+            <div class="action-row">
+              <button class="small-btn btn-warning" onclick="editExpense('${row.id}')">Edit</button>
+              <button class="small-btn btn-danger" onclick="deleteExpense('${row.id}')">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    async function saveExpense() {
+      clearMessage("expenseMessage");
+
+      const expense_date = document.getElementById("expenseDate").value;
+      const category = document.getElementById("expenseCategory").value;
+      const vendor = document.getElementById("expenseVendor").value.trim() || null;
+      const description = document.getElementById("expenseDescription").value.trim() || null;
+      const amount = document.getElementById("expenseAmount").value;
+      const payment_method = document.getElementById("expensePaymentMethod").value || null;
+      const status = document.getElementById("expenseStatus").value;
+      const receipt_url = document.getElementById("expenseReceiptUrl").value.trim() || null;
+      const notes = document.getElementById("expenseNotes").value.trim() || null;
+
+      if (!expense_date) {
+        showMessage("expenseMessage", "Expense date is required.", "error");
+        return;
+      }
+
+      if (!category) {
+        showMessage("expenseMessage", "Category is required.", "error");
+        return;
+      }
+
+      if (!amount || Number(amount) <= 0) {
+        showMessage("expenseMessage", "Amount must be greater than 0.", "error");
+        return;
+      }
+
+      const payload = {
+        expense_date,
+        category,
+        vendor,
+        description,
+        amount: Number(amount),
+        payment_method,
+        status,
+        receipt_url,
+        notes
+      };
+
+      const { error } = await supabaseClient
+        .from("expenses")
+        .insert([payload]);
+
+      if (error) {
+        showMessage("expenseMessage", "Could not save expense.\n" + error.message, "error");
+        return;
+      }
+
+      showMessage("expenseMessage", "Expense saved successfully.", "success");
+      clearExpenseForm();
+      await loadExpenses();
+    }
+
+    async function updateExpense() {
+      clearMessage("expenseMessage");
+
+      if (!editingExpenseId) {
+        showMessage("expenseMessage", "Select an expense using Edit first.", "error");
+        return;
+      }
+
+      const expense_date = document.getElementById("expenseDate").value;
+      const category = document.getElementById("expenseCategory").value;
+      const vendor = document.getElementById("expenseVendor").value.trim() || null;
+      const description = document.getElementById("expenseDescription").value.trim() || null;
+      const amount = document.getElementById("expenseAmount").value;
+      const payment_method = document.getElementById("expensePaymentMethod").value || null;
+      const status = document.getElementById("expenseStatus").value;
+      const receipt_url = document.getElementById("expenseReceiptUrl").value.trim() || null;
+      const notes = document.getElementById("expenseNotes").value.trim() || null;
+
+      if (!expense_date) {
+        showMessage("expenseMessage", "Expense date is required.", "error");
+        return;
+      }
+
+      if (!category) {
+        showMessage("expenseMessage", "Category is required.", "error");
+        return;
+      }
+
+      if (!amount || Number(amount) <= 0) {
+        showMessage("expenseMessage", "Amount must be greater than 0.", "error");
+        return;
+      }
+
+      const payload = {
+        expense_date,
+        category,
+        vendor,
+        description,
+        amount: Number(amount),
+        payment_method,
+        status,
+        receipt_url,
+        notes
+      };
+
+      const { error } = await supabaseClient
+        .from("expenses")
+        .update(payload)
+        .eq("id", editingExpenseId);
+
+      if (error) {
+        showMessage("expenseMessage", "Could not update expense.\n" + error.message, "error");
+        return;
+      }
+
+      showMessage("expenseMessage", "Expense updated successfully.", "success");
+      clearExpenseForm();
+      await loadExpenses();
+    }
+
+    async function deleteExpense(id) {
+      const confirmed = confirm("Delete this expense?");
+      if (!confirmed) return;
+
+      const { error } = await supabaseClient
+        .from("expenses")
+        .delete()
+        .eq("id", id);
+
+      if (error) {
+        showMessage("expenseListMessage", "Could not delete expense.\n" + error.message, "error");
+        return;
+      }
+
+      if (editingExpenseId === id) {
+        clearExpenseForm();
+      }
+
+      showMessage("expenseListMessage", "Expense deleted successfully.", "success");
+      await loadExpenses();
+    }
+
+    function editExpense(id) {
+      const found = expenses.find(exp => String(exp.id) === String(id));
+      if (!found) {
+        showMessage("expenseMessage", "Expense not found.", "error");
+        return;
+      }
+
+      editingExpenseId = found.id;
+      document.getElementById("expenseDate").value = found.expense_date || "";
+      document.getElementById("expenseCategory").value = found.category || "Other";
+      document.getElementById("expenseVendor").value = found.vendor || "";
+      document.getElementById("expenseDescription").value = found.description || "";
+      document.getElementById("expenseAmount").value = found.amount ?? "";
+      document.getElementById("expensePaymentMethod").value = found.payment_method || "";
+      document.getElementById("expenseStatus").value = found.status || "Unpaid";
+      document.getElementById("expenseReceiptUrl").value = found.receipt_url || "";
+      document.getElementById("expenseNotes").value = found.notes || "";
+
+      showMessage("expenseMessage", "Expense loaded for update. Change the fields, then click Update Expense.", "success");
+      document.querySelector('[data-page="expensesPage"]').click();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function clearExpenseForm() {
+      editingExpenseId = null;
+      document.getElementById("expenseDate").value = todayInputDate();
+      document.getElementById("expenseCategory").value = "Fuel";
+      document.getElementById("expenseVendor").value = "";
+      document.getElementById("expenseDescription").value = "";
+      document.getElementById("expenseAmount").value = "";
+      document.getElementById("expensePaymentMethod").value = "";
+      document.getElementById("expenseStatus").value = "Unpaid";
+      document.getElementById("expenseReceiptUrl").value = "";
+      document.getElementById("expenseNotes").value = "";
+    }
+
+    function exportExpenses() {
+      const dataStr = JSON.stringify(expenses, null, 2);
+      const blob = new Blob([dataStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "expenses.json";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    // DASHBOARD
+    function renderDashboard() {
+      const totalCustomers = customers.length;
+      const activeCustomers = customers.filter(c => String(c.status || "").toLowerCase() === "active").length;
+
+      const totalInvoices = invoices.length;
+      const paidInvoices = invoices.filter(i => String(i.status || "").toLowerCase() === "paid");
+      const openInvoices = invoices.filter(i => String(i.status || "").toLowerCase() === "open");
+
+      const totalExpensesCount = expenses.length;
+      const paidExpenses = expenses.filter(e => String(e.status || "").toLowerCase() === "paid");
+      const unpaidExpenses = expenses.filter(e => String(e.status || "").toLowerCase() === "unpaid");
+
+      const revenue = paidInvoices.reduce((sum, i) => sum + Number(i.amount || 0), 0);
+      const outstanding = openInvoices.reduce((sum, i) => sum + Number(i.amount || 0), 0);
+      const totalExpensesAmount = expenses.reduce((sum, e) => sum + Number(e.amount || 0), 0);
+      const unpaidExpensesAmount = unpaidExpenses.reduce((sum, e) => sum + Number(e.amount || 0), 0);
+      const profit = revenue - totalExpensesAmount;
+
+      document.getElementById("dashboardRevenueStat").textContent = formatMoney(revenue);
+      document.getElementById("dashboardOutstandingStat").textContent = formatMoney(outstanding);
+      document.getElementById("dashboardExpensesStat").textContent = formatMoney(totalExpensesAmount);
+      document.getElementById("dashboardProfitStat").textContent = formatMoney(profit);
+      document.getElementById("dashboardCustomersStat").textContent = activeCustomers;
+
+      document.getElementById("dbTotalCustomers").textContent = totalCustomers;
+      document.getElementById("dbTotalInvoices").textContent = totalInvoices;
+      document.getElementById("dbPaidInvoices").textContent = paidInvoices.length;
+      document.getElementById("dbOpenInvoices").textContent = openInvoices.length;
+      document.getElementById("dbTotalExpenses").textContent = totalExpensesCount;
+      document.getElementById("dbPaidExpenses").textContent = paidExpenses.length;
+      document.getElementById("dbUnpaidExpenses").textContent = unpaidExpenses.length;
+
+      document.getElementById("dbRevenue").textContent = formatMoney(revenue);
+      document.getElementById("dbOutstanding").textContent = formatMoney(outstanding);
+      document.getElementById("dbExpenses").textContent = formatMoney(totalExpensesAmount);
+      document.getElementById("dbProfit").textContent = formatMoney(profit);
+      document.getElementById("dbPendingExpenses").textContent = formatMoney(unpaidExpensesAmount);
+
+      const profitEl = document.getElementById("dashboardProfitStat");
+      const profitDetailsEl = document.getElementById("dbProfit");
+
+      profitEl.style.color = profit >= 0 ? "#166534" : "#b91c1c";
+      profitDetailsEl.className = "summary-value " + (profit >= 0 ? "positive" : "negative");
+    }
+
+    // EVENTS
     document.getElementById("saveCustomerBtn").addEventListener("click", saveCustomer);
     document.getElementById("clearCustomerBtn").addEventListener("click", clearCustomerForm);
     document.getElementById("customerRefreshBtn").addEventListener("click", loadCustomers);
@@ -1002,10 +1565,25 @@
       }
     });
 
+    document.getElementById("saveExpenseBtn").addEventListener("click", saveExpense);
+    document.getElementById("updateExpenseBtn").addEventListener("click", updateExpense);
+    document.getElementById("clearExpenseBtn").addEventListener("click", clearExpenseForm);
+    document.getElementById("expenseRefreshBtn").addEventListener("click", loadExpenses);
+    document.getElementById("expenseClearSearchBtn").addEventListener("click", () => {
+      document.getElementById("expenseSearch").value = "";
+      renderExpenses();
+    });
+    document.getElementById("expenseSearch").addEventListener("input", renderExpenses);
+    document.getElementById("exportExpensesBtn").addEventListener("click", exportExpenses);
+
+    // INIT
     async function initApp() {
       document.getElementById("invoiceDate").value = todayInputDate();
+      document.getElementById("expenseDate").value = todayInputDate();
       await loadCustomers();
       await loadInvoices();
+      await loadExpenses();
+      renderDashboard();
     }
 
     initApp();
@@ -1013,6 +1591,8 @@
     window.deleteCustomer = deleteCustomer;
     window.deleteInvoice = deleteInvoice;
     window.editInvoice = editInvoice;
+    window.deleteExpense = deleteExpense;
+    window.editExpense = editExpense;
   </script>
 </body>
 </html>
