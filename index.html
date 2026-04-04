@@ -6,31 +6,79 @@
   <title>GregLandscape Login Test</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    body { margin: 0; font-family: Arial, sans-serif; background: #0b235f; }
-    .wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-    .card { width: 360px; background: #fff; border-radius: 14px; padding: 28px; }
-    h1 { margin: 0 0 20px; font-size: 22px; }
-    input { width: 100%; box-sizing: border-box; padding: 12px; margin: 0 0 12px; }
-    button { width: 100%; padding: 12px; border: 0; background: #16a34a; color: #fff; cursor: pointer; }
-    #msg { margin-top: 12px; color: #b91c1c; white-space: pre-wrap; }
-    #ok { margin-top: 12px; color: #166534; white-space: pre-wrap; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b235f;
+    }
+
+    .wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .card {
+      width: 360px;
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 28px;
+    }
+
+    h1 {
+      margin: 0 0 20px;
+      font-size: 22px;
+    }
+
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      margin: 0 0 12px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: 0;
+      background: #16a34a;
+      color: #ffffff;
+      cursor: pointer;
+    }
+
+    #msg {
+      margin-top: 12px;
+      color: #b91c1c;
+      white-space: pre-wrap;
+    }
+
+    #ok {
+      margin-top: 12px;
+      color: #166534;
+      white-space: pre-wrap;
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="card">
       <h1>GregLandscape</h1>
+
       <input id="email" type="email" placeholder="Email" autocomplete="username" />
       <input id="password" type="password" placeholder="Password" autocomplete="current-password" />
+
       <button id="loginBtn" type="button">Login</button>
+
       <div id="msg"></div>
       <div id="ok"></div>
     </div>
   </div>
 
   <script>
-    const SUPABASE_URL = "PASTE_YOUR_PROJECT_URL_HERE";
-    const SUPABASE_ANON_KEY = "PASTE_YOUR_ANON_PUBLIC_KEY_HERE";
+    const SUPABASE_URL = "https://nmbobbmqkvyuucwapaoj.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5tYm9iYm1xa3Z5dXVjd2FwYW9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyNDM5MDgsImV4cCI6MjA5MDgxOTkwOH0.L-e_JF5YnZQejSvz3hieWM3gVOdwJ91nuetFy4gv4N4";
 
     const msgEl = document.getElementById("msg");
     const okEl = document.getElementById("ok");
@@ -43,14 +91,6 @@
     function setOk(text) {
       okEl.textContent = text;
       msgEl.textContent = "";
-    }
-
-    if (
-      !SUPABASE_URL.startsWith("https://") ||
-      SUPABASE_ANON_KEY === "PASTE_YOUR_ANON_PUBLIC_KEY_HERE"
-    ) {
-      setError("Paste the exact Project URL and anon public key from Supabase Settings > API.");
-      throw new Error("Supabase config not pasted yet.");
     }
 
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -82,8 +122,11 @@
     }
 
     document.getElementById("loginBtn").addEventListener("click", login);
-    document.getElementById("password").addEventListener("keydown", (e) => {
-      if (e.key === "Enter") login();
+
+    document.getElementById("password").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        login();
+      }
     });
   </script>
 </body>
