@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GregLandscape App - Customers</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root{
       --bg:#f6f8fb;
@@ -23,90 +24,50 @@
     .app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
     .sidebar{background:#0f172a;color:#fff;padding:24px 16px}
     .brand{font-size:28px;font-weight:700;margin-bottom:24px}
-    .nav a{
-      display:block;color:#cbd5e1;text-decoration:none;padding:12px 14px;
-      border-radius:12px;margin-bottom:8px;font-weight:600
-    }
+    .nav a{display:block;color:#cbd5e1;text-decoration:none;padding:12px 14px;border-radius:12px;margin-bottom:8px;font-weight:600}
     .nav a.active{background:#1e293b;color:#fff}
     .main{padding:28px}
     .title h1{margin:0 0 6px;font-size:32px}
     .title p{margin:0;color:var(--muted)}
     .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:24px 0}
-    .kpi{
-      background:var(--card);border:1px solid var(--line);border-radius:16px;
-      box-shadow:var(--shadow);padding:16px 18px
-    }
+    .kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:16px 18px}
     .kpi-label{color:var(--muted);font-size:13px;margin-bottom:8px}
     .kpi-value{font-size:28px;font-weight:700}
     .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:24px}
-    .card{
-      background:var(--card);border:1px solid var(--line);
-      border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden
-    }
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
     .card-header{padding:18px 20px;border-bottom:1px solid var(--line)}
     .card-header h2{margin:0;font-size:20px}
     .card-body{padding:20px}
     .search-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
-    input, textarea, select{
-      width:100%;padding:12px 14px;border:1px solid var(--line);
-      border-radius:12px;font-size:14px;outline:none;background:#fff
-    }
+    input, textarea, select{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;font-size:14px;outline:none;background:#fff}
     textarea{min-height:88px;resize:vertical}
-    input:focus, textarea:focus, select:focus{
-      border-color:var(--blue);box-shadow:0 0 0 4px rgba(59,130,246,.12)
-    }
+    input:focus, textarea:focus, select:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(59,130,246,.12)}
     .search{flex:1;min-width:240px}
-    .btn{
-      border:none;border-radius:12px;padding:12px 14px;
-      font-weight:700;cursor:pointer
-    }
+    .btn{border:none;border-radius:12px;padding:12px 14px;font-weight:700;cursor:pointer}
     .btn-primary{background:var(--green2);color:#062f14}
     .btn-secondary{background:#eef2ff;color:#3730a3}
     .btn-danger{background:#fee2e2;color:var(--red)}
     .btn-small{padding:8px 10px;font-size:12px}
-    .btn:disabled{opacity:.6;cursor:not-allowed}
     .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
     .full{grid-column:1 / -1}
     .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}
     table{width:100%;border-collapse:collapse;min-width:1100px}
-    th,td{
-      text-align:left;padding:14px 12px;border-bottom:1px solid var(--line);
-      vertical-align:top;font-size:14px
-    }
+    th,td{text-align:left;padding:14px 12px;border-bottom:1px solid var(--line);vertical-align:top;font-size:14px}
     th{background:#f8fafc;color:#334155;position:sticky;top:0}
-    .tag{
-      display:inline-block;padding:6px 10px;border-radius:999px;
-      font-size:12px;font-weight:700
-    }
+    .tag{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
     .tag-active{background:#dcfce7;color:var(--green)}
     .tag-inactive{background:#fee2e2;color:var(--red)}
     .muted{color:var(--muted)}
     .empty{text-align:center;color:var(--muted);padding:28px}
     .actions{display:flex;gap:8px;flex-wrap:wrap}
-    .notice{
-      display:none;margin-top:14px;padding:12px 14px;border-radius:12px;
-      background:#eff6ff;color:#1d4ed8;font-size:13px
-    }
+    .notice{display:none;margin-top:14px;padding:12px 14px;border-radius:12px;background:#eff6ff;color:#1d4ed8;font-size:13px}
     .notice.show{display:block}
-    .error{
-      display:none;margin-top:14px;padding:12px 14px;border-radius:12px;
-      background:#fee2e2;color:#991b1b;font-size:13px
-    }
+    .error{display:none;margin-top:14px;padding:12px 14px;border-radius:12px;background:#fee2e2;color:#991b1b;font-size:13px;white-space:pre-wrap}
     .error.show{display:block}
     .top-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
     .status-line{font-size:13px;color:var(--muted)}
-    @media (max-width:1100px){
-      .grid{grid-template-columns:1fr}
-      .kpis{grid-template-columns:repeat(2,1fr)}
-    }
-    @media (max-width:760px){
-      .app{grid-template-columns:1fr}
-      .sidebar{padding:18px}
-      .main{padding:18px}
-      .kpis{grid-template-columns:1fr}
-      .form-grid{grid-template-columns:1fr}
-      .title h1{font-size:26px}
-    }
+    @media (max-width:1100px){.grid{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:760px){.app{grid-template-columns:1fr}.sidebar{padding:18px}.main{padding:18px}.kpis{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.title h1{font-size:26px}}
   </style>
 </head>
 <body>
@@ -252,17 +213,11 @@
 
 <script>
   const SUPABASE_URL = "https://nmbobbmqkvyuucwapaaj.supabase.co";
-  const SUPABASE_ANON_KEY = "sb_publishable_BDY1Xh-8Nx2vfHvk0KOsOA_cma_8Lpc";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_BDY1Xh-8Nx2vfHvk0KOsOA_cma_8Lpc";
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-  const TABLE_URL = `${SUPABASE_URL}/rest/v1/customers`;
   let customers = [];
   let filteredCustomers = [];
-
-  const defaultHeaders = {
-    "apikey": SUPABASE_ANON_KEY,
-    "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
-    "Content-Type": "application/json"
-  };
 
   function setSyncStatus(text) {
     document.getElementById("syncStatus").textContent = text;
@@ -300,26 +255,23 @@
   async function loadCustomers() {
     hideError();
     setSyncStatus("Loading customers from database...");
-    try {
-      const res = await fetch(`${TABLE_URL}?select=*&order=created_at.desc.nullslast`, {
-        method: "GET",
-        headers: defaultHeaders
-      });
 
-      if (!res.ok) {
-        const txt = await res.text();
-        throw new Error(txt || "Failed to load customers");
-      }
+    const { data, error } = await supabaseClient
+      .from("customers")
+      .select("*")
+      .order("created_at", { ascending: false });
 
-      customers = await res.json();
-      filteredCustomers = [...customers];
-      render();
-      setSyncStatus(`Loaded ${customers.length} customer(s) from database`);
-    } catch (err) {
-      console.error(err);
+    if (error) {
+      console.error(error);
       setSyncStatus("Database load failed");
-      showError("Could not load customers from Supabase.");
+      showError("Could not load customers from Supabase.\n\n" + error.message);
+      return;
     }
+
+    customers = data || [];
+    filteredCustomers = [...customers];
+    render();
+    setSyncStatus(`Loaded ${customers.length} customer(s) from database`);
   }
 
   function updateKpis() {
@@ -427,28 +379,21 @@
     hideError();
     setSyncStatus("Deleting customer...");
 
-    try {
-      const res = await fetch(`${TABLE_URL}?id=eq.${encodeURIComponent(id)}`, {
-        method: "DELETE",
-        headers: {
-          ...defaultHeaders,
-          "Prefer": "return=representation"
-        }
-      });
+    const { error } = await supabaseClient
+      .from("customers")
+      .delete()
+      .eq("id", id);
 
-      if (!res.ok) {
-        const txt = await res.text();
-        throw new Error(txt || "Delete failed");
-      }
-
-      showNotice("Customer deleted.");
-      resetForm();
-      await loadCustomers();
-    } catch (err) {
-      console.error(err);
+    if (error) {
+      console.error(error);
       setSyncStatus("Delete failed");
-      showError("Could not delete customer.");
+      showError("Could not delete customer.\n\n" + error.message);
+      return;
     }
+
+    showNotice("Customer deleted.");
+    resetForm();
+    await loadCustomers();
   }
 
   function deleteCurrent() {
@@ -464,42 +409,6 @@
     a.download = "greglandscape-customers.json";
     a.click();
     URL.revokeObjectURL(url);
-  }
-
-  async function insertCustomer(payload) {
-    const res = await fetch(TABLE_URL, {
-      method: "POST",
-      headers: {
-        ...defaultHeaders,
-        "Prefer": "return=representation"
-      },
-      body: JSON.stringify(payload)
-    });
-
-    if (!res.ok) {
-      const txt = await res.text();
-      throw new Error(txt || "Insert failed");
-    }
-
-    return res.json();
-  }
-
-  async function updateCustomer(id, payload) {
-    const res = await fetch(`${TABLE_URL}?id=eq.${encodeURIComponent(id)}`, {
-      method: "PATCH",
-      headers: {
-        ...defaultHeaders,
-        "Prefer": "return=representation"
-      },
-      body: JSON.stringify(payload)
-    });
-
-    if (!res.ok) {
-      const txt = await res.text();
-      throw new Error(txt || "Update failed");
-    }
-
-    return res.json();
   }
 
   document.getElementById("customerForm").addEventListener("submit", async function(e) {
@@ -523,24 +432,39 @@
       return;
     }
 
-    try {
-      setSyncStatus(id ? "Updating customer..." : "Saving customer...");
+    setSyncStatus(id ? "Updating customer..." : "Saving customer...");
 
-      if (id) {
-        await updateCustomer(id, payload);
-        showNotice("Customer updated.");
-      } else {
-        await insertCustomer(payload);
-        showNotice("Customer added.");
+    if (id) {
+      const { error } = await supabaseClient
+        .from("customers")
+        .update(payload)
+        .eq("id", id);
+
+      if (error) {
+        console.error(error);
+        setSyncStatus("Save failed");
+        showError("Could not update customer.\n\n" + error.message);
+        return;
       }
 
-      resetForm();
-      await loadCustomers();
-    } catch (err) {
-      console.error(err);
-      setSyncStatus("Save failed");
-      showError("Could not save customer to Supabase.");
+      showNotice("Customer updated.");
+    } else {
+      const { error } = await supabaseClient
+        .from("customers")
+        .insert([payload]);
+
+      if (error) {
+        console.error(error);
+        setSyncStatus("Save failed");
+        showError("Could not save customer to Supabase.\n\n" + error.message);
+        return;
+      }
+
+      showNotice("Customer added.");
     }
+
+    resetForm();
+    await loadCustomers();
   });
 
   document.getElementById("searchInput").addEventListener("input", applySearch);
