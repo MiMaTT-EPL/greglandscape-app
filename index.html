@@ -641,7 +641,7 @@
           </div>
 
           <div class="card">
-            <div class="panel-title">Add Customer</div>
+            <div class="panel-title" id="customerFormTitle">Add Customer</div>
 
             <div class="section-title">Identity</div>
             <div class="form-grid">
@@ -709,7 +709,7 @@
             </div>
 
             <div class="form-divider">
-              <div class="section-title">Meta</div>
+              <div class="section-title">Additional Details</div>
               <div class="form-grid">
                 <div class="form-group">
                   <label class="muted">Status</label>
@@ -728,6 +728,7 @@
 
             <div class="toolbar">
               <button class="btn btn-primary" id="saveCustomerBtn" type="button">Save Customer</button>
+              <button class="btn btn-warning" id="updateCustomerBtn" type="button">Update Customer</button>
               <button class="btn btn-secondary" id="clearCustomerBtn" type="button">Clear</button>
             </div>
 
@@ -1077,12 +1078,12 @@
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5tYm9iYm1xa3Z5dXVjd2FwYW9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyNDM5MDgsImV4cCI6MjA5MDgxOTkwOH0.L-e_JF5YnZQejSvz3hieWM3gVOdwJ91nuetFy4gv4N4";
 
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
     const REGION_OPTIONS = ["North", "South", "East", "West", "Central"];
 
     let customers = [];
     let invoices = [];
     let expenses = [];
+    let editingCustomerId = null;
     let editingInvoiceId = null;
     let editingExpenseId = null;
     let appInitialized = false;
@@ -1168,6 +1169,12 @@
       return "badge";
     }
 
+    function setCustomerFormMode(mode) {
+      document.getElementById("customerFormTitle").textContent = mode === "edit" ? "Edit Customer" : "Add Customer";
+      document.getElementById("saveCustomerBtn").classList.toggle("hidden", mode === "edit");
+      document.getElementById("updateCustomerBtn").classList.toggle("hidden", mode !== "edit");
+    }
+
     function populateCustomerDropdown() {
       const select = document.getElementById("invoiceCustomer");
       const activeCustomers = customers.filter((c) => String(c.status || "").toLowerCase() === "active");
@@ -1196,10 +1203,7 @@
         return;
       }
 
-      const { error } = await supabaseClient.auth.signInWithPassword({
-        email,
-        password
-      });
+      const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
       if (error) {
         showMessage("loginMessage", error.message, "error");
@@ -1222,6 +1226,7 @@
       customers = [];
       invoices = [];
       expenses = [];
+      editingCustomerId = null;
       editingInvoiceId = null;
       editingExpenseId = null;
       appInitialized = false;
@@ -1342,6 +1347,7 @@
           <td><span class="${statusBadgeClass(row.status)}">${escapeHtml(row.status || "")}</span></td>
           <td>
             <div class="action-row">
+              <button class="small-btn btn-warning" type="button" onclick="editCustomer('${row.id}')">Edit</button>
               <button class="small-btn btn-danger" type="button" onclick="deleteCustomer('${row.id}')">Delete</button>
             </div>
           </td>
@@ -1349,39 +1355,53 @@
       `).join("");
     }
 
+    function getCustomerFormPayload() {
+      return {
+        customer_type: document.getElementById("customerType").value,
+        recurring_contract: document.getElementById("customerRecurringContract").value,
+        customer_name: document.getElementById("customerName").value.trim(),
+        phone: document.getElementById("customerPhone").value.trim(),
+        email: document.getElementById("customerEmail").value.trim(),
+        address: document.getElementById("customerAddress").value.trim(),
+        region: normalizeRegion(document.getElementById("customerRegion").value),
+        notes: document.getElementById("customerNotes").value.trim(),
+        status: document.getElementById("customerStatus").value
+      };
+    }
+
+    function validateCustomerPayload(payload) {
+      if (!payload.customer_name) {
+        return "Customer name is required.";
+      }
+
+      if (!payload.region) {
+        return "Region is required.";
+      }
+
+      return "";
+    }
+
     async function saveCustomer() {
       clearMessage("customerMessage");
 
-      const customer_type = document.getElementById("customerType").value;
-      const recurring_contract = document.getElementById("customerRecurringContract").value;
-      const customer_name = document.getElementById("customerName").value.trim();
-      const phone = document.getElementById("customerPhone").value.trim();
-      const email = document.getElementById("customerEmail").value.trim();
-      const address = document.getElementById("customerAddress").value.trim();
-      const region = normalizeRegion(document.getElementById("customerRegion").value);
-      const notes = document.getElementById("customerNotes").value.trim();
-      const status = document.getElementById("customerStatus").value;
+      const form = getCustomerFormPayload();
+      const validationError = validateCustomerPayload(form);
 
-      if (!customer_name) {
-        showMessage("customerMessage", "Customer name is required.", "error");
-        return;
-      }
-
-      if (!region) {
-        showMessage("customerMessage", "Region is required.", "error");
+      if (validationError) {
+        showMessage("customerMessage", validationError, "error");
         return;
       }
 
       const payload = {
-        customer_type,
-        recurring_contract,
-        customer_name,
-        phone,
-        email,
-        address,
-        region,
-        notes: notes || null,
-        status
+        customer_type: form.customer_type,
+        recurring_contract: form.recurring_contract,
+        customer_name: form.customer_name,
+        phone: form.phone,
+        email: form.email,
+        address: form.address,
+        region: form.region,
+        notes: form.notes || null,
+        status: form.status
       };
 
       const { error } = await supabaseClient.from("customers").insert([payload]);
@@ -1398,7 +1418,73 @@
       showMessage("customerMessage", "Customer saved successfully.", "success");
     }
 
+    async function updateCustomer() {
+      clearMessage("customerMessage");
+
+      if (!editingCustomerId) {
+        showMessage("customerMessage", "Select a customer using Edit first.", "error");
+        return;
+      }
+
+      const form = getCustomerFormPayload();
+      const validationError = validateCustomerPayload(form);
+
+      if (validationError) {
+        showMessage("customerMessage", validationError, "error");
+        return;
+      }
+
+      const payload = {
+        customer_type: form.customer_type,
+        recurring_contract: form.recurring_contract,
+        customer_name: form.customer_name,
+        phone: form.phone,
+        email: form.email,
+        address: form.address,
+        region: form.region,
+        notes: form.notes || null,
+        status: form.status
+      };
+
+      const { error } = await supabaseClient.from("customers").update(payload).eq("id", editingCustomerId);
+
+      if (error) {
+        showMessage("customerMessage", "Could not update customer.\n" + error.message, "error");
+        return;
+      }
+
+      clearCustomerForm();
+      await loadCustomers();
+      showMessage("customerMessage", "Customer updated successfully.", "success");
+    }
+
+    function editCustomer(id) {
+      const found = customers.find((c) => String(c.id) === String(id));
+
+      if (!found) {
+        showMessage("customerMessage", "Customer not found.", "error");
+        return;
+      }
+
+      editingCustomerId = found.id;
+      document.getElementById("customerType").value = found.customer_type || "Individual";
+      document.getElementById("customerRecurringContract").value = normalizeRecurringLabel(found.recurring_contract || "No Contract");
+      document.getElementById("customerName").value = found.customer_name || "";
+      document.getElementById("customerPhone").value = found.phone || "";
+      document.getElementById("customerEmail").value = found.email || "";
+      document.getElementById("customerAddress").value = found.address || "";
+      document.getElementById("customerRegion").value = normalizeRegion(found.region || "");
+      document.getElementById("customerNotes").value = found.notes || "";
+      document.getElementById("customerStatus").value = found.status || "Active";
+
+      setCustomerFormMode("edit");
+      showMessage("customerMessage", "Customer loaded for update. Change the fields, then click Update Customer.", "success");
+      document.querySelector('[data-page="customersPage"]').click();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
     function clearCustomerForm() {
+      editingCustomerId = null;
       document.getElementById("customerType").value = "Individual";
       document.getElementById("customerRecurringContract").value = "No Contract";
       document.getElementById("customerName").value = "";
@@ -1408,12 +1494,15 @@
       document.getElementById("customerRegion").value = "";
       document.getElementById("customerNotes").value = "";
       document.getElementById("customerStatus").value = "Active";
+      setCustomerFormMode("add");
+      clearMessage("customerMessage");
     }
 
     async function deleteCustomer(id) {
       const linkedInvoices = invoices.filter((inv) => String(inv.customer_id) === String(id));
+
       if (linkedInvoices.length > 0) {
-        showMessage("customerMessage", "Cannot delete this customer because invoices are linked to it.", "error");
+        showMessage("customerMessage", "Cannot delete this customer because invoices are linked to it. Set the customer to Inactive instead.", "error");
         return;
       }
 
@@ -1425,6 +1514,10 @@
       if (error) {
         showMessage("customerMessage", "Could not delete customer.\n" + error.message, "error");
         return;
+      }
+
+      if (editingCustomerId === id) {
+        clearCustomerForm();
       }
 
       await loadCustomers();
@@ -2060,6 +2153,7 @@
         loadCustomers(true);
       });
       document.getElementById("saveCustomerBtn").addEventListener("click", saveCustomer);
+      document.getElementById("updateCustomerBtn").addEventListener("click", updateCustomer);
       document.getElementById("clearCustomerBtn").addEventListener("click", clearCustomerForm);
 
       document.getElementById("invoiceSearch").addEventListener("input", renderInvoices);
@@ -2097,9 +2191,9 @@
     async function initApp() {
       document.getElementById("invoiceDate").value = todayInputDate();
       document.getElementById("expenseDate").value = todayInputDate();
+      clearCustomerForm();
       clearInvoiceForm();
       clearExpenseForm();
-      clearCustomerForm();
 
       await loadCustomers();
       await loadInvoices();
@@ -2115,6 +2209,7 @@
       }
     });
 
+    window.editCustomer = editCustomer;
     window.deleteCustomer = deleteCustomer;
     window.deleteInvoice = deleteInvoice;
     window.editInvoice = editInvoice;
