@@ -29,7 +29,7 @@
     .main{padding:28px}
     .title h1{margin:0 0 6px;font-size:32px}
     .title p{margin:0;color:var(--muted)}
-    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:24px 0}
+    .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin:24px 0}
     .kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:16px 18px}
     .kpi-label{color:var(--muted);font-size:13px;margin-bottom:8px}
     .kpi-value{font-size:28px;font-weight:700}
@@ -51,12 +51,14 @@
     .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
     .full{grid-column:1 / -1}
     .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}
-    table{width:100%;border-collapse:collapse;min-width:1100px}
+    table{width:100%;border-collapse:collapse;min-width:1300px}
     th,td{text-align:left;padding:14px 12px;border-bottom:1px solid var(--line);vertical-align:top;font-size:14px}
     th{background:#f8fafc;color:#334155;position:sticky;top:0}
     .tag{display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}
     .tag-active{background:#dcfce7;color:var(--green)}
     .tag-inactive{background:#fee2e2;color:var(--red)}
+    .tag-contract{background:#e0f2fe;color:#075985}
+    .tag-paused{background:#fef3c7;color:#92400e}
     .muted{color:var(--muted)}
     .empty{text-align:center;color:var(--muted);padding:28px}
     .actions{display:flex;gap:8px;flex-wrap:wrap}
@@ -92,6 +94,7 @@
       <div class="kpi"><div class="kpi-label">Total Customers</div><div class="kpi-value" id="kpiTotal">0</div></div>
       <div class="kpi"><div class="kpi-label">Active</div><div class="kpi-value" id="kpiActive">0</div></div>
       <div class="kpi"><div class="kpi-label">Inactive</div><div class="kpi-value" id="kpiInactive">0</div></div>
+      <div class="kpi"><div class="kpi-label">Active Contracts</div><div class="kpi-value" id="kpiContracts">0</div></div>
       <div class="kpi"><div class="kpi-label">Search Results</div><div class="kpi-value" id="kpiFiltered">0</div></div>
     </div>
 
@@ -106,7 +109,7 @@
           </div>
 
           <div class="search-row">
-            <input class="search" id="searchInput" type="text" placeholder="Search by name, phone, email, address, region">
+            <input class="search" id="searchInput" type="text" placeholder="Search by name, phone, email, address, region, contract">
             <button class="btn btn-secondary" onclick="clearSearch()">Clear Search</button>
             <button class="btn btn-secondary" onclick="loadCustomers()">Refresh</button>
             <button class="btn btn-secondary" onclick="exportCustomers()">Export JSON</button>
@@ -123,6 +126,7 @@
                   <th>Email</th>
                   <th>Address</th>
                   <th>Region</th>
+                  <th>Recurring Contract</th>
                   <th>Notes</th>
                   <th>Status</th>
                   <th>Actions</th>
@@ -185,6 +189,15 @@
                   <option value="East">East</option>
                   <option value="South">South</option>
                   <option value="Central">Central</option>
+                </select>
+              </div>
+
+              <div>
+                <label>Recurring Contract Status</label>
+                <select id="recurringContract">
+                  <option value="No Contract">No Contract</option>
+                  <option value="Active Contract">Active Contract</option>
+                  <option value="Paused Contract">Paused Contract</option>
                 </select>
               </div>
 
@@ -252,6 +265,12 @@
       .replaceAll("'", "&#039;");
   }
 
+  function contractTagClass(value) {
+    if (value === "Active Contract") return "tag tag-contract";
+    if (value === "Paused Contract") return "tag tag-paused";
+    return "tag";
+  }
+
   async function loadCustomers() {
     hideError();
     setSyncStatus("Loading customers from database...");
@@ -277,9 +296,11 @@
   function updateKpis() {
     const total = customers.length;
     const active = customers.filter(c => c.status === "Active").length;
+    const activeContracts = customers.filter(c => c.recurring_contract === "Active Contract").length;
     document.getElementById("kpiTotal").textContent = total;
     document.getElementById("kpiActive").textContent = active;
     document.getElementById("kpiInactive").textContent = total - active;
+    document.getElementById("kpiContracts").textContent = activeContracts;
     document.getElementById("kpiFiltered").textContent = filteredCustomers.length;
   }
 
@@ -288,11 +309,12 @@
     tbody.innerHTML = "";
 
     if (!filteredCustomers.length) {
-      tbody.innerHTML = '<tr><td colspan="10" class="empty">No customers found.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="11" class="empty">No customers found.</td></tr>';
       return;
     }
 
     filteredCustomers.forEach((c, i) => {
+      const contract = c.recurring_contract || "No Contract";
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td>${i + 1}</td>
@@ -302,6 +324,7 @@
         <td>${escapeHtml(c.email)}</td>
         <td>${escapeHtml(c.address)}</td>
         <td>${escapeHtml(c.region)}</td>
+        <td><span class="${contractTagClass(contract)}">${escapeHtml(contract)}</span></td>
         <td>${escapeHtml(c.notes)}</td>
         <td><span class="tag ${c.status === "Active" ? "tag-active" : "tag-inactive"}">${escapeHtml(c.status)}</span></td>
         <td>
@@ -323,7 +346,7 @@
   function applySearch() {
     const q = document.getElementById("searchInput").value.trim().toLowerCase();
     filteredCustomers = customers.filter(c =>
-      [c.customer_type, c.customer_name, c.phone, c.email, c.address, c.region, c.notes, c.status]
+      [c.customer_type, c.customer_name, c.phone, c.email, c.address, c.region, c.notes, c.status, c.recurring_contract]
         .filter(Boolean)
         .some(v => String(v).toLowerCase().includes(q))
     );
@@ -345,6 +368,7 @@
     document.getElementById("customerType").value = "Individual";
     document.getElementById("region").value = "North";
     document.getElementById("status").value = "Active";
+    document.getElementById("recurringContract").value = "No Contract";
     hideNotice();
     hideError();
   }
@@ -360,6 +384,7 @@
     document.getElementById("email").value = c.email || "";
     document.getElementById("address").value = c.address || "";
     document.getElementById("region").value = c.region || "North";
+    document.getElementById("recurringContract").value = c.recurring_contract || "No Contract";
     document.getElementById("notes").value = c.notes || "";
     document.getElementById("status").value = c.status || "Active";
 
@@ -423,6 +448,7 @@
       email: document.getElementById("email").value.trim() || null,
       address: document.getElementById("address").value.trim() || null,
       region: document.getElementById("region").value,
+      recurring_contract: document.getElementById("recurringContract").value,
       notes: document.getElementById("notes").value.trim() || null,
       status: document.getElementById("status").value
     };
