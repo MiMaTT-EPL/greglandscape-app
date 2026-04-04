@@ -6,287 +6,68 @@
   <title>GregLandscape App</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
-
-    body {
-      background: #f3f4f6;
-      color: #111827;
-    }
-
-    .app {
-      display: flex;
-      min-height: 100vh;
-    }
-
-    .sidebar {
-      width: 220px;
-      background: #07163a;
-      color: white;
-      padding: 28px 0;
-    }
-
-    .brand {
-      font-size: 22px;
-      font-weight: 700;
-      padding: 0 24px 28px;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+    body { background: #f3f4f6; color: #111827; }
+    .app { display: flex; min-height: 100vh; }
+    .sidebar { width: 220px; background: #07163a; color: white; padding: 28px 0; }
+    .brand { font-size: 22px; font-weight: 700; padding: 0 24px 28px; }
     .nav-btn {
-      display: block;
-      width: 100%;
-      border: none;
-      background: transparent;
-      color: white;
-      text-align: left;
-      padding: 16px 24px;
-      cursor: pointer;
-      font-size: 16px;
+      display: block; width: 100%; border: none; background: transparent; color: white;
+      text-align: left; padding: 16px 24px; cursor: pointer; font-size: 16px;
     }
-
-    .nav-btn.active,
-    .nav-btn:hover {
-      background: rgba(255,255,255,0.08);
+    .nav-btn.active, .nav-btn:hover { background: rgba(255,255,255,0.08); }
+    .content { flex: 1; padding: 28px; }
+    .page { display: none; }
+    .page.active { display: block; }
+    h1 { font-size: 26px; margin-bottom: 8px; }
+    .subtext { color: #6b7280; margin-bottom: 24px; }
+    .stats { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; margin-bottom: 22px; }
+    .card { background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 16px; }
+    .stat-title { font-size: 14px; color: #6b7280; margin-bottom: 8px; }
+    .stat-value { font-size: 20px; font-weight: 700; color: #07163a; }
+    .grid-2 { display: grid; grid-template-columns: 1.4fr 0.9fr; gap: 20px; }
+    .panel-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+    .toolbar { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+    input, select, textarea, button { font-size: 14px; }
+    input, select, textarea {
+      width: 100%; border: 1px solid #d1d5db; border-radius: 12px; padding: 12px 14px; outline: none; background: white;
     }
-
-    .content {
-      flex: 1;
-      padding: 28px;
-    }
-
-    .page {
-      display: none;
-    }
-
-    .page.active {
-      display: block;
-    }
-
-    h1 {
-      font-size: 26px;
-      margin-bottom: 8px;
-    }
-
-    .subtext {
-      color: #6b7280;
-      margin-bottom: 24px;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 16px;
-      margin-bottom: 22px;
-    }
-
-    .card {
-      background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 16px;
-      padding: 16px;
-    }
-
-    .stat-title {
-      font-size: 14px;
-      color: #6b7280;
-      margin-bottom: 8px;
-    }
-
-    .stat-value {
-      font-size: 20px;
-      font-weight: 700;
-      color: #07163a;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1.4fr 0.9fr;
-      gap: 20px;
-    }
-
-    .panel-title {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 16px;
-    }
-
-    .toolbar {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 14px;
-      flex-wrap: wrap;
-    }
-
-    input,
-    select,
-    textarea,
-    button {
-      font-size: 14px;
-    }
-
-    input,
-    select,
-    textarea {
-      width: 100%;
-      border: 1px solid #d1d5db;
-      border-radius: 12px;
-      padding: 12px 14px;
-      outline: none;
-      background: white;
-    }
-
-    textarea {
-      min-height: 90px;
-      resize: vertical;
-    }
-
-    .search-input {
-      flex: 1;
-      min-width: 220px;
-    }
-
-    .btn {
-      border: none;
-      border-radius: 12px;
-      padding: 12px 16px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .btn-primary {
-      background: #16a34a;
-      color: white;
-    }
-
-    .btn-secondary {
-      background: #eef2ff;
-      color: #3730a3;
-    }
-
-    .btn-danger {
-      background: #dc2626;
-      color: white;
-    }
-
+    textarea { min-height: 90px; resize: vertical; }
+    .search-input { flex: 1; min-width: 220px; }
+    .btn { border: none; border-radius: 12px; padding: 12px 16px; cursor: pointer; font-weight: 600; }
+    .btn-primary { background: #16a34a; color: white; }
+    .btn-secondary { background: #eef2ff; color: #3730a3; }
+    .btn-danger { background: #dc2626; color: white; }
     .table-wrap {
-      width: 100%;
-      overflow-x: auto;
-      border: 1px solid #e5e7eb;
-      border-radius: 14px;
-      background: white;
+      width: 100%; overflow-x: auto; border: 1px solid #e5e7eb; border-radius: 14px; background: white;
     }
-
-    table {
-      width: 100%;
-      min-width: 900px;
-      border-collapse: collapse;
-    }
-
-    th,
-    td {
-      text-align: left;
-      padding: 14px 12px;
-      border-bottom: 1px solid #f1f5f9;
-      vertical-align: top;
-    }
-
-    th {
-      background: #f9fafb;
-      font-size: 14px;
-    }
-
-    td {
-      font-size: 14px;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .form-group {
-      margin-bottom: 14px;
-    }
-
-    .full {
-      grid-column: 1 / -1;
-    }
-
+    table { width: 100%; min-width: 900px; border-collapse: collapse; }
+    th, td { text-align: left; padding: 14px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+    th { background: #f9fafb; font-size: 14px; }
+    td { font-size: 14px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-group { margin-bottom: 14px; }
+    .full { grid-column: 1 / -1; }
     .message {
-      margin-top: 14px;
-      padding: 12px 14px;
-      border-radius: 12px;
-      font-size: 14px;
-      display: none;
-      white-space: pre-wrap;
+      margin-top: 14px; padding: 12px 14px; border-radius: 12px; font-size: 14px; display: none; white-space: pre-wrap;
     }
-
-    .message.show {
-      display: block;
-    }
-
-    .message.success {
-      background: #dcfce7;
-      color: #166534;
-      border: 1px solid #bbf7d0;
-    }
-
-    .message.error {
-      background: #fee2e2;
-      color: #991b1b;
-      border: 1px solid #fecaca;
-    }
-
-    .muted {
-      color: #6b7280;
-      font-size: 13px;
-    }
-
-    .small-btn {
-      padding: 8px 12px;
-      border-radius: 10px;
-      font-size: 13px;
-      border: none;
-      cursor: pointer;
-    }
-
-    .action-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
+    .message.show { display: block; }
+    .message.success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+    .message.error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    .muted { color: #6b7280; font-size: 13px; }
+    .small-btn { padding: 8px 12px; border-radius: 10px; font-size: 13px; border: none; cursor: pointer; }
+    .action-row { display: flex; gap: 8px; flex-wrap: wrap; }
 
     @media (max-width: 1200px) {
-      .stats {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .grid-2 {
-        grid-template-columns: 1fr;
-      }
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-2 { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 720px) {
-      .app {
-        flex-direction: column;
-      }
-
-      .sidebar {
-        width: 100%;
-      }
-
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .stats {
-        grid-template-columns: 1fr;
-      }
+      .app { flex-direction: column; }
+      .sidebar { width: 100%; }
+      .form-grid { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -301,7 +82,6 @@
     </aside>
 
     <main class="content">
-      <!-- CUSTOMERS -->
       <section id="customersPage" class="page active">
         <h1>Customers</h1>
         <p class="subtext">Manage customer records.</p>
@@ -382,7 +162,6 @@
         </div>
       </section>
 
-      <!-- INVOICES -->
       <section id="invoicesPage" class="page">
         <h1>Invoices</h1>
         <p class="subtext">Invoice tracking linked to customers.</p>
@@ -402,7 +181,7 @@
           </div>
           <div class="card">
             <div class="stat-title">Open Amount</div>
-            <div class="stat-value" id="invoiceOpenAmountStat">0</div>
+            <div class="stat-value" id="invoiceOpenAmountStat">0.00</div>
           </div>
           <div class="card">
             <div class="stat-title">Search Results</div>
@@ -503,30 +282,23 @@
         </div>
       </section>
 
-      <!-- EXPENSES -->
       <section id="expensesPage" class="page">
         <h1>Expenses</h1>
         <p class="subtext">Placeholder page for future expense module.</p>
-        <div class="card">
-          Expenses module not yet connected in this version.
-        </div>
+        <div class="card">Expenses module not yet connected in this version.</div>
       </section>
 
-      <!-- DASHBOARD -->
       <section id="dashboardPage" class="page">
         <h1>Dashboard</h1>
         <p class="subtext">Quick business overview.</p>
-        <div class="card">
-          Dashboard module not yet connected in this version.
-        </div>
+        <div class="card">Dashboard module not yet connected in this version.</div>
       </section>
     </main>
   </div>
 
   <script>
-    const SUPABASE_URL = "https://YOUR_PROJECT_URL.supabase.co";
-    const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
-
+    const SUPABASE_URL = "https://nmbobbmqkvyuucwapaoj.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5tYm9iYm1xa3Z5dXVjd2FwYW9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyNDM5MDgsImV4cCI6MjA5MDgxOTkwOH0.L-e_JF5YnZQejSvz3hieWM3gVOdwJ91nuetFy4gv4N4";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let customers = [];
@@ -578,8 +350,24 @@
         .replace(/'/g, "&#039;");
     }
 
-    function normalizeRecurringValue(row) {
-      return row.recurring_contract ?? row.recurring ?? row.is_recurring ?? row.recurring_customer ?? "No";
+    function getCustomerName(row) {
+      return row.name ?? row.customer_name ?? row.full_name ?? "";
+    }
+
+    function getCustomerPhone(row) {
+      return row.phone ?? row.phone_number ?? row.mobile ?? "";
+    }
+
+    function getCustomerEmail(row) {
+      return row.email ?? row.email_address ?? "";
+    }
+
+    function getCustomerAddress(row) {
+      return row.address ?? row.customer_address ?? "";
+    }
+
+    function getCustomerRecurring(row) {
+      return row.recurring_contract ?? row.recurring ?? row.is_recurring ?? "No";
     }
 
     async function loadCustomers() {
@@ -587,18 +375,17 @@
 
       const { data, error } = await supabaseClient
         .from("customers")
-        .select("*")
-        .order("created_at", { ascending: false });
+        .select("*");
 
       if (error) {
-        showMessage("customerMessage", "Could not load customers.\n" + error.message, "error");
         customers = [];
         renderCustomers();
         populateCustomerDropdown();
+        showMessage("customerMessage", "Could not load customers.\n" + error.message, "error");
         return;
       }
 
-      customers = data || [];
+      customers = Array.isArray(data) ? data : [];
       renderCustomers();
       populateCustomerDropdown();
     }
@@ -608,14 +395,12 @@
 
       const filtered = customers.filter((row) => {
         const haystack = [
-          row.name,
-          row.phone,
-          row.email,
-          row.address,
-          normalizeRecurringValue(row)
-        ]
-          .join(" ")
-          .toLowerCase();
+          getCustomerName(row),
+          getCustomerPhone(row),
+          getCustomerEmail(row),
+          getCustomerAddress(row),
+          getCustomerRecurring(row)
+        ].join(" ").toLowerCase();
 
         return haystack.includes(searchValue);
       });
@@ -625,31 +410,25 @@
       const tbody = document.getElementById("customersTableBody");
 
       if (!filtered.length) {
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="7">No customers found.</td>
-          </tr>
-        `;
+        tbody.innerHTML = `<tr><td colspan="7">No customers found.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = filtered.map((row, index) => {
-        return `
-          <tr>
-            <td>${index + 1}</td>
-            <td>${escapeHtml(row.name || "")}</td>
-            <td>${escapeHtml(row.phone || "")}</td>
-            <td>${escapeHtml(row.email || "")}</td>
-            <td>${escapeHtml(row.address || "")}</td>
-            <td>${escapeHtml(normalizeRecurringValue(row) || "No")}</td>
-            <td>
-              <div class="action-row">
-                <button class="small-btn btn-danger" onclick="deleteCustomer('${row.id}')">Delete</button>
-              </div>
-            </td>
-          </tr>
-        `;
-      }).join("");
+      tbody.innerHTML = filtered.map((row, index) => `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${escapeHtml(getCustomerName(row))}</td>
+          <td>${escapeHtml(getCustomerPhone(row))}</td>
+          <td>${escapeHtml(getCustomerEmail(row))}</td>
+          <td>${escapeHtml(getCustomerAddress(row))}</td>
+          <td>${escapeHtml(getCustomerRecurring(row))}</td>
+          <td>
+            <div class="action-row">
+              <button class="small-btn btn-danger" onclick="deleteCustomer('${row.id}')">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `).join("");
     }
 
     function populateCustomerDropdown() {
@@ -663,7 +442,7 @@
       select.innerHTML = `
         <option value="">Select customer</option>
         ${customers.map((row) => `
-          <option value="${row.id}">${escapeHtml(row.name || "Unnamed Customer")}</option>
+          <option value="${row.id}">${escapeHtml(getCustomerName(row) || "Unnamed Customer")}</option>
         `).join("")}
       `;
     }
@@ -683,10 +462,10 @@
       }
 
       const payload = {
-        name,
-        phone,
-        email,
-        address,
+        name: name,
+        phone: phone,
+        email: email,
+        address: address,
         recurring_contract: recurringContract
       };
 
@@ -714,7 +493,7 @@
     }
 
     async function deleteCustomer(id) {
-      const linkedInvoices = invoices.filter(inv => inv.customer_id === id);
+      const linkedInvoices = invoices.filter((inv) => inv.customer_id === id);
       if (linkedInvoices.length > 0) {
         showMessage("customerMessage", "Cannot delete this customer because invoices are linked to it.", "error");
         return;
@@ -741,59 +520,48 @@
       clearMessage("invoiceListMessage");
 
       const { data, error } = await supabaseClient
-        .from("invoices")
-        .select(`
-          id,
-          customer_id,
-          invoice_date,
-          service_type,
-          description,
-          amount,
-          status,
-          payment_date,
-          customers (
-            id,
-            name
-          )
-        `)
-        .order("invoice_date", { ascending: false });
+        .from("Invoices")
+        .select("*");
 
       if (error) {
-        showMessage("invoiceListMessage", "Could not load invoices.\n" + error.message, "error");
         invoices = [];
         renderInvoices();
+        showMessage("invoiceListMessage", "Could not load invoices.\n" + error.message, "error");
         return;
       }
 
-      invoices = data || [];
+      invoices = Array.isArray(data) ? data : [];
       renderInvoices();
+    }
+
+    function getCustomerNameById(customerId) {
+      const found = customers.find((c) => c.id === customerId);
+      return found ? getCustomerName(found) : "Unknown Customer";
     }
 
     function renderInvoices() {
       const searchValue = document.getElementById("invoiceSearch").value.trim().toLowerCase();
 
       const filtered = invoices.filter((row) => {
-        const customerName = row.customers?.name || "";
+        const customerName = getCustomerNameById(row.customer_id);
         const haystack = [
           customerName,
-          row.service_type,
-          row.description,
-          row.status,
-          row.invoice_date,
-          row.payment_date,
-          row.amount
-        ]
-          .join(" ")
-          .toLowerCase();
+          row.service_type ?? "",
+          row.description ?? "",
+          row.status ?? "",
+          row.invoice_date ?? "",
+          row.payment_date ?? "",
+          row.amount ?? ""
+        ].join(" ").toLowerCase();
 
         return haystack.includes(searchValue);
       });
 
       const totalCount = invoices.length;
-      const openCount = invoices.filter(i => (i.status || "").toLowerCase() === "open").length;
-      const paidCount = invoices.filter(i => (i.status || "").toLowerCase() === "paid").length;
+      const openCount = invoices.filter(i => String(i.status || "").toLowerCase() === "open").length;
+      const paidCount = invoices.filter(i => String(i.status || "").toLowerCase() === "paid").length;
       const openAmount = invoices
-        .filter(i => (i.status || "").toLowerCase() === "open")
+        .filter(i => String(i.status || "").toLowerCase() === "open")
         .reduce((sum, i) => sum + Number(i.amount || 0), 0);
 
       document.getElementById("invoiceTotalStat").textContent = totalCount;
@@ -805,35 +573,27 @@
       const tbody = document.getElementById("invoicesTableBody");
 
       if (!filtered.length) {
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="9">No invoices found.</td>
-          </tr>
-        `;
+        tbody.innerHTML = `<tr><td colspan="9">No invoices found.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = filtered.map((row, index) => {
-        const customerName = row.customers?.name || "Unknown Customer";
-
-        return `
-          <tr>
-            <td>${index + 1}</td>
-            <td>${escapeHtml(row.invoice_date || "")}</td>
-            <td>${escapeHtml(customerName)}</td>
-            <td>${escapeHtml(row.service_type || "")}</td>
-            <td>${escapeHtml(row.description || "")}</td>
-            <td>${escapeHtml(formatMoney(row.amount))}</td>
-            <td>${escapeHtml(row.status || "")}</td>
-            <td>${escapeHtml(row.payment_date || "")}</td>
-            <td>
-              <div class="action-row">
-                <button class="small-btn btn-danger" onclick="deleteInvoice('${row.id}')">Delete</button>
-              </div>
-            </td>
-          </tr>
-        `;
-      }).join("");
+      tbody.innerHTML = filtered.map((row, index) => `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${escapeHtml(row.invoice_date || "")}</td>
+          <td>${escapeHtml(getCustomerNameById(row.customer_id))}</td>
+          <td>${escapeHtml(row.service_type || "")}</td>
+          <td>${escapeHtml(row.description || "")}</td>
+          <td>${escapeHtml(formatMoney(row.amount))}</td>
+          <td>${escapeHtml(row.status || "")}</td>
+          <td>${escapeHtml(row.payment_date || "")}</td>
+          <td>
+            <div class="action-row">
+              <button class="small-btn btn-danger" onclick="deleteInvoice('${row.id}')">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `).join("");
     }
 
     async function saveInvoice() {
@@ -866,14 +626,14 @@
         customer_id: customerId,
         invoice_date: invoiceDate,
         service_type: serviceType,
-        description,
+        description: description,
         amount: Number(amount),
-        status,
+        status: status,
         payment_date: paymentDate
       };
 
       const { error } = await supabaseClient
-        .from("invoices")
+        .from("Invoices")
         .insert([payload]);
 
       if (error) {
@@ -901,7 +661,7 @@
       if (!confirmed) return;
 
       const { error } = await supabaseClient
-        .from("invoices")
+        .from("Invoices")
         .delete()
         .eq("id", id);
 
