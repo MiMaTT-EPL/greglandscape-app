@@ -1981,6 +1981,7 @@
 
       const totalExpenses = expenses
         .filter((row) => isInPeriod(row.expense_date, year, month))
+        .filter(e => String(e.category || "").toLowerCase() !== "other")
         .reduce((sum, row) => sum + Number(row.amount || 0), 0);
 
       return {
@@ -2829,7 +2830,7 @@
       document.getElementById("expensesPaidStat").textContent = expenses.filter((e) => String(e.status || "").toLowerCase() === "paid").length;
       document.getElementById("expensesUnpaidStat").textContent = expenses.filter((e) => String(e.status || "").toLowerCase() === "unpaid").length;
       document.getElementById("expensesAmountStat").textContent = formatMoney(
-        expenses.reduce((sum, e) => sum + Number(e.amount || 0), 0)
+        expenses.filter(e => String(e.category || "").toLowerCase() !== "other").reduce((sum, e) => sum + Number(e.amount || 0), 0)
       );
 
       const tbody = document.getElementById("expensesTableBody");
@@ -2911,7 +2912,7 @@
       const description = document.getElementById("expenseDescription").value.trim() || null;
       const amount = document.getElementById("expenseAmount").value;
       const payment_method = document.getElementById("expensePaymentMethod").value || null;
-      const status = document.getElementById("expenseStatus").value;
+      const status = document.getElementById("expenseStatus").value === "Paid" ? "Paid" : "Unpaid";
       const receipt_url = document.getElementById("expenseReceiptUrl").value.trim() || null;
       const notes = document.getElementById("expenseNotes").value.trim() || null;
 
@@ -2968,7 +2969,7 @@
       const description = document.getElementById("expenseDescription").value.trim() || null;
       const amount = document.getElementById("expenseAmount").value;
       const payment_method = document.getElementById("expensePaymentMethod").value || null;
-      const status = document.getElementById("expenseStatus").value;
+      const status = document.getElementById("expenseStatus").value === "Paid" ? "Paid" : "Unpaid";
       const receipt_url = document.getElementById("expenseReceiptUrl").value.trim() || null;
       const notes = document.getElementById("expenseNotes").value.trim() || null;
 
@@ -3086,7 +3087,7 @@
         .reduce((sum, row) => sum + Number(row.amount || 0), 0);
 
       const paidRevenue = serviceRevenue + otherIncome;
-      const totalExpenses = periodExpenses.reduce((sum, row) => sum + Number(row.amount || 0), 0);
+      const totalExpenses = periodExpenses.filter(e => String(e.category || "").toLowerCase() !== "other").reduce((sum, row) => sum + Number(row.amount || 0), 0);
       const openInvoiceAmount = openInvoices.reduce((sum, row) => sum + Number(row.amount || 0), 0);
       const netPosition = paidRevenue - totalExpenses;
 
