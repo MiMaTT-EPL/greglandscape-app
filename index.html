@@ -1596,15 +1596,21 @@
           </div>
 
           <div class="card">
-            <div class="kpi-label">Other Income</div>
-            <div class="kpi-number" id="dashOtherIncome">0.00</div>
-            <div class="kpi-sub">Paid invoices with service type Other Income</div>
-          </div>
-
-          <div class="card">
             <div class="kpi-label">Expenses</div>
             <div class="kpi-number" id="dashTotalExpenses">0.00</div>
             <div class="kpi-sub">Recorded expenses excluding Other Expenses</div>
+          </div>
+
+          <div class="card">
+            <div class="kpi-label">Net Business Revenue</div>
+            <div class="kpi-number" id="dashNetBusinessRevenue">0.00</div>
+            <div class="kpi-sub">Service Revenue - Expenses</div>
+          </div>
+
+          <div class="card">
+            <div class="kpi-label">Other Income</div>
+            <div class="kpi-number" id="dashOtherIncome">0.00</div>
+            <div class="kpi-sub">Paid invoices with service type Other Income</div>
           </div>
 
           <div class="card">
@@ -1614,21 +1620,27 @@
           </div>
 
           <div class="card">
-            <div class="kpi-label">Net Position</div>
-            <div class="kpi-number" id="dashNetPosition">0.00</div>
-            <div class="kpi-sub">Service Revenue + Other Income - Expenses - Other Expenses</div>
+            <div class="kpi-label">Other Net Contribution</div>
+            <div class="kpi-number" id="dashOtherNetContribution">0.00</div>
+            <div class="kpi-sub">Other Income - Other Expenses</div>
           </div>
 
           <div class="card">
-            <div class="kpi-label">Open Invoice Amount</div>
-            <div class="kpi-number" id="dashOpenInvoiceAmount">0.00</div>
-            <div class="kpi-sub">Outstanding invoices in selected period</div>
+            <div class="kpi-label">Overall Net Contribution</div>
+            <div class="kpi-number" id="dashOverallNetContribution">0.00</div>
+            <div class="kpi-sub">Net Business Revenue + Other Net Contribution</div>
           </div>
 
           <div class="card">
             <div class="kpi-label">Paid Revenue</div>
             <div class="kpi-number" id="dashPaidRevenue">0.00</div>
             <div class="kpi-sub">Service Revenue + Other Income</div>
+          </div>
+
+          <div class="card">
+            <div class="kpi-label">Open Invoice Amount</div>
+            <div class="kpi-number" id="dashOpenInvoiceAmount">0.00</div>
+            <div class="kpi-sub">Outstanding invoices in selected period</div>
           </div>
 
           <div class="card">
@@ -1647,7 +1659,7 @@
         <div class="card trend-card">
           <div class="trend-header">
             <div>
-              <div class="panel-title" style="margin-bottom:6px;">Net Position Trend</div>
+              <div class="panel-title" style="margin-bottom:6px;">Overall Net Contribution Trend</div>
               <div class="dashboard-summary-note">Last 6 months ending on the selected dashboard period.</div>
             </div>
 
@@ -3107,20 +3119,31 @@
       const otherExpenses = periodExpenses
         .filter((row) => String(row.category || "").toLowerCase() === "other")
         .reduce((sum, row) => sum + Number(row.amount || 0), 0);
+      const netBusinessRevenue = serviceRevenue - totalExpenses;
+      const otherNetContribution = otherIncome - otherExpenses;
+      const overallNetContribution = netBusinessRevenue + otherNetContribution;
       const openInvoiceAmount = openInvoices.reduce((sum, row) => sum + Number(row.amount || 0), 0);
-      const netPosition = paidRevenue - totalExpenses - otherExpenses;
 
       document.getElementById("dashServiceRevenue").textContent = formatMoney(serviceRevenue);
       document.getElementById("dashOtherIncome").textContent = formatMoney(otherIncome);
       document.getElementById("dashTotalExpenses").textContent = formatMoney(totalExpenses);
       document.getElementById("dashOtherExpenses").textContent = formatMoney(otherExpenses);
+      document.getElementById("dashNetBusinessRevenue").textContent = formatMoney(netBusinessRevenue);
+      document.getElementById("dashOtherNetContribution").textContent = formatMoney(otherNetContribution);
+      document.getElementById("dashOverallNetContribution").textContent = formatMoney(overallNetContribution);
       document.getElementById("dashPaidRevenue").textContent = formatMoney(paidRevenue);
       document.getElementById("dashOpenInvoiceAmount").textContent = formatMoney(openInvoiceAmount);
       document.getElementById("dashOpenInvoicesCount").textContent = openInvoices.length;
       document.getElementById("dashTotalCustomers").textContent = activeCustomers;
-      document.getElementById("dashNetPosition").textContent = formatMoney(netPosition);
-      document.getElementById("dashNetPosition").classList.remove("positive", "negative");
-      document.getElementById("dashNetPosition").classList.add(netPosition >= 0 ? "positive" : "negative");
+
+      document.getElementById("dashNetBusinessRevenue").classList.remove("positive", "negative");
+      document.getElementById("dashNetBusinessRevenue").classList.add(netBusinessRevenue >= 0 ? "positive" : "negative");
+
+      document.getElementById("dashOtherNetContribution").classList.remove("positive", "negative");
+      document.getElementById("dashOtherNetContribution").classList.add(otherNetContribution >= 0 ? "positive" : "negative");
+
+      document.getElementById("dashOverallNetContribution").classList.remove("positive", "negative");
+      document.getElementById("dashOverallNetContribution").classList.add(overallNetContribution >= 0 ? "positive" : "negative");
 
       const openBody = document.getElementById("dashboardOpenInvoicesBody");
       if (!openInvoices.length) {
