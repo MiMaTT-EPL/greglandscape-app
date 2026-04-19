@@ -1496,7 +1496,7 @@
                   <option value="Utilities">Utilities</option>
                   <option value="Rent">Rent</option>
                   <option value="Marketing">Marketing</option>
-                  <option value="Other">Other</option>
+                  <option value="Other">Other Expenses</option>
                 </select>
               </div>
 
@@ -1604,13 +1604,19 @@
           <div class="card">
             <div class="kpi-label">Expenses</div>
             <div class="kpi-number" id="dashTotalExpenses">0.00</div>
-            <div class="kpi-sub">Recorded expenses in selected period</div>
+            <div class="kpi-sub">Recorded expenses excluding Other Expenses</div>
+          </div>
+
+          <div class="card">
+            <div class="kpi-label">Other Expenses</div>
+            <div class="kpi-number" id="dashOtherExpenses">0.00</div>
+            <div class="kpi-sub">Recorded expenses with category Other Expenses</div>
           </div>
 
           <div class="card">
             <div class="kpi-label">Net Position</div>
             <div class="kpi-number" id="dashNetPosition">0.00</div>
-            <div class="kpi-sub">Service Revenue + Other Income - Expenses</div>
+            <div class="kpi-sub">Service Revenue + Other Income - Expenses - Other Expenses</div>
           </div>
 
           <div class="card">
@@ -1979,9 +1985,14 @@
 
       const totalRevenue = serviceRevenue + otherIncome;
 
-      const totalExpenses = expenses
-        .filter((row) => isInPeriod(row.expense_date, year, month))
-        .filter(e => String(e.category || "").toLowerCase() !== "other")
+      const periodExpenses = expenses.filter((row) => isInPeriod(row.expense_date, year, month));
+
+      const totalExpenses = periodExpenses
+        .filter((row) => String(row.category || "").toLowerCase() !== "other")
+        .reduce((sum, row) => sum + Number(row.amount || 0), 0);
+
+      const otherExpenses = periodExpenses
+        .filter((row) => String(row.category || "").toLowerCase() === "other")
         .reduce((sum, row) => sum + Number(row.amount || 0), 0);
 
       return {
@@ -1989,7 +2000,8 @@
         otherIncome,
         totalRevenue,
         totalExpenses,
-        net: totalRevenue - totalExpenses
+        otherExpenses,
+        net: totalRevenue - totalExpenses - otherExpenses
       };
     }
 
@@ -2830,7 +2842,9 @@
       document.getElementById("expensesPaidStat").textContent = expenses.filter((e) => String(e.status || "").toLowerCase() === "paid").length;
       document.getElementById("expensesUnpaidStat").textContent = expenses.filter((e) => String(e.status || "").toLowerCase() === "unpaid").length;
       document.getElementById("expensesAmountStat").textContent = formatMoney(
-        expenses.filter(e => String(e.category || "").toLowerCase() !== "other").reduce((sum, e) => sum + Number(e.amount || 0), 0)
+        expenses
+          .filter((e) => String(e.category || "").toLowerCase() !== "other")
+          .reduce((sum, e) => sum + Number(e.amount || 0), 0)
       );
 
       const tbody = document.getElementById("expensesTableBody");
@@ -3087,13 +3101,19 @@
         .reduce((sum, row) => sum + Number(row.amount || 0), 0);
 
       const paidRevenue = serviceRevenue + otherIncome;
-      const totalExpenses = periodExpenses.filter(e => String(e.category || "").toLowerCase() !== "other").reduce((sum, row) => sum + Number(row.amount || 0), 0);
+      const totalExpenses = periodExpenses
+        .filter((row) => String(row.category || "").toLowerCase() !== "other")
+        .reduce((sum, row) => sum + Number(row.amount || 0), 0);
+      const otherExpenses = periodExpenses
+        .filter((row) => String(row.category || "").toLowerCase() === "other")
+        .reduce((sum, row) => sum + Number(row.amount || 0), 0);
       const openInvoiceAmount = openInvoices.reduce((sum, row) => sum + Number(row.amount || 0), 0);
-      const netPosition = paidRevenue - totalExpenses;
+      const netPosition = paidRevenue - totalExpenses - otherExpenses;
 
       document.getElementById("dashServiceRevenue").textContent = formatMoney(serviceRevenue);
       document.getElementById("dashOtherIncome").textContent = formatMoney(otherIncome);
       document.getElementById("dashTotalExpenses").textContent = formatMoney(totalExpenses);
+      document.getElementById("dashOtherExpenses").textContent = formatMoney(otherExpenses);
       document.getElementById("dashPaidRevenue").textContent = formatMoney(paidRevenue);
       document.getElementById("dashOpenInvoiceAmount").textContent = formatMoney(openInvoiceAmount);
       document.getElementById("dashOpenInvoicesCount").textContent = openInvoices.length;
