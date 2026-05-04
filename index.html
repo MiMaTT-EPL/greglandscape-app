@@ -3078,7 +3078,10 @@
 
       showMessage("expenseMessage", "Expense loaded for update. Change the fields, then click Update Expense.", "success");
       activatePage("expensesPage");
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      setTimeout(() => {
+        const target = document.getElementById("expenseDate");
+        if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 50);
     }
 
     function clearExpenseForm() {
@@ -3102,7 +3105,10 @@
       const periodExpenses = filterExpensesByDashboardMode();
 
       const paidInvoices = periodInvoices.filter((row) => String(row.status || "").toLowerCase() === "paid");
-      const openInvoices = periodInvoices.filter((row) => String(row.status || "").toLowerCase() === "open");
+      const openInvoices = periodInvoices.filter((row) => {
+        const status = String(row.status || "").toLowerCase();
+        return status === "open" || status === "unpaid";
+      });
 
       const serviceRevenue = paidInvoices
         .filter((row) => String(normalizeServiceType(row.service_type)).toLowerCase() !== "other")
@@ -3150,7 +3156,7 @@
         openBody.innerHTML = `<tr><td colspan="6">No open invoices in selected period.</td></tr>`;
         setMobileList("dashboardOpenInvoicesMobileList", "", "No open invoices in selected period.");
       } else {
-        openBody.innerHTML = openInvoices.slice(0, 10).map((row, index) => `
+        openBody.innerHTML = openInvoices.map((row, index) => `
           <tr>
             <td>${index + 1}</td>
             <td>${escapeHtml(customerNameById(row.customer_id))}</td>
@@ -3163,7 +3169,7 @@
 
         setMobileList(
           "dashboardOpenInvoicesMobileList",
-          openInvoices.slice(0, 10).map((row) => `
+          openInvoices.map((row) => `
             <div class="mobile-item">
               <div class="mobile-item-head">
                 <div>
