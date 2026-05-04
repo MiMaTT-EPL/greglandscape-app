@@ -151,7 +151,7 @@
       background: white;
       border-top: 1px solid var(--border);
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       padding-bottom: var(--safe-bottom);
       box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
     }
@@ -757,6 +757,30 @@
       color: var(--gray-text);
     }
 
+
+    .return-summary-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .return-line-table table {
+      min-width: 680px;
+    }
+
+    .return-total-row td {
+      font-weight: 700;
+      background: #f9fafb;
+    }
+
+    .return-note {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+      margin-top: 8px;
+    }
+
     
 
     #customersPage .stats {
@@ -807,6 +831,10 @@
 
       .trend-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .return-summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
@@ -1023,6 +1051,10 @@
         align-items: end;
       }
 
+      .return-summary-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
       .trend-col {
         background: transparent;
         padding: 0;
@@ -1120,6 +1152,7 @@
         <button class="nav-btn active" data-page="customersPage" type="button">Customers</button>
         <button class="nav-btn" data-page="invoicesPage" type="button">Invoices</button>
         <button class="nav-btn" data-page="expensesPage" type="button">Expenses</button>
+        <button class="nav-btn" data-page="returnPLPage" type="button">Return P&L</button>
         <button class="nav-btn" data-page="dashboardPage" type="button">Dashboard</button>
       </div>
 
@@ -1557,6 +1590,109 @@
         </div>
       </section>
 
+
+
+      <section id="returnPLPage" class="page">
+        <h1>Return P&amp;L</h1>
+        <p class="subtext">Main company profit and loss summary prepared for Mauritius return filing support.</p>
+
+        <div class="card">
+          <div class="panel-title">Return Period</div>
+          <div class="dashboard-filter-group">
+            <div class="form-group">
+              <label class="muted">Start Date</label>
+              <input id="returnPLStartDate" type="date" />
+            </div>
+            <div class="form-group">
+              <label class="muted">End Date</label>
+              <input id="returnPLEndDate" type="date" />
+            </div>
+            <button class="btn btn-secondary" id="returnPLRefreshBtn" type="button">Refresh Return P&amp;L</button>
+          </div>
+          <div class="return-note" id="returnPLPeriodNote">Select the company accounting period to prepare the return profit and loss.</div>
+        </div>
+
+        <div class="return-summary-grid">
+          <div class="card">
+            <div class="kpi-label">Total Income</div>
+            <div class="kpi-number" id="returnPLTotalIncome">0.00</div>
+            <div class="kpi-sub">Paid service revenue + other income</div>
+          </div>
+
+          <div class="card">
+            <div class="kpi-label">Total Expenses</div>
+            <div class="kpi-number" id="returnPLTotalExpenses">0.00</div>
+            <div class="kpi-sub">Business expenses + other expenses</div>
+          </div>
+
+          <div class="card">
+            <div class="kpi-label">Profit / Loss Before Tax</div>
+            <div class="kpi-number" id="returnPLProfitBeforeTax">0.00</div>
+            <div class="kpi-sub">Total income - total expenses</div>
+          </div>
+
+          <div class="card">
+            <div class="kpi-label">Open Revenue Not Included</div>
+            <div class="kpi-number" id="returnPLOpenRevenue">0.00</div>
+            <div class="kpi-sub">Open invoices in the selected period</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card return-line-table">
+            <div class="panel-title">Income Statement Lines</div>
+            <div class="table-wrap desktop-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Line</th>
+                    <th>Amount</th>
+                  </tr>
+                </thead>
+                <tbody id="returnPLIncomeBody"></tbody>
+              </table>
+            </div>
+            <div id="returnPLIncomeMobileList" class="mobile-list mobile-only"></div>
+          </div>
+
+          <div class="card return-line-table">
+            <div class="panel-title">Expense Statement Lines</div>
+            <div class="table-wrap desktop-table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Line</th>
+                    <th>Amount</th>
+                  </tr>
+                </thead>
+                <tbody id="returnPLExpenseBody"></tbody>
+              </table>
+            </div>
+            <div id="returnPLExpenseMobileList" class="mobile-list mobile-only"></div>
+          </div>
+        </div>
+
+        <div class="card return-line-table">
+          <div class="panel-title">Return Filing Summary</div>
+          <div class="table-wrap desktop-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Return Line</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody id="returnPLSummaryBody"></tbody>
+            </table>
+          </div>
+          <div id="returnPLSummaryMobileList" class="mobile-list mobile-only"></div>
+          <div class="return-note">This tab is a preparation view from your app records. Final MRA filing should still be checked against the company return form and supporting records.</div>
+        </div>
+      </section>
+
       <section id="dashboardPage" class="page">
         <h1>Dashboard</h1>
         <p class="subtext">Professional business summary with period filters and trend view.</p>
@@ -1745,6 +1881,7 @@
       <button class="mobile-nav-btn active" data-page="customersPage" type="button">Customers</button>
       <button class="mobile-nav-btn" data-page="invoicesPage" type="button">Invoices</button>
       <button class="mobile-nav-btn" data-page="expensesPage" type="button">Expenses</button>
+      <button class="mobile-nav-btn" data-page="returnPLPage" type="button">Return P&L</button>
       <button class="mobile-nav-btn" data-page="dashboardPage" type="button">Dashboard</button>
     </nav>
   </div>
@@ -1868,6 +2005,7 @@
         customersPage: "Customers",
         invoicesPage: "Invoices",
         expensesPage: "Expenses",
+        returnPLPage: "Return P&L",
         dashboardPage: "Dashboard"
       };
       const el = document.getElementById("mobilePageLabel");
@@ -2221,6 +2359,7 @@
       populateCustomerDropdown();
       populateDashboardYearFilter();
       renderDashboard();
+      renderReturnPL();
 
       if (showSuccessMessage) {
         showMessage("customerListMessage", "Customers refreshed.", "success");
@@ -2521,6 +2660,7 @@
       renderInvoices();
       populateDashboardYearFilter();
       renderDashboard();
+      renderReturnPL();
 
       if (showSuccessMessage) {
         showMessage("invoiceListMessage", "Invoices refreshed.", "success");
@@ -2823,6 +2963,7 @@
       renderExpenses();
       populateDashboardYearFilter();
       renderDashboard();
+      renderReturnPL();
 
       if (showSuccessMessage) {
         showMessage("expenseListMessage", "Expenses refreshed.", "success");
@@ -3097,6 +3238,143 @@
       document.getElementById("expenseNotes").value = "";
     }
 
+
+    function isInDateRange(dateString, startDate, endDate) {
+      if (!dateString || !startDate || !endDate) return false;
+      return String(dateString) >= String(startDate) && String(dateString) <= String(endDate);
+    }
+
+    function setDefaultReturnPLPeriod() {
+      const startEl = document.getElementById("returnPLStartDate");
+      const endEl = document.getElementById("returnPLEndDate");
+      if (!startEl || !endEl) return;
+
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = today.getMonth() + 1;
+      const endYear = month <= 6 ? year : year + 1;
+
+      startEl.value = `${endYear - 1}-07-01`;
+      endEl.value = `${endYear}-06-30`;
+    }
+
+    function makeReturnMobileRows(rows) {
+      return rows.map((row) => `
+        <div class="mobile-item">
+          <div class="mobile-item-head">
+            <div>
+              <div class="mobile-item-title">${escapeHtml(row.label)}</div>
+              <div class="mobile-item-subtitle">${escapeHtml(row.note || "")}</div>
+            </div>
+            <span class="badge ${row.amount < 0 ? "badge-danger" : "badge-gray"}">${escapeHtml(formatMoney(row.amount))}</span>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderReturnPL() {
+      const startDate = document.getElementById("returnPLStartDate")?.value || "";
+      const endDate = document.getElementById("returnPLEndDate")?.value || "";
+      const noteEl = document.getElementById("returnPLPeriodNote");
+
+      if (!startDate || !endDate) {
+        if (noteEl) noteEl.textContent = "Select a start date and end date to prepare the return profit and loss.";
+        return;
+      }
+
+      if (startDate > endDate) {
+        if (noteEl) noteEl.textContent = "Start date cannot be after end date.";
+        return;
+      }
+
+      if (noteEl) noteEl.textContent = `Showing return profit and loss from ${startDate} to ${endDate}.`;
+
+      const returnInvoices = invoices.filter((row) => isInDateRange(row.invoice_date, startDate, endDate));
+      const paidInvoices = returnInvoices.filter((row) => String(row.status || "").toLowerCase() === "paid");
+      const openInvoices = returnInvoices.filter((row) => String(row.status || "").toLowerCase() === "open");
+      const returnExpenses = expenses.filter((row) => isInDateRange(row.expense_date, startDate, endDate));
+
+      const serviceRevenue = paidInvoices
+        .filter((row) => String(normalizeServiceType(row.service_type)).toLowerCase() !== "other")
+        .reduce((sum, row) => sum + Number(row.amount || 0), 0);
+
+      const otherIncome = paidInvoices
+        .filter((row) => String(normalizeServiceType(row.service_type)).toLowerCase() === "other")
+        .reduce((sum, row) => sum + Number(row.amount || 0), 0);
+
+      const openRevenue = openInvoices.reduce((sum, row) => sum + Number(row.amount || 0), 0);
+      const totalIncome = serviceRevenue + otherIncome;
+
+      const expenseCategories = Array.from(new Set(returnExpenses.map((row) => row.category || "Uncategorised"))).sort();
+      const expenseRows = expenseCategories.map((category) => ({
+        label: category === "Other" ? "Other Expenses" : category,
+        amount: returnExpenses
+          .filter((row) => (row.category || "Uncategorised") === category)
+          .reduce((sum, row) => sum + Number(row.amount || 0), 0),
+        note: "Recorded expenses"
+      }));
+
+      const totalExpenses = expenseRows.reduce((sum, row) => sum + Number(row.amount || 0), 0);
+      const profitBeforeTax = totalIncome - totalExpenses;
+
+      const incomeRows = [
+        { label: "Service Revenue", amount: serviceRevenue, note: "Paid invoices excluding Other Income" },
+        { label: "Other Income", amount: otherIncome, note: "Paid invoices marked as Other Income" },
+        { label: "Total Income", amount: totalIncome, note: "Income included in return P&L" }
+      ];
+
+      const summaryRows = [
+        { label: "Total Income", amount: totalIncome, note: "Paid revenue included" },
+        { label: "Total Expenses", amount: totalExpenses, note: "Expenses recorded" },
+        { label: "Profit / Loss Before Tax", amount: profitBeforeTax, note: "Before any tax computation" },
+        { label: "Open Revenue Not Included", amount: openRevenue, note: "Open invoices for review" }
+      ];
+
+      document.getElementById("returnPLTotalIncome").textContent = formatMoney(totalIncome);
+      document.getElementById("returnPLTotalExpenses").textContent = formatMoney(totalExpenses);
+      document.getElementById("returnPLProfitBeforeTax").textContent = formatMoney(profitBeforeTax);
+      document.getElementById("returnPLOpenRevenue").textContent = formatMoney(openRevenue);
+
+      document.getElementById("returnPLProfitBeforeTax").classList.remove("positive", "negative");
+      document.getElementById("returnPLProfitBeforeTax").classList.add(profitBeforeTax >= 0 ? "positive" : "negative");
+
+      document.getElementById("returnPLIncomeBody").innerHTML = incomeRows.map((row, index) => `
+        <tr class="${row.label === "Total Income" ? "return-total-row" : ""}">
+          <td>${index + 1}</td>
+          <td>${escapeHtml(row.label)}</td>
+          <td>${escapeHtml(formatMoney(row.amount))}</td>
+        </tr>
+      `).join("");
+
+      document.getElementById("returnPLExpenseBody").innerHTML = expenseRows.length
+        ? expenseRows.map((row, index) => `
+            <tr>
+              <td>${index + 1}</td>
+              <td>${escapeHtml(row.label)}</td>
+              <td>${escapeHtml(formatMoney(row.amount))}</td>
+            </tr>
+          `).join("") + `
+            <tr class="return-total-row">
+              <td>${expenseRows.length + 1}</td>
+              <td>Total Expenses</td>
+              <td>${escapeHtml(formatMoney(totalExpenses))}</td>
+            </tr>
+          `
+        : `<tr><td colspan="3">No expenses found in selected period.</td></tr>`;
+
+      document.getElementById("returnPLSummaryBody").innerHTML = summaryRows.map((row, index) => `
+        <tr class="${row.label === "Profit / Loss Before Tax" ? "return-total-row" : ""}">
+          <td>${index + 1}</td>
+          <td>${escapeHtml(row.label)}</td>
+          <td>${escapeHtml(formatMoney(row.amount))}</td>
+        </tr>
+      `).join("");
+
+      setMobileList("returnPLIncomeMobileList", makeReturnMobileRows(incomeRows), "No income found in selected period.");
+      setMobileList("returnPLExpenseMobileList", makeReturnMobileRows(expenseRows.concat([{ label: "Total Expenses", amount: totalExpenses, note: "Total recorded expenses" }])), "No expenses found in selected period.");
+      setMobileList("returnPLSummaryMobileList", makeReturnMobileRows(summaryRows), "No return summary available.");
+    }
+
     function renderDashboard() {
       document.getElementById("dashboardPeriodLabel").textContent = periodLabelText();
 
@@ -3308,6 +3586,7 @@
       updatePageLabel(pageId);
 
       if (pageId === "dashboardPage") renderDashboard();
+      if (pageId === "returnPLPage") renderReturnPL();
     }
 
     function bindNavigation() {
@@ -3375,6 +3654,10 @@
       document.getElementById("updateExpenseBtn").addEventListener("click", updateExpense);
       document.getElementById("clearExpenseBtn").addEventListener("click", clearExpenseForm);
 
+      document.getElementById("returnPLRefreshBtn").addEventListener("click", renderReturnPL);
+      document.getElementById("returnPLStartDate").addEventListener("change", renderReturnPL);
+      document.getElementById("returnPLEndDate").addEventListener("change", renderReturnPL);
+
       document.getElementById("dashboardMode").addEventListener("change", function () {
         renderDashboard();
       });
@@ -3385,6 +3668,7 @@
     async function initApp() {
       document.getElementById("invoiceDate").value = todayInputDate();
       document.getElementById("expenseDate").value = todayInputDate();
+      setDefaultReturnPLPeriod();
       clearCustomerForm();
       clearInvoiceForm();
       clearExpenseForm();
@@ -3397,6 +3681,7 @@
 
       activatePage("customersPage");
       renderDashboard();
+      renderReturnPL();
     }
 
     supabaseClient.auth.onAuthStateChange(function (_event, session) {
